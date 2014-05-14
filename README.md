@@ -1,4 +1,7 @@
-sep
+Object Tracking and Thermal Scanning
 ===
+[Software Engineering Project 320 — Curtin University — 2014]
 
-Software Engineering Project 320 — Bomb Guys
+
+
+
