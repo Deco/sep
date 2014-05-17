@@ -1,0 +1,16 @@
+Source: libserial
+Section: main
+Priority: extra
+Maintainer: Ilya Shpigor <petrsum@gmail.com>
+Build-Depends: debhelper (>= 5)
+Standards-Version: 3.7.2
+
+Package: libserial
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, pkg-config
+Description: The library for work with the serial port
+
+Package: libserial-dev
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Development files for libserial
