@@ -29,6 +29,17 @@ class SuperSampler
         }
 };
 
+void generateImage()
+{
+    /// Iterate through all the list or pixels, looking for points within its range.
+
+}
+
+void recordPoint()
+{
+
+}
+
 void render()
 {
     sf::RenderWindow window(sf::VideoMode(640, 480), "SuperSampler");
@@ -39,8 +50,31 @@ void render()
         sf::Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
-                window.close();
+            switch (event.type)
+            {
+                case sf::Event::Closed:
+                {
+                    window.close(); 
+                    break;
+                }
+                case sf::Event::KeyPressed:
+                {
+                    if(event.key.code == sf::Keyboard::Escape)
+                    { 
+                        window.close(); 
+                    }
+                    else if (event.key.code == sf::Keyboard::Space)
+                    {
+                        generateImage();
+                    }
+                    break;
+                }
+                case sf::Event::MouseButtonPressed:
+                {
+                    recordPoint();
+                    break;
+                }
+            }
         }
 
         window.clear();
@@ -51,7 +85,5 @@ void render()
 
 int main()
 {
-    SuperSampler ss;
-    cv::Vec2d pos;
     render();
 }

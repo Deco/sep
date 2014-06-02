@@ -6,7 +6,7 @@ if(NOT DEFINED CMAKE_PROJECT_ROOT)
     )
 endif()
 
-set(CMAKE_CXX_FLAGS "-ggdb")
+set(CMAKE_CXX_FLAGS "-std=c++11 -ggdb")
 
 add_executable(main
     main.cpp
