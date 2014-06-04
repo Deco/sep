@@ -276,7 +276,6 @@ public:
         }
 } catch(SerialException e) {
 std::cout << e.string << std::endl;
-std::cout << "errno: " << e.internal_reference << " (" << strerror(e.internal_reference) << ")" << std::endl;
 }
     }
     void actuatorThreadRun()

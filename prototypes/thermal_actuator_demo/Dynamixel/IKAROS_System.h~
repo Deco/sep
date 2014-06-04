@@ -31,7 +31,7 @@
 //
 
 //#define MINIMAL
-//#define MAC_OS_X
+#define MAC_OS_X
 //#define LINUX
 //#define WINDOWS
 //#define WINDOWS32
