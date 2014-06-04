@@ -63,6 +63,79 @@ public:
     {   
         window.clear();
 
+        float sensorDataCache[64];
+        if (1) {
+            sf::Lock sensorDataMutexLock(sensorDataMutex);
+            memcpy(sensorDataCache, sensorData, sizeof(float)*64);
+        }
+
+        double size = 40.0;
+
+        double pixelTemp = 0.0;
+        int hottestX, hottestY;
+        float hottestTemp;
+        float minTemp = 15.0, maxTemp = 35.0;
+        for(int x = 0; x < 16; x++) {
+            for(int y = 0; y < 4; y++) {
+                double val = sensorDataCache[x*4+(3-y)];
+
+                if(val > hottestTemp) {
+                    hottestTemp = val;
+                    hotSpot.x = (double)x/15.0;
+                    hotSpot.y = ((double)y+8.0-2.0)/15.0;
+                    hottestX = x; hottestY = y;
+                }
+                // if(val > maxTemp) {
+                //     maxTemp = val;
+                // } else if(val < minTemp) {
+                //     minTemp = val;
+                // }
+            }
+        }
+        for(int x = 0; x < 16; x++) {
+            for(int y = 0; y < 4; y++) {
+                double val = std::min(std::max(sensorDataCache[x*4+(3-y)], minTemp), maxTemp);
+                double frac = (val-minTemp)/(maxTemp-minTemp);
+
+                sf::RectangleShape rect;
+                rect.setPosition(sf::Vector2f(x*size, y*size));
+                rect.setSize(sf::Vector2f(size, size));
+                rect.setFillColor(hsv(300.0-frac*300.0, 1, 1));
+                window.draw(rect);
+                if(x == hottestX && y == hottestY) {
+                    sf::CircleShape circ;
+                    double radius = size/5;
+                    circ.setRadius(radius);
+                    circ.setPosition(sf::Vector2f((x+0.5)*size-radius, (y+0.5)*size-radius));
+                    circ.setFillColor(sf::Color::Black);
+                    window.draw(circ);
+                }
+                if(
+                        cursorX >= x*size && cursorX <= (x+1)*size
+                    &&  cursorY >= y*size && cursorY <= (y+1)*size
+                ) {
+                    pixelTemp = sensorDataCache[x*4+(3-y)];
+                }
+            }
+        }
+
+        sf::Text text;
+        text.setPosition(sf::Vector2f(5, 170));
+        text.setFont(font);
+        std::stringstream ss;
+        ss << "servo pos = " << servoXPos << ", " << servoYPos
+           << "; servo speed = " << servoSpeed
+           << "\n"
+        ;
+        ss << "ambient = " << ambientTemp
+           << "; pixel = " << pixelTemp
+           << "\n"
+        ;
+        text.setString(ss.str());
+        text.setCharacterSize(24);
+        text.setColor(sf::Color::White);
+        window.draw(text);
+
         window.display();
     }
 

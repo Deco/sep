@@ -3,6 +3,8 @@
 #include "sensor_mlx90620.h"
 #include "sensor_imu02a.h"
 
+#include <Wire.h>
+
 #include "firmware_registers.h"
 
 #include "i2cmaster.h"
@@ -16,14 +18,14 @@ void setup()
 {
     Serial.begin(115200);
     
-    i2c_init();
-    delay(5);
+    //i2c_init();
+    //delay(5);
     I2C_BUS.begin();
-    delay(5);
+    //delay(5);
 
-    mlx.init();
-    delay(5);
-    mlx.calibrate();
+    //mlx.init();
+    //delay(5);
+    //mlx.calibrate();
     delay(5);
 
     imu.init();
