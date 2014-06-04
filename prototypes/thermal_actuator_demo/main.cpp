@@ -35,7 +35,7 @@ public:
         , actuatorThread(&ActuatorApp::actuatorThreadRun, this)
     {
         running = true;
-        sensorThread.launch();
+        //sensorThread.launch();
         actuatorThread.launch();
 
         hotSpot.x = 0.5;
@@ -263,7 +263,9 @@ public:
     }
     void actuatorThreadRun()
     {
+        std::cout << "blah" << std::endl;
         DynamixelComm dc("/dev/tty.usbserial-A9S3VTXD", 1000000);
+        std::cout << "asdasd" << std::endl;
         while(running) {
             servoXPos = dc.GetPosition(01);
             servoYPos = dc.GetPosition(16);
@@ -338,7 +340,7 @@ int main(int argCount, char *argList[])
         sf::Event event;
         while(window.pollEvent(event)) {
             switch(event.type) {
-                case sf::Event::Closed: {
+                case sf::Event::Closed: {)
                     app.onClose();
                     window.close();
                     return 0;
