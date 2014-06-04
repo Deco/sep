@@ -19,3 +19,7 @@ if(SFML_FOUND)
   include_directories(${SFML_INCLUDE_DIR})
   target_link_libraries(main ${SFML_LIBRARIES})
 endif()
+
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+target_link_libraries( trackingthingo ${OpenCV_LIBS} )
