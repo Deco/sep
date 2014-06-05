@@ -8,7 +8,7 @@ endif()
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/Dynamixel")
 
-set(CMAKE_CXX_FLAGS "-ggdb")
+set(CMAKE_CXX_FLAGS "-std=c++11 -ggdb")
 
 FILE(GLOB DYNAMIXEL_SOURCES "Dynamixel/*.cc")
 

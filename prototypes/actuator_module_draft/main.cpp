@@ -39,11 +39,11 @@ int main()
 			{
 				if(isAdding) {
 		    		ActuatorMoveOrder order;
-		    		order.posDeg = cv::Vec2d(300.0*((double)event.mouseButton.x)/640.0, -90.0+180*((double)event.mouseButton.y)/480.0);
+		    		order.posDeg = cv::Vec2d(-150+300.0*((double)event.mouseButton.x)/640.0, -90.0+180*((double)event.mouseButton.y)/480.0);
 		    		order.duration = 2;
 		    		ordersToAddList.push_back(order);
 				} else {
-					ac.move(cv::Vec2d(300.0*((double)event.mouseButton.x)/640.0, -90.0+180*((double)event.mouseButton.y)/480.0), 2);
+					ac.move(cv::Vec2d(-150+300.0*((double)event.mouseButton.x)/640.0, -90.0+180*((double)event.mouseButton.y)/480.0), 2);
 				}
 			}
 			else if (event.type == sf::Event::KeyPressed)
@@ -75,7 +75,8 @@ int main()
 		ac.getCurrentPosition(pos);
 		std::cout << pos[0] << ", " << pos[1] << std::endl;
 
-		auto rectPos = sf::Vector2f(pos[0]/300.0*640.0, (pos[1]+90.0)/180.0*480.0);
+		auto rectPos = sf::Vector2f((pos[0]+150.0)/300.0*640.0, (pos[1]+90.0)/180.0*480.0);
+		
 		sf::RectangleShape rect;
 		rect.setPosition(rectPos);
 		rect.setSize(sf::Vector2f(20, 20));
@@ -86,7 +87,7 @@ int main()
 		for(int i = 0; i < ordersToAddList.size(); i++) {
 			ActuatorMoveOrder &order = ordersToAddList[i];
 
-			sf::Vector2f newPos = sf::Vector2f(order.posDeg[0]/300.0*640.0, (order.posDeg[1]+90.0)/180.0*480.0);
+			sf::Vector2f newPos = sf::Vector2f((order.posDeg[0]+150.0)/300.0*640.0, (order.posDeg[1]+90.0)/180.0*480.0);
 
 			sf::Vertex linePoints[] = {prevPos, newPos};
 			window.draw(linePoints, 2, sf::Lines);
