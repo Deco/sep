@@ -13,6 +13,10 @@ ActuatorController::ActuatorController(const std::string deviceName)
 	: dc(deviceName.c_str(), 1000000)
 {
 
+
+	dc.SetTorqueEnabled(01, false);
+	dc.SetTorqueEnabled(16, false);
+
 }
 
 int degreeToServoCoords(
@@ -31,19 +35,37 @@ int servoToDegrees(
 {
 	double frac = (servo - minServo) / (maxServo - minServo);
 	double degrees = ((double)minDeg) + frac*((double)(maxDeg-minDeg));
+	//std::cout << "servo->degrees: " << degrees << std::endl;
 	return (int)degrees;
 }
 
-void ActuatorController::update() { }
+void ActuatorController::update() {
+
+	bool isMoving = getIsMoving();
+
+	if(isMoving) {
+
+	}
+	else {
+		if(!moveQueue.empty()) {
+			ActuatorMoveOrder order = moveQueue.front();
+			moveQueue.pop();
+			move(order.posDeg, order.duration);
+		}
+	}
+
+    servoXPos = servoToDegrees(dc.GetPosition(01), 0, 300, 0, 1023);
+    servoYPos = servoToDegrees(dc.GetPosition(16), -90, 90, 203, 819);
+}
 
 void ActuatorController::getCurrentPosition(cv::Vec2d &posRef)
 {
-	servoXPos = dc.GetPosition(01);
-    servoYPos = dc.GetPosition(16);
+	servoXPos = servoToDegrees(dc.GetPosition(01), 0, 300, 0, 1023);
+    servoYPos = servoToDegrees(dc.GetPosition(16), -90, 90, 203, 819);
     posRef[0] = servoXPos;
     posRef[1] = servoYPos;
 }
-void ActuatorController::move(cv::Vec2d &goalDegPos, double timeSeconds)
+void ActuatorController::move(cv::Vec2d goalDegPos, double timeSeconds)
 {
 	if(goalDegPos[0] < minYawDeg) {
 		throw std::runtime_error("Goal yaw is too low!");
@@ -57,22 +79,25 @@ void ActuatorController::move(cv::Vec2d &goalDegPos, double timeSeconds)
 	else if(goalDegPos[1] > maxPitchDeg) {
 		throw std::runtime_error("Goal pitch is too high!");
 	}
+	totalTime = timeSeconds;
 
 	double maxSpeed = 114.0;
 	double maxSpeedCode = 1023.0;
+	degX_GoalPos = goalDegPos[0];
+	degY_GoalPos = goalDegPos[1];
 
 	//Servo 01, X
-	double servoX_GoalPos = degreeToServoCoords(goalDegPos[0], 0, 300, 0, 1023);
-	double degX_currentPos = servoToDegrees(servoXPos, 0, 300, 0, 1023);
-	double degX_PosDiff = std::abs(goalDegPos[0] - degX_currentPos);
+	servoX_GoalPos = degreeToServoCoords(goalDegPos[0], 0, 300, 0, 1023);
+	double degX_PosDiff = std::abs(goalDegPos[0] - servoXPos);
 	double rpmX = (degX_PosDiff/360.0)/(timeSeconds/60.0); 
 	double servoSpeedX = (rpmX/maxSpeed) * maxSpeedCode;
+	desiredXSpeed = servoSpeedX;
 
+	std::cout << "SPEED: " << servoSpeedX << ", " << (int)servoSpeedX << std::endl;
 
 	//Servo 16, Y
-	double servoY_GoalPos = degreeToServoCoords(goalDegPos[1], -90, 90, 203, 819);
-	double degY_currentPos = servoToDegrees(servoYPos, -90, 90, 203, 819);
-	double degY_PosDiff = std::abs(goalDegPos[1] - degY_currentPos);
+	servoY_GoalPos = degreeToServoCoords(goalDegPos[1], -90, 90, 203, 819);
+	double degY_PosDiff = std::abs(goalDegPos[1] - servoYPos);
 	double rpmY = (degY_PosDiff/360.0)/(timeSeconds/60.0);
 	double servoSpeedY = (rpmY/maxSpeed) * maxSpeedCode;
 
@@ -95,4 +120,22 @@ void ActuatorController::getPositionRange(cv::Vec2d &min, cv::Vec2d &max)
 
 	max[0] = 300; //Max x
 	max[1] = 90; //Max y
+}
+
+bool ActuatorController::getIsMoving() 
+{
+	bool isMoving = false;
+	bool isServoXMoving = dc.GetIsMoving(01);
+	bool isServoYMoving = dc.GetIsMoving(16);
+	if(isServoYMoving || isServoXMoving) {
+		isMoving = true;
+	}
+	return isMoving;
+}
+
+void ActuatorController::queueMoves(std::vector<ActuatorMoveOrder> moveList) 
+{
+	for(ActuatorMoveOrder order : moveList) {
+		moveQueue.push(order);
+	}
 }

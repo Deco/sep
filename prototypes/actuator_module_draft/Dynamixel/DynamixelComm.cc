@@ -210,4 +210,35 @@ DynamixelComm::Ping(int id)
     return (n != 0);
 }
 
+bool
+DynamixelComm::GetIsMoving(int id)
+{                                                      
+    unsigned char outbuf[256] = {0XFF, 0XFF, id, 4, INST_READ, P_MOVING, 1, 0X00}; // read two bytes for present position
+    unsigned char inbuf[256];
+    
+    Send(outbuf);
+    
+    // set a timout first
+
+    Receive(inbuf);
+    
+    // exit if checksum incorrect
+    
+    // check ID @ inbuf[2]
+    // check ERROR @ inbuf[4], should be 0
+    
+    return inbuf[5];
+}
+
+
+
+void
+DynamixelComm::SetTorqueEnabled(int id, bool enabled)
+{
+    unsigned char outbuf[256] = {0XFF, 0XFF, id, 4, INST_WRITE, P_TORQUE_ENABLE, (enabled), 0X00}; // write one bytes for torque enabled
+    unsigned char inbuf[256];
+    
+    Send(outbuf);
+    Receive(inbuf);
+}
 

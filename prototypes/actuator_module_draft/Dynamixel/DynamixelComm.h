@@ -110,6 +110,8 @@ public:
     int             SetTorque(int id, int value);
     int             GetPosition(int id);
     bool            Ping(int id);
+    bool            GetIsMoving(int id);
+    void SetTorqueEnabled(int id, bool enabled);
 };
 
 #endif
