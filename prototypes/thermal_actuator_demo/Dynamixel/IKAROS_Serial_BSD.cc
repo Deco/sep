@@ -35,7 +35,7 @@
 #include <cstdio>
 
 
-#ifdef MAC_OS_X
+#if MAC_OS_X
 #include <IOKit/serial/ioss.h>
 #include <sys/ioctl.h>
 #endif

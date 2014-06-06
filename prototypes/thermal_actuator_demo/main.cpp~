@@ -276,7 +276,6 @@ public:
         }
 } catch(SerialException e) {
 std::cout << e.string << std::endl;
-std::cout << "errno: " << e.internal_reference << " (" << strerror(e.internal_reference) << ")" << std::endl;
 }
     }
     void actuatorThreadRun()
@@ -364,7 +363,7 @@ int main(int argCount, char *argList[])
         sf::Event event;
         while(window.pollEvent(event)) {
             switch(event.type) {
-                case sf::Event::Closed: {)
+                case sf::Event::Closed: {
                     app.onClose();
                     window.close();
                     return 0;

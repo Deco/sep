@@ -36,6 +36,7 @@
 
 
 #ifdef MAC_OS_X
+#error "WHAT THE FUCK"
 #include <IOKit/serial/ioss.h>
 #include <sys/ioctl.h>
 #endif

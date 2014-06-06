@@ -15,11 +15,11 @@ message(STATUS ${CMAKE_TOOLCHAIN_FILE})
 project(sketch_sensor_firmware)
 
 if(DEFINED SKETCH_SENSOR_FIRMWARE_PORT)
-    set(sketch_sensor_firmware_PORT
-        ${SKETCH_SENSOR_FIRMWARE_PORT}
+    set(${FIRMWARE_NAME}_PORT
+        SKETCH_SENSOR_FIRMWARE_PORT
     )
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(sketch_sensor_firmware_PORT
+    set(${FIRMWARE_NAME}_PORT
         "/dev/tty.usbmodem1421"
     )
 else()
