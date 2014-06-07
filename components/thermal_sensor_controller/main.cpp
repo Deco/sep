@@ -5,7 +5,7 @@
 
 int main()
 {
-    ThermalSensorController sc("/dev/ttyACM0");
+    ThermalSensorController sc("/dev/tty.usbmodem1421");
     
     cv::Mat_<float> img;
     time_t timeOfRead;
