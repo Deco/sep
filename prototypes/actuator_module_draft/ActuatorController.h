@@ -30,7 +30,6 @@ public:
 
 	void init();
 	void shutdown();
-	
 	void update();
 
     cv::Vec2d getCurrentPosition();
