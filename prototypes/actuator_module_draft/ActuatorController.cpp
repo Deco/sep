@@ -9,7 +9,10 @@
 #include "Dynamixel/DynamixelComm.h"
 #include "ActuatorController.h"
 
-/** Template used to return the absolute value of a vector*/
+/**
+* Created by: Aaron Nguyen
+* Template used to return the absolute value of a vector
+*/
 template<typename T>
 cv::Vec<T, 2> vecabs(cv::Vec<T, 2> v) {
 	return cv::Vec<T, 2>(std::abs(v[0]), std::abs(v[1]));
@@ -21,13 +24,21 @@ const cv::Vec2d ActuatorController::maxDeg = cv::Vec2d( 150.0,  90.0);
 const cv::Vec2i ActuatorController::minServoCoord = cv::Vec2i(   0, 203);
 const cv::Vec2i ActuatorController::maxServoCoord = cv::Vec2i(1023, 819);
 
+/** 
+* Created by: Aaron Nguyen
+* An alternate constructor importing device name.
+*/
 ActuatorController::ActuatorController(const std::string deviceName)
 	: dc(deviceName.c_str(), 1000000)
 {
+	//Initialises shouldStop atomic boolean to false.
 	shouldStopAtom.store(false);
 }
 
-/** Initialises Actuator Thread */
+/**
+* Created by: Aaron Nguyen 
+* Initialises Actuator Thread 
+*/
 void ActuatorController::init()
 {
 	updateThread = std::thread(&ActuatorController::updateThreadFunc, this);
@@ -42,7 +53,10 @@ void ActuatorController::update() {
 	// 
 }
 
-/** Returns the servos yaw and pitch current position in degrees. */
+/**
+* Created by: Aaron Nguyen 
+* Returns the servos yaw and pitch current position in degrees. 
+*/
 cv::Vec2d ActuatorController::getCurrentPosition()
 {
 	if(1) { // Ensures we have exclusive access to the current position of the servos
@@ -51,7 +65,10 @@ cv::Vec2d ActuatorController::getCurrentPosition()
 	}
 }
 
-/** Set the minimum and maximum degree values of yaw and pitch servos*/
+/** 
+* Created by: Aaron Nguyen
+* Set the minimum and maximum degree values of yaw and pitch servos
+*/
 void ActuatorController::getPositionRange(cv::Vec2d &min, cv::Vec2d &max)
 {
 	min[0] = -150; //Min yaw
@@ -61,13 +78,19 @@ void ActuatorController::getPositionRange(cv::Vec2d &min, cv::Vec2d &max)
 	max[1] = 90; //Max pitch
 }
 
-/** Receives an order to be pushed into the moveQueue */
+/**
+* Created by: Aaron Nguyen 
+* Receives an order to be pushed into the moveQueue 
+*/
 void ActuatorController::queueMove(ActuatorMoveOrder order)
 {
 	moveQueue.push(order);
 }
 
-/** Receives a list of move orders to be pushed into the moveQueue.*/
+/**
+* Created by: Aaron Nguyen 
+* Receives a list of move orders to be pushed into the moveQueue.
+*/
 void ActuatorController::queueMoves(std::vector<ActuatorMoveOrder> moveList) 
 {
 	// Pushes each order in moveList to moveQueue
@@ -76,8 +99,10 @@ void ActuatorController::queueMoves(std::vector<ActuatorMoveOrder> moveList)
 	}
 }
 
-/** This method clears all queued orders and cancels the current order.
- */
+/**
+* Created by: Aaron Nguyen 
+* This method clears all queued orders and cancels the current order.
+*/
 void ActuatorController::stop() 
 {
 	if(1) { // Ensure we have exclusive access to moveQueue
@@ -91,9 +116,11 @@ void ActuatorController::stop()
 
 /**** PRIVATE INTERNAL STUFF BELOW THIS LINE ****/
 
-/** Converts yaw and pitch degrees into servo coordinates, based on the min and max
-	angle and coord fields.
- */
+/** 
+* Created by: Aaron Nguyen
+* Converts yaw and pitch degrees into servo coordinates, based on the min and max
+* angle and coord fields.
+*/
 cv::Vec2i ActuatorController::degreeToServoCoords(cv::Vec2d posDeg)
 {
 	// Calculate the difference and convert to a scalar
@@ -107,8 +134,10 @@ cv::Vec2i ActuatorController::degreeToServoCoords(cv::Vec2d posDeg)
 	);
 }
 
-/** Converts yaw and pitch servo coordinates into degrees, based on the min and max
-	angle and coord fields
+/**
+* Created by: Aaron Nguyen 
+* Converts yaw and pitch servo coordinates into degrees, based on the min and max
+* angle and coord fields
 */
 cv::Vec2d ActuatorController::servoCoordsToDegree(cv::Vec2i posCoord)
 {
@@ -127,10 +156,12 @@ cv::Vec2d ActuatorController::servoCoordsToDegree(cv::Vec2i posCoord)
 }
 
 
-/** Calculates the yaw and pitch speed required to get to the goal position
- *  in the time given. It uses the servo speed calculated to send move commands
- *  to the actuator to be moved.
- */
+/** 
+* Created by: Aaron Nguyen
+* Calculates the yaw and pitch speed required to get to the goal position
+* in the time given. It uses the servo speed calculated to send move commands
+* to the actuator to be moved.
+*/
 void ActuatorController::commMove(cv::Vec2d goalDegPos, double timeSeconds)
 {
 	// Throws exception when:
@@ -165,7 +196,7 @@ void ActuatorController::commMove(cv::Vec2d goalDegPos, double timeSeconds)
 	cv::Vec2d velDeg = vecabs(goalDegDiff)/timeSeconds;
 	// Calculate revolution per minute for yaw and pitch
 	cv::Vec2d rpmDeg = (velDeg/360.0)*60.0;
-	// Calculate servo speed for both yaw and pitch servos
+	// Calculate servo speed for both yaw and pitch sservos
 	cv::Vec2d servoSpeed = (rpmDeg/maxSpeedRpm) * maxSpeedCoord;
 
 	// Moves the yaw and pitch servos given goal position and the servo speeds
@@ -174,15 +205,20 @@ void ActuatorController::commMove(cv::Vec2d goalDegPos, double timeSeconds)
 	
 }
 
-/** Obtains the servos current position in servo coordinates.(yaw, pitch) */
+/** 
+* Created by: Aaron Nguyen
+* Obtains the servos current position in servo coordinates.(yaw, pitch)
+*/
 cv::Vec2i ActuatorController::commObtainCurrentCoords()
 {
 	return cv::Vec2i(dc.GetPosition(01), dc.GetPosition(16));
 }
 
-/** Receives information from servos to check whether they are
- *	moving or not.
- */
+/** 
+* Created by: Aaron Nguyen
+* Receives information from servos to check whether they are
+* moving or not.
+*/
 bool ActuatorController::commObtainIsMoving() 
 {
 	bool isMoving = false;
@@ -195,6 +231,11 @@ bool ActuatorController::commObtainIsMoving()
 	return isMoving;
 }
 
+/**
+* Created by: Aaron Nguyen
+* A thread function that continuously runs, and pops any order within the queue
+* to be executed. Calls necesssary functions to stop or move the actuator servos
+*/
 void ActuatorController::updateThreadFunc()
 {
 
