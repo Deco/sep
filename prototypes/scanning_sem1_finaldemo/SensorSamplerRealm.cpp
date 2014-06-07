@@ -1,9 +1,7 @@
 #include "SensorSamplerRealm.h"
 
-/// Constructor for the SensorSamplerRealm.
-/// minPos & maxPos represent the maximum rotation of
-/// the actuator movement. Readingsize is the size of the 
-/// of the individual readings, relative to the window.
+/// Author S.Holmes.
+/// Constructor
 SensorSamplerRealm::SensorSamplerRealm(cv::Vec2d _minPos, cv::Vec2d _maxPos,  cv::Vec2d _readingSize)
     : minPos(_minPos) 
     , maxPos(_maxPos)
@@ -13,9 +11,10 @@ SensorSamplerRealm::SensorSamplerRealm(cv::Vec2d _minPos, cv::Vec2d _maxPos,  cv
     ///
 }
 
-/// public function for adding a reading from the sensor to the
-/// list. TO IMPLEMENT: change list (readingList) to a quad-tree
-/// so we don't have to iterate through every pixel for each reading.
+/// Author S. Holmes
+/// Public function for adding a reading from the sensor to the
+/// list. Reading has a matrix of single channel values representing
+/// temperatures. Also takes a position and creation time of the data.
 void SensorSamplerRealm::addReadingWindow(
     cv::Mat_<float> &matRef,
     cv::Vec2d pos,
@@ -37,6 +36,7 @@ void SensorSamplerRealm::addReadingWindow(
     }
 }
 
+/// Author S.Holmes Modified by D.White
 /// Called by the SFML app/UI to re-populate it's image
 /// with updated values from the list/quad-tree. Passes a function
 /// reference that sets the colour values of the pixels, depending
