@@ -11,8 +11,10 @@
 int main()
 {
 	ActuatorController ac("/dev/tty.usbserial-A9S3VTXD");
+	ac.init();
+
 	cv::Vec2d pos;
-	ac.getCurrentPosition(pos);
+	pos = ac.getCurrentPosition();
 	std::cout << pos[0] << ", " << pos[1] << std::endl;
 
 	
@@ -43,7 +45,11 @@ int main()
 		    		order.duration = 2;
 		    		ordersToAddList.push_back(order);
 				} else {
-					ac.move(cv::Vec2d(-150+300.0*((double)event.mouseButton.x)/640.0, -90.0+180*((double)event.mouseButton.y)/480.0), 2);
+					ac.stop();
+					ActuatorMoveOrder order;
+				    order.posDeg = cv::Vec2d(-150+300.0*((double)event.mouseButton.x)/640.0, -90.0+180*((double)event.mouseButton.y)/480.0);
+				    order.duration = 2;
+					ac.queueMove(order);
 				}
 			}
 			else if (event.type == sf::Event::KeyPressed)
@@ -72,8 +78,8 @@ int main()
 		window.clear();
 
 		cv::Vec2d pos;
-		ac.getCurrentPosition(pos);
-		std::cout << pos[0] << ", " << pos[1] << std::endl;
+		pos = ac.getCurrentPosition();
+		//std::cout << pos[0] << ", " << pos[1] << std::endl;
 
 		auto rectPos = sf::Vector2f((pos[0]+150.0)/300.0*640.0, (pos[1]+90.0)/180.0*480.0);
 		

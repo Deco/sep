@@ -22,13 +22,16 @@ const cv::Vec2i ActuatorController::maxServoCoord = cv::Vec2i(1023, 819);
 ActuatorController::ActuatorController(const std::string deviceName)
 	: dc(deviceName.c_str(), 1000000)
 {
-	dc.SetTorqueEnabled(01, false);
-	dc.SetTorqueEnabled(16, false);
+	shouldStopAtom.store(false);
 }
 
 void ActuatorController::init()
 {
 	updateThread = std::thread(&ActuatorController::updateThreadFunc, this);
+}
+
+void ActuatorController::update() {
+	// 
 }
 
 cv::Vec2i ActuatorController::degreeToServoCoords(cv::Vec2d posDeg)
@@ -50,86 +53,104 @@ cv::Vec2d ActuatorController::servoCoordsToDegree(cv::Vec2i posCoord)
 	double fracPitch = ((double)posCoord[1]-(double)minServoCoord[1]);
 	fracPitch /= ((double)maxServoCoord[1]-(double)minServoCoord[1]);
 
-	std::cout << "yawfrac: " << fracYaw << std::endl;
 	return cv::Vec2d(
 		(double)minDeg[0]+fracYaw  * (double)(maxDeg[0]-minDeg[0]),
 		(double)minDeg[1]+fracPitch* (double)(maxDeg[1]-minDeg[1])
 	);
 }
 
+void ActuatorController::stop() 
+{
+	if(1) {
+		std::lock_guard<std::mutex> moveQueueLock(moveQueueMutex);
+		std::queue<ActuatorMoveOrder>().swap(moveQueue);
+		shouldStopAtom.store(true);
+	}
+}
+void ActuatorController::getPositionRange(cv::Vec2d &min, cv::Vec2d &max)
+{
+	min[0] = -150; //Min x
+	min[1] = -90; //Min y
+
+	max[0] = 150; //Max x
+	max[1] = 90; //Max y
+}
+
+void ActuatorController::queueMove(ActuatorMoveOrder order)
+{
+	moveQueue.push(order);
+}
+
+void ActuatorController::queueMoves(std::vector<ActuatorMoveOrder> moveList) 
+{
+	for(ActuatorMoveOrder order : moveList) {
+		moveQueue.push(order);
+	}
+}
+
+cv::Vec2d ActuatorController::getCurrentPosition()
+{
+	if(1) {
+		std::lock_guard<std::mutex> currentPosDegLock(currentPosDegMutex);
+		return currentPosDeg;
+	}
+}
+
+// PRIVATE INTERNAL STUFF BELOW THIS LINE
+
 void ActuatorController::updateThreadFunc()
 {
-	/*while true do
-		if moving or just was moving then
-			get servo pos and put it into currentPosDeg
-		end
-
-		if moving then
-			keep moving
-		else
-			if he have a queued order then
-				pop order from queue
-				execute it
-			end
-		end
-	end*/
+	dc.SetTorqueEnabled(01, false);
+	dc.SetTorqueEnabled(16, false);
 
 	while(true) {
-		if(isMoving) {
-			servoPosDeg = servoCoordsToDegree(getCurrentCoords());
-			
+		bool isMoving = commObtainIsMoving();
+
+		cv::Vec2i currentCoords = commObtainCurrentCoords();
+        cv::Vec2d posDeg = servoCoordsToDegree(currentCoords);
+
+        if(1) {
+            std::lock_guard<std::mutex> currentPosDegLock(currentPosDegMutex);
+		    currentPosDeg = posDeg;
+        }
+
+        bool shouldStop = shouldStopAtom.load();
+        bool shouldSendNextOrder = true;
+		if(isMoving && !shouldStop) {
+			shouldSendNextOrder = false;
+		}
+		if(shouldSendNextOrder) {
+            bool hasOrder = false;
+            ActuatorMoveOrder order;
 			if(1) {
-				std::lock orderQueueLock(currentPosDegMutex);
-				orderQueue.push(order);
+				std::lock_guard<std::mutex> moveQueueLock(moveQueueMutex);
+                if(!moveQueue.empty()) {
+                    order = moveQueue.front();
+                    moveQueue.pop();
+                    hasOrder = true;
+                }
+			}
+			if(hasOrder) {
+        		std::cout << "ORDER ISSUED!" << std::endl;
+                commMove(order.posDeg, order.duration);
+			} else if(shouldStop) {
+				dc.SetPosition(01, currentCoords[0]);
+				dc.SetPosition(16, currentCoords[1]);
 			}
 		}
-
-		if(isMoving) {
-
-		}
-		else {
-			if(!moveQueue.empty()) {
-				ActuatorMoveOrder order = moveQueue.front();
-				moveQueue.pop();
-				move(order.posDeg, order.duration);
-			}
+		if(shouldStop) {
+			shouldStopAtom.store(false);
 		}
 	}
 }
 
-void ActuatorController::update() {
-
-	bool isMoving = getIsMoving();
-
-	if(isMoving) {
-
-	} else {
-		if(!moveQueue.empty()) {
-			ActuatorMoveOrder order = moveQueue.front();
-			moveQueue.pop();
-			move(order.posDeg, order.duration);
-		}
-	}
-
-	servoPosDeg = servoCoordsToDegree(getCurrentCoords());
-}
-
-void ActuatorController::getCurrentPosition(cv::Vec2d &posRef)
-{
-	servoPosDeg = servoCoordsToDegree(getCurrentCoords());
-    posRef[0] = servoPosDeg[0];
-    posRef[1] = servoPosDeg[1];
-    std::cout << "wtf: " << getCurrentCoords()[0] << std::endl;
-}
-
-cv::Vec2i ActuatorController::getCurrentCoords()
+cv::Vec2i ActuatorController::commObtainCurrentCoords()
 {
 	return cv::Vec2i(dc.GetPosition(01), dc.GetPosition(16));
 }
 
-void ActuatorController::move(cv::Vec2d goalDegPos, double timeSeconds)
+void ActuatorController::commMove(cv::Vec2d goalDegPos, double timeSeconds)
 {
-	std::cout << "goal yaw: " << goalDegPos[0] << std::endl;
 	if(goalDegPos[0] < minDeg[0]) {
 		std::cout << goalDegPos[0] << std::endl;
 		throw std::runtime_error("Goal yaw is too low!");
@@ -147,7 +168,7 @@ void ActuatorController::move(cv::Vec2d goalDegPos, double timeSeconds)
 	double maxSpeedRpm = 114.0;
 	double maxSpeedCoord = 1023.0;
 
-	cv::Vec2d currentDegServoPos = servoCoordsToDegree(getCurrentCoords());
+	cv::Vec2d currentDegServoPos = servoCoordsToDegree(commObtainCurrentCoords());
 
 	cv::Vec2d goalDegDiff = currentDegServoPos-goalDegPos;
 
@@ -161,21 +182,8 @@ void ActuatorController::move(cv::Vec2d goalDegPos, double timeSeconds)
 	dc.Move(16, degreeToServoCoords(goalDegPos)[1], servoSpeed[1]);
 	
 }
-void ActuatorController::stop() 
-{
 
-
-}
-void ActuatorController::getPositionRange(cv::Vec2d &min, cv::Vec2d &max)
-{
-	min[0] = -150; //Min x
-	min[1] = -90; //Min y
-
-	max[0] = 150; //Max x
-	max[1] = 90; //Max y
-}
-
-bool ActuatorController::getIsMoving() 
+bool ActuatorController::commObtainIsMoving() 
 {
 	bool isMoving = false;
 	bool isServoXMoving = dc.GetIsMoving(01);
@@ -184,11 +192,4 @@ bool ActuatorController::getIsMoving()
 		isMoving = true;
 	}
 	return isMoving;
-}
-
-void ActuatorController::queueMoves(std::vector<ActuatorMoveOrder> moveList) 
-{
-	for(ActuatorMoveOrder order : moveList) {
-		moveQueue.push(order);
-	}
 }
