@@ -1,8 +1,8 @@
 #include <opencv2/opencv.hpp>
 #include <thread>
-#include <atomic>
 #include <mutex>
 #include <queue>
+#include <ctime>
 
 class ThermalSensorController
 {
@@ -17,13 +17,14 @@ public:
     void shutdown();
     
     void update();
+    void turnOff();
     
-    bool popThermopileReading(cv::Mat &matRef, double &timeRef);
+    bool popThermopileReading(cv::Mat &matRef, time_t &timeRef);
     
 private:
     struct Reading {
         cv::Mat_<float> img;
-        double time;
+        time_t time;
     };
 private:
     std::thread sensorThread;
@@ -33,6 +34,7 @@ private:
     
     std::mutex readingQueueMutex;
     std::queue<Reading> readingQueue;
+    bool running;
     
     void sensorThreadFunc();
 };

@@ -15,7 +15,7 @@ class SerialConn {
         #ifdef SERIALCONN_USE_BOOST
             boost::asio::io_service io;
             boost::asio::serial_port sport;
-        #elif MAC_OS_X
+        #elif SERIALCONN_USE_IKARUS
             bool mac = true;
             // manual serial stuff here
         #endif

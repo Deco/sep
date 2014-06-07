@@ -8,13 +8,12 @@ int main()
     ThermalSensorController sc("/dev/ttyACM0");
     
     cv::Mat_<float> img;
-    img.create(20, 20);
-    double time = 0;
+    time_t timeOfRead;
     sc.init();
+
     while(1) {
-        bool wasDataRead = sc.popThermopileReading(img, time);
+        bool wasDataRead = sc.popThermopileReading(img, timeOfRead);
         if(wasDataRead) {
-            //std::cout << "reading: " << img(0, 0) << "(" << time << ")" << std::endl;
             for (int i=0;i<4;i++) {
                 for (int j=0;j<16;j++) {
                     printf("%f ", img(i, j));

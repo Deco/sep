@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    add_definitions(-DMAC_OS_X=1)
+    add_definitions(-SERIALCONN_USE_IKARUS=1)
 else(UNIX)
     add_definitions(-DSERIALCONN_USE_BOOST=1)
 endif()

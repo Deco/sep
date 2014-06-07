@@ -2,7 +2,10 @@
 #include "serialconn.h"
 #include <mutex>
 
-
+/* Definitions for the ID byte read from sensor telling us 
+ * what kind of data the sensor is sending */
+#define AMBIENT_TEMP 0x11
+#define SENSOR_DATA 0x12    
 
 
 ThermalSensorController::ThermalSensorController(
@@ -15,129 +18,112 @@ ThermalSensorController::ThermalSensorController(
 /* Start a thread that reads data from sensor pushes to queue */
 void ThermalSensorController::init()
 {
+    running = true;
     sensorThread = std::thread(&ThermalSensorController::sensorThreadFunc, this);
 }
 
 /* This func is ran by a thread to read data and put in queue */
 void ThermalSensorController::sensorThreadFunc()
 {
+    std::cout << "Opening sensor device: " << deviceName << std::endl;
+ //   try {
+    unsigned char data[255];
+    unsigned char buff[255];
 
-union float2bytes { float f; char b[sizeof(float)]; };
 
-float2bytes f2b;
-unsigned char buff[255];
-    /*
-    float a[] = { 1,  2,  3,  4,
-               5,  6,  7,  8,
-               9, 10, 11, 12 };
-    CvMat mat = cvMat( 3, 4, CV_32FC1, a ); // 32FC1 for float
-*/
-  //  img.create(20, 20);
-  int count = 10;
-  while(count >= 0){
     Reading newReading;
     newReading.img.create(4, 16);  // 4 rows 16 cols
-    newReading.time = 50;
+    newReading.time = time(0);
     
-    
-  //  cv::Mat M = cvCreateMat( 4, 16, CV_32FC1 );
-   // M->data.fl[ 0 * M->cols + 0 ] = (float)3.0;
-    cv::Mat newMat;
-    newMat.create(4,16, CV_32FC1);
-    
-    float data[4][16];
+        
+    SerialConn sc(deviceName, 115200);
+    int readCount;
 
-    SerialConn sc("/dev/ttyACM0", 115200);
+    data[0] = 255;
+    int sent = sc.write((char*)&data, 1);
+    assert(sent == 1);
 
-    int count=0;
-    for (int i=0;i<4;i++) {
-        for (int j=0;j<16;j++) {
-          for (int k=0;k<sizeof(float);k++) {
-                int readCount = sc.read((char*)&buff, 1);
-                f2b.b[k] = buff[0];
-             //   printf("\treading byte from sensor: %u\n",buff[0] );
-                data[i][j] = f2b.f;
-            }
-            count++;
-          //  printf("Just read float num %d: %f\n",count , data[i][j]);
-        }
-    }
-
-
-
-
-newReading.img = cv::Mat( 4, 16, CV_32FC1, data );
-//cv::Mat mat = cv::Mat( 4, 16, CV_32FC1, data );
-
-
-        /* DEC CODE BOX EXAMPLE
-        switch(id) {
-    case 16: {
-        
-        if(len != 4*64) {
-            // problems!
-        }
-        
-        float data[64];
-        sport.read((char*)&data, sizeof(float)*64);
-        
-        img.create(4, 16);
-        float *imgDataPtr = (float*)img.data;
-        
-        memcpy(imgDataPtr, data, sizeof(float)*64);
-        
-        break;
-    }
-        
-        */
-        
-        
-        
-        
- //       if(readCount > 0) {
-       // newReading.img.at<unsigned char>(0, 0) = buff[0];
-
-        
-        
-    //    printf("%d:byte: %x\n", (int)buff[0]);
-        
-     //   newReading.img.push_back(buff);
-     
-        readingQueue.push(newReading);
-           
- //           count++;
- //       }
- //   }
-     
-    sc.close();
-    count--;
-
-}
-
-    /*
-     while true do
-        try
-            open serial port using deviceName and deviceBaudRate  
-            "synchronise"
-            
-            while true do
-                read bytes
-                handle data
-                if(1) {
-                    std::lock readingQueueLock(readingQueueMutex);
-                    push to readingQueue
+    int count = 0;
+        do {
+            readCount = sc.read((char*)&buff, 1);
+            if(readCount > 0) {
+                if(buff[0] == 255) {
+                    count++;
+                } else {
+                    count = 0;
                 }
-            end
-        catch errors
-            handle errors
-        end
-    end*/
-   // while(1) {
-  //      std::cout << "thread" << std::endl;
-  //  }
+            }
+        } while(count < 50);
+
+        data[0] = 254;
+        sent = sc.write((char*)&data, 1);
+        assert(sent == 1);
+
+
+        do {
+            readCount = sc.read((char*)&buff, 1);
+            if(readCount > 0 && buff[0] == 254) {
+                break;
+            }
+        } while(true);
+        printf("synced!\n");
+
+        while (running){
+
+
+        sc.read((char*)&buff, 1);
+        assert(buff[0] == 255); // sentinal byte
+
+        sc.read((char*)&buff, 1);
+        unsigned char id = buff[0];
+
+        sc.read((char*)&buff, 2);
+        unsigned short len = *((unsigned short*)buff);
+
+        sc.read((char*)&buff, len);
+
+
+        float ambientTemp = 0;
+
+        switch(id) {
+            case AMBIENT_TEMP: {
+                std::cout << "Reading new Ambient temp data!" << std::endl;
+                assert(len == sizeof(float));
+                float ambient = *((float*)buff);
+                ambientTemp = ambient;
+                std::cout << "ambient temp: " << ambientTemp << std::endl;
+                break;
+            };
+            case SENSOR_DATA: {
+                std::cout << "Reading new sensor data!" << std::endl;
+                assert(len == 64*sizeof(float));
+                // create pointer to the new images data
+                float *imgDataPtr = (float*)newReading.img.data; 
+                if(1) {
+                    std::lock_guard<std::mutex> readingQueueLock(readingQueueMutex);
+                    memcpy(imgDataPtr, buff, sizeof(float)*64);
+                    readingQueue.push(newReading);
+                }
+                break;
+            };
+            default: {
+                assert(1 == 0);
+            }
+        }
+    }
+//} catch(SerialException e) {
+  //  std::cout << e.string << std::endl;
+    //std::cout << "errno: " << e.internal_reference << " (" << strerror(e.internal_reference) << ")" << std::endl;
+//}
+
+     
+    
 }
 
-bool ThermalSensorController::popThermopileReading(cv::Mat &matRef, double &timeRef)
+
+
+
+bool ThermalSensorController::popThermopileReading(cv::Mat &matRef, time_t &timeRef)
 {
     bool isReadingAvailable = false;
     Reading r;
@@ -157,4 +143,10 @@ bool ThermalSensorController::popThermopileReading(cv::Mat &matRef, double &time
     }
 
     return isReadingAvailable;
+}
+
+void ThermalSensorController::turnOff(){
+
+    running = false;
+
 }
