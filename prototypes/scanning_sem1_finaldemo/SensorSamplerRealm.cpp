@@ -2,8 +2,9 @@
 
 /// Author S.Holmes.
 /// Constructor
-SensorSamplerRealm::SensorSamplerRealm(cv::Vec2d _minPos, cv::Vec2d _maxPos,  cv::Vec2d _readingSize)
-    : minPos(_minPos) 
+SensorSamplerRealm::SensorSamplerRealm(
+    cv::Vec2d _minPos, cv::Vec2d _maxPos, cv::Vec2d _readingSize
+)   : minPos(_minPos) 
     , maxPos(_maxPos)
     , readingSize(_readingSize)
     , readingList()
@@ -68,7 +69,7 @@ void SensorSamplerRealm::updateViewWindow(
     
 
     /// Currently just re-populates the all the pixels in the window.
-    /// TO IMPLEMENT: change it to handle re-using existing pixels to
+    /// TODO: change it to handle re-using existing pixels to
     /// optimize the image construction. Also still only uses a list instead
     /// of quad-tree.
     for(int viewColI = 0; viewColI < viewImgRef.cols; viewColI++) {
@@ -90,7 +91,7 @@ void SensorSamplerRealm::updateViewWindow(
             
             double readingTempAverage = (readingCount == 0 ? 0 : readingTempSum/(double)readingCount);
             
-            /// Calls the function reference. Not done yet.
+            /// Calls the function reference.
             setPixelColorFunc(viewImgRef(viewRowI, viewColI), readingTempAverage);
         }
     }

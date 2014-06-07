@@ -16,7 +16,7 @@ public:
     /// minPos & maxPos represent the maximum rotation of
     /// the actuator movement. Readingsize is the size of the 
     /// of the individual readings, relative to the window.
-	SensorSamplerRealm(cv::Vec2d _minPos, cv::Vec2d _maxPos);
+	SensorSamplerRealm(cv::Vec2d _minPos, cv::Vec2d _maxPos, cv::Vec2d _readingSize);
     
     /// Public function for adding a reading from the sensor to the
     /// list. TO IMPLEMENT: change list (readingList) to a quad-tree
