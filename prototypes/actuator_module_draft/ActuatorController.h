@@ -2,11 +2,12 @@
 #include "Dynamixel/DynamixelComm.h"
 #include <queue>
 #include <thread>
-#include <atomic>
+#include <mutex>
 
 struct ActuatorMoveOrder {
 	cv::Vec2d posDeg;
 	double duration;
+	bool isStopOrder;
 };
 
 class ActuatorController {
@@ -14,14 +15,14 @@ private:
 
 	std::thread updateThread;
 	DynamixelComm dc;
+	cv::Vec2d servoPosDeg;
 
 	std::mutex currentPosDegMutex;
 	cv::Vec2d currentPosDeg;
-	
-	std::mutex orderQueueMutex;
-	std::queue<ActuatorMoveOrder> orderQueue;
 
-	cv::Vec2d servoPosDeg;
+	std::atomic_bool shouldStopAtom;
+	
+	std::mutex moveQueueMutex;
 	std::queue<ActuatorMoveOrder> moveQueue;
 	
 public:
@@ -29,22 +30,25 @@ public:
 
 	void init();
 	void shutdown();
-
 	void update();
-	void getCurrentPosition(cv::Vec2d &posRef);
-	cv::Vec2i getCurrentCoords();
-	void move(cv::Vec2d goalPos, double timeSeconds);
-	void queueMoves(std::vector<ActuatorMoveOrder> moveList);
-	void stop();
+
+    cv::Vec2d getCurrentPosition();
 	void getPositionRange(cv::Vec2d &min, cv::Vec2d &max);
-
-	bool getIsMoving();
-
+    
+    void queueMove(ActuatorMoveOrder order);
+    void queueMoves(std::vector<ActuatorMoveOrder> orderList);
+    void stop();
+   
 
 private:
 	cv::Vec2i degreeToServoCoords(cv::Vec2d posDeg);
 	cv::Vec2d servoCoordsToDegree(cv::Vec2i posCoord);
-
+	
+	void commMove(cv::Vec2d goalPos, double timeSeconds);
+	cv::Vec2i commObtainCurrentCoords();
+	bool commObtainIsMoving();
+	
+	void updateThreadFunc();
 private:
 	static const cv::Vec2d minDeg;
 	static const cv::Vec2d maxDeg;
