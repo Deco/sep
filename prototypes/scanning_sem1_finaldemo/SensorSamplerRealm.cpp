@@ -8,7 +8,7 @@ SensorSamplerRealm::SensorSamplerRealm(cv::Vec2d _minPos, cv::Vec2d _maxPos,  cv
     , readingSize(_readingSize)
     , readingList()
 {
-    ///
+    //
 }
 
 /// Author S. Holmes
@@ -95,3 +95,5 @@ void SensorSamplerRealm::updateViewWindow(
         }
     }
 }
+
+

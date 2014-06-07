@@ -26,16 +26,14 @@ void ThermalSensorController::init()
 void ThermalSensorController::sensorThreadFunc()
 {
     std::cout << "Opening sensor device: " << deviceName << std::endl;
- //   try {
+
     unsigned char data[255];
     unsigned char buff[255];
-
 
     Reading newReading;
     newReading.img.create(4, 16);  // 4 rows 16 cols
     newReading.time = time(0);
     
-        
     SerialConn sc(deviceName, 115200);
     int readCount;
 
@@ -44,33 +42,31 @@ void ThermalSensorController::sensorThreadFunc()
     assert(sent == 1);
 
     int count = 0;
-        do {
-            readCount = sc.read((char*)&buff, 1);
-            if(readCount > 0) {
-                if(buff[0] == 255) {
-                    count++;
-                } else {
-                    count = 0;
-                }
+    do {
+        readCount = sc.read((char*)&buff, 1);
+        if(readCount > 0) {
+            if(buff[0] == 255) {
+                count++;
+            } else {
+                count = 0;
             }
-        } while(count < 50);
+        }
+    } while(count < 50);
 
-        data[0] = 254;
-        sent = sc.write((char*)&data, 1);
-        assert(sent == 1);
-
-
-        do {
-            readCount = sc.read((char*)&buff, 1);
-            if(readCount > 0 && buff[0] == 254) {
-                break;
-            }
-        } while(true);
-        printf("synced!\n");
-
-        while (running){
+    data[0] = 254;
+    sent = sc.write((char*)&data, 1);
+    assert(sent == 1);
 
 
+    do {
+        readCount = sc.read((char*)&buff, 1);
+        if(readCount > 0 && buff[0] == 254) {
+            break;
+        }
+    } while(true);
+    printf("synced!\n");
+
+    while (running){
         sc.read((char*)&buff, 1);
         assert(buff[0] == 255); // sentinal byte
 
@@ -111,13 +107,6 @@ void ThermalSensorController::sensorThreadFunc()
             }
         }
     }
-//} catch(SerialException e) {
-  //  std::cout << e.string << std::endl;
-    //std::cout << "errno: " << e.internal_reference << " (" << strerror(e.internal_reference) << ")" << std::endl;
-//}
-
-     
-    
 }
 
 
@@ -145,7 +134,7 @@ bool ThermalSensorController::popThermopileReading(cv::Mat &matRef, time_t &time
     return isReadingAvailable;
 }
 
-void ThermalSensorController::turnOff(){
+void ThermalSensorController::turnOff() {
 
     running = false;
 
