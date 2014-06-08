@@ -1,5 +1,7 @@
 #include <opencv2/opencv.hpp>
+#include <deque>
 
+#include "quadtree.h"
 
 struct SensorViewWindow;
 
@@ -10,6 +12,13 @@ struct SensorViewWindow;
 /// and time-weighting.
 class SensorSamplerRealm
 {
+public:
+    /// This function type is used for filling the pixels in a view window with
+    /// custom colours depending on the temperature readings.
+    typedef std::function<
+        void (cv::Mat &pixelRef, const cv::Vec2i &pixelPos, const float &temp)
+    > PixelColorFunc;
+
 public:
 	//SensorSamplerRealm(ParamSet &_pset);
     /// Constructor for the SensorSamplerRealm.
@@ -23,7 +32,7 @@ public:
     /// so we don't have to iterate through every pixel for each reading.
 	void addReadingWindow(
 	    cv::Mat_<float> &matRef,
-	    cv::Vec2d pos, cv::Vec2d readingSize,
+	    cv::Vec2d pos,
 	    double time
     );
     /// Removes all readings from the window. Generally called due to the 
@@ -34,7 +43,7 @@ public:
     /// data realm.
 	void updateViewWindow(
 	    SensorViewWindow &viewWindowRef,
-	    std::function<void (cv::Mat &pixelRef, const float &temp)> setPixelColorFunc
+	    PixelColorFunc setPixelColorFunc
     );
 
 private:
@@ -50,10 +59,13 @@ private:
 private:
     /// List of readings. Will be changed to a quad-tree in later
     /// releases.
-	std::vector<ReadingInfo> readingList;
+    std::vector<ReadingInfo> readingList;
 	cv::Vec2d minPos; /// In Degrees.
 	cv::Vec2d maxPos;
 	cv::Vec2d readingSize; /// Size of individual reader.
+
+    std::vector<ReadingInfo> newReadingList; // this is a terrible hack
+    RectTree<ReadingInfo> readingTree;
 };
 
 struct SensorViewWindow
@@ -73,12 +85,14 @@ public:
     const cv::Mat &getImage() const;
     
     double getTime() const;
+
+    void forceInvalidation();
     
 protected:
     friend class SensorSamplerRealm;
     
     cv::Mat img;
     cv::Vec2d newPos, currPos, newSize, currSize;
-    double 
-    time;
+    double time;
+    bool forcedInvalid;
 };

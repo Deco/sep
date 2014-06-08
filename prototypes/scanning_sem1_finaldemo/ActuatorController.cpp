@@ -38,7 +38,8 @@ void ActuatorController::shutdown()
 	//
 }
 
-void ActuatorController::update() {
+void ActuatorController::update()
+{
 	// 
 }
 
@@ -46,8 +47,17 @@ void ActuatorController::update() {
 cv::Vec2d ActuatorController::getCurrentPosition()
 {
 	if(1) { // Ensures we have exclusive access to the current position of the servos
-		std::lock_guard<std::mutex> currentPosDegLock(currentPosDegMutex);
+		std::lock_guard<std::mutex> movementInfoLock(movementInfoMutex);
 		return currentPosDeg;
+	}
+}
+
+/** Returns the movement status of the servos. */
+bool ActuatorController::getIsMoving()
+{
+	if(1) { // Ensures we have exclusive access to the current position of the servos
+		std::lock_guard<std::mutex> movementInfoLock(movementInfoMutex);
+		return currentIsMoving;
 	}
 }
 
@@ -208,8 +218,9 @@ void ActuatorController::updateThreadFunc()
         cv::Vec2d posDeg = servoCoordsToDegree(currentCoords);
 
         if(1) {
-            std::lock_guard<std::mutex> currentPosDegLock(currentPosDegMutex);
+            std::lock_guard<std::mutex> movementInfoLock(movementInfoMutex);
 		    currentPosDeg = posDeg;
+		    currentIsMoving = isMoving;
         }
 
         bool shouldStop = shouldStopAtom.load();
@@ -234,7 +245,7 @@ void ActuatorController::updateThreadFunc()
                 }
 			}
 			if(hasOrder) {
-        		std::cout << "ORDER ISSUED!" << std::endl;
+        		// std::cout << "ORDER ISSUED!" << std::endl;
         		// and forward it to the servos.
                 commMove(order.posDeg, order.duration);
 			} else if(shouldStop) {

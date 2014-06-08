@@ -17,8 +17,9 @@ private:
 	DynamixelComm dc;
 	cv::Vec2d servoPosDeg;
 
-	std::mutex currentPosDegMutex;
+	std::mutex movementInfoMutex;
 	cv::Vec2d currentPosDeg;
+	bool currentIsMoving;
 
 	std::atomic_bool shouldStopAtom;
 	
@@ -33,6 +34,7 @@ public:
 	void update();
 
     cv::Vec2d getCurrentPosition();
+    bool getIsMoving();
 	void getPositionRange(cv::Vec2d &min, cv::Vec2d &max);
     
     void queueMove(ActuatorMoveOrder order);

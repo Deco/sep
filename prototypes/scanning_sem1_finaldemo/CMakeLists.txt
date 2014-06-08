@@ -25,12 +25,16 @@ add_executable(main
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/")
 
+FIND_PACKAGE( Boost 1.40 COMPONENTS system REQUIRED )
+INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
+TARGET_LINK_LIBRARIES( main ${Boost_LIBRARIES} )
+
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+target_link_libraries( main ${OpenCV_LIBS} )
+
 find_package(SFML 2 REQUIRED system window graphics network audio)
 if(SFML_FOUND)
   include_directories(${SFML_INCLUDE_DIR})
   target_link_libraries(main ${SFML_LIBRARIES})
 endif()
-
-find_package( OpenCV REQUIRED )
-include_directories( ${OpenCV_INCLUDE_DIRS} )
-target_link_libraries( main ${OpenCV_LIBS} )
