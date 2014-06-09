@@ -138,6 +138,19 @@ public:
     
     bool onUpdate(sf::RenderWindow &window, double time, double deltaTime)
     {
+        float leftMove  = sf::Keyboard::isKeyPressed(sf::Keyboard::Left ) ? -1.0 : 0;
+        float rightMove = sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ?  1.0 : 0;
+        float upMove    = sf::Keyboard::isKeyPressed(sf::Keyboard::Up   ) ? -1.0 : 0;
+        float downMove  = sf::Keyboard::isKeyPressed(sf::Keyboard::Down ) ?  1.0 : 0;
+        thermalView.move(25.0f*sf::Vector2f(
+            ( leftMove+rightMove)*deltaTime,
+            (   upMove+ downMove)*deltaTime
+        ));
+
+        float inZoom = sf::Keyboard::isKeyPressed(sf::Keyboard::LBracket) ? -1.0 : 0;
+        float outZoom = sf::Keyboard::isKeyPressed(sf::Keyboard::RBracket) ? 1.0 : 0;
+        thermalView.zoom(1.0+0.1*(inZoom+outZoom));
+
         cv::Mat_<float> readingImg;
         double readingTime;
 
@@ -232,7 +245,7 @@ public:
         std::cout << "click: " << cursorPos.x << ", " << cursorPos.y << std::endl;
         cv::Vec2d clickPos(cursorPos.x-150.0, cursorPos.y-90.0);
 
-        if(state) {
+        if(ev.mouseButton.button == sf::Mouse::Left and state) {
             /*cv::Mat_<float> readingImg(4, 16);
             double readingTime;
             sc.popThermopileReading(readingImg, readingTime);
@@ -278,6 +291,9 @@ public:
     void onMouseMotion(sf::RenderWindow &window, sf::Event &ev)
     {
         cursorX = ev.mouseMove.x; cursorY = ev.mouseMove.y;
+        cursorX = ev.mouseButton.x; cursorY = ev.mouseButton.y;
+        window.setView(thermalView);
+        sf::Vector2f cursorPos = window.mapPixelToCoords(sf::Vector2i(cursorX, cursorY));
     }
     void getWindowMode(int &widthRef, int &heightRef, int &bppRef, int &flagsRef)
     {
