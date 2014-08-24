@@ -65,7 +65,7 @@ public:
     {
         running = false;
     }
-
+    
     void initRender(sf::RenderWindow &window)
     {
         window.setFramerateLimit(30);

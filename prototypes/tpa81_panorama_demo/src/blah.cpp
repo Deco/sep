@@ -303,7 +303,7 @@ public:
       double vy = vymin+(vymax-vymin)*((double)py/(double)windowHeight);
       double vw = thermalPixelSizeYaw;
       double vh = thermalPixelSizePitch;
-
+      
       std::vector<RectTree<SensorReading>::RectResult> resList;
       readingsTree.findRectsAtPoint(vx, vy, resList);
 
