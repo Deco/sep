@@ -32,9 +32,9 @@ void Director::haltMovement()
 	}
 }
 
-std::vector<cv::Vec2d> Director::performRegionScan(std::vector<cv::Vec2d> pointsList)
+void Director::performRegionScan(std::vector<cv::Vec2d> pointsList)
 {
-	std::vector<cv::Vec2d> selectedRegion = selectArea(pointsList);
+	selectArea(pointsList);
 	if(isIdle) {
 		scanArea(selectedRegion);
 		//isIdle = false;
@@ -44,7 +44,6 @@ std::vector<cv::Vec2d> Director::performRegionScan(std::vector<cv::Vec2d> points
 		scanArea(selectedRegion);
 		//isIdle = false;
 	}
-	return selectedRegion;
 }
 
 std::vector<ActuatorMoveOrder> Director::performFullScan()
@@ -84,7 +83,7 @@ void Director::clearCollectedData(/*Add time to clear later */)
 	//Data realm stuff
 }
 
-std::vector<cv::Vec2d> Director::selectArea(std::vector<cv::Vec2d> pointsList)
+void Director::selectArea(std::vector<cv::Vec2d> pointsList)
 {
 	double inf = std::numeric_limits<double>::infinity();
 	cv::Vec2d min = {inf, inf};
@@ -106,8 +105,7 @@ std::vector<cv::Vec2d> Director::selectArea(std::vector<cv::Vec2d> pointsList)
 
 	std::cout << "min: " << min[0] << "," << min[1] << std::endl;
 	std::cout << "max: " << max[0] << "," << max[1] << std::endl;
-	std::vector<cv::Vec2d> area_points = {min, max};
-	return area_points;
+	selectedRegion = {min, max};
 }
 
 
@@ -152,6 +150,8 @@ void Director::scanArea(std::vector<cv::Vec2d> area_points)
 	}
 }
 
+//This is just a prototype for full scan.
+//Can be removed.
 std::vector<ActuatorMoveOrder> Director::scanAreaPrecision(std::vector<cv::Vec2d> area_points)
 {
 	std::vector<ActuatorMoveOrder> ordersList;
@@ -254,6 +254,11 @@ void Director::addOrdersToQueue(std::vector<ActuatorMoveOrder> ordersList)
 cv::Vec2d Director::getCurrentPositionAC()
 {
 	return ac->getCurrentPosition();
+}
+
+std::vector<cv::Vec2d> Director::getSelectedRegion()
+{
+	return selectedRegion;
 }
 
 

@@ -35,6 +35,7 @@ int main()
             director.update();
             if (event.type == sf::Event::MouseButtonPressed) {
             	if(isAdding) {
+            		//When in adding mode, add position of where mouse clicked to a vector.
             		cv::Vec2d point = cv::Vec2d(-150+300.0*((double)event.mouseButton.x)/640.0, -90.0+180*((double)event.mouseButton.y)/480.0);
             		std::cout << point[0] << ',' << point[1] << std::endl;
             		pointsList.push_back(point);
@@ -43,6 +44,7 @@ int main()
             		selected_points.push_back(mouse_pos); 
             	}
             	else {
+            		//When not in adding mode, send order to manualPan function to move actuator.
             		cv::Vec2d point = cv::Vec2d(-150+300.0*((double)event.mouseButton.x)/640.0, -90.0+180*((double)event.mouseButton.y)/480.0);
             		std::cout << point[0] << ',' << point[1] << std::endl;
             		ActuatorMoveOrder order;
@@ -63,7 +65,8 @@ int main()
 		    	}
 		    	else if(event.key.code == sf::Keyboard::S) {
 		    		//Draw box, Scan region
-		    		area_points = director.performRegionScan(pointsList);
+		    		director.performRegionScan(pointsList);
+		    		area_points = director.getSelectedRegion();
 		    		pointsList.clear();
 		    		isAdding = false;
 		    		area_selected = true;		   
@@ -74,6 +77,7 @@ int main()
 
 		    	}
 		    	else if(event.key.code == sf::Keyboard::C) {
+		    		//Empty everything
 		    		area_points.clear();
 		    		selected_points.clear();
 		    		ordersList.clear();

@@ -57,10 +57,7 @@ void ActuatorController::update() {
 
 bool ActuatorController::getIsMoving() 
 {
-	if(1) {
-		std::lock_guard<std::mutex> movingLock(movingMutex);
-		return isAcMoving.load();
-	}
+	return isAcMoving.load();
 }
 
 /**
@@ -253,13 +250,8 @@ void ActuatorController::updateThreadFunc()
 	//dc.SetTorqueEnabled(16, false);
 
 	while(true) {
-		//bool isMoving = commObtainIsMoving();
-		if(1) {
-			std::lock_guard<std::mutex> movingLock(movingMutex);
-			isAcMoving.store(commObtainIsMoving());
-			
-		}
-		bool isMoving = isAcMoving.load();
+		bool isMoving = commObtainIsMoving();
+		isAcMoving.store(isMoving);
 
 		cv::Vec2i currentCoords = commObtainCurrentCoords();
         cv::Vec2d posDeg = servoCoordsToDegree(currentCoords);
