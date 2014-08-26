@@ -25,7 +25,7 @@ struct BezierControlPoint {
     double x, y; // relative to segment anchor
 };
 
-std::vector<SegmentAnchor> segmentList;
+std::vector<SegmentAnchor> anchorList;
 
 
 float graphSize = 800.0;
@@ -37,6 +37,7 @@ int dragAnchorI;
 int dragControlPointI;
 sf::Vector2f mouseDragStartCoords;
 sf::Vector2f dragObjectStartCoords;
+bool showLinearSpectrum = false;
 
 double getDist(sf::Vector2f a, sf::Vector2f b) { return sqrt(pow(a.x-b.x, 2)+pow(a.y-b.y, 2)); }
 
@@ -62,8 +63,8 @@ void mouseDown(sf::Event e, sf::Vector2f mousePos)
     bool isClosestAControlPoint = false;
     double closestDist = 9999999.0;
     sf::Vector2f closestPos;
-    for(int segmentAnchorI = 0; segmentAnchorI < segmentList.size(); segmentAnchorI++) {
-        SegmentAnchor &segmentAnchor = segmentList[segmentAnchorI];
+    for(int segmentAnchorI = 0; segmentAnchorI < anchorList.size(); segmentAnchorI++) {
+        SegmentAnchor &segmentAnchor = anchorList[segmentAnchorI];
         
         auto currAnchorPos = sf::Vector2f(segmentAnchor.x, segmentAnchor.y);
         double dist = getDist(mouseCoords, currAnchorPos);;
@@ -74,7 +75,7 @@ void mouseDown(sf::Event e, sf::Vector2f mousePos)
             closestPos = currAnchorPos;
         }
         if(segmentAnchor.kind == SegmentBehaviour::BEZIER) {
-            SegmentAnchor &nextSegmentAnchor = segmentList[segmentAnchorI+1];
+            SegmentAnchor &nextSegmentAnchor = anchorList[segmentAnchorI+1];
             auto nextAnchorPos = sf::Vector2f(nextSegmentAnchor.x, nextSegmentAnchor.y);
             
             for(int controlPointI = 0; controlPointI < segmentAnchor.bezierControlPointList.size(); controlPointI++) {
@@ -108,8 +109,8 @@ void mouseMoved(sf::Event e, sf::Vector2f mousePos)
     auto mouseCoords = mousePos/graphSize;
     if(isDragging) {
         if(isDraggingControlPoint) {
-            SegmentAnchor &draggedAnchor = segmentList[dragAnchorI];
-            SegmentAnchor &nextAnchor = segmentList[dragAnchorI+1];
+            SegmentAnchor &draggedAnchor = anchorList[dragAnchorI];
+            SegmentAnchor &nextAnchor = anchorList[dragAnchorI+1];
             BezierControlPoint &draggedControlPoint = draggedAnchor.bezierControlPointList[dragControlPointI];
             auto mouseDiffInSegmentSpace = sf::Vector2f(
                 (mouseCoords.x-mouseDragStartCoords.x)/(nextAnchor.x-draggedAnchor.x),
@@ -119,12 +120,12 @@ void mouseMoved(sf::Event e, sf::Vector2f mousePos)
             draggedControlPoint.y = clamp(dragObjectStartCoords.y+mouseDiffInSegmentSpace.y, 0.0f, 1.0f);
             dragControlPointI = reorder(draggedAnchor.bezierControlPointList, dragControlPointI);
         } else {
-            SegmentAnchor &draggedAnchor = segmentList[dragAnchorI];
-            if(dragAnchorI > 0 && dragAnchorI < segmentList.size()-1) {
+            SegmentAnchor &draggedAnchor = anchorList[dragAnchorI];
+            if(dragAnchorI > 0 && dragAnchorI < anchorList.size()-1) {
                 draggedAnchor.x = dragObjectStartCoords.x+(mouseCoords.x-mouseDragStartCoords.x);
             }
             draggedAnchor.y = dragObjectStartCoords.y+(mouseCoords.y-mouseDragStartCoords.y);
-            dragAnchorI = reorder(segmentList, dragAnchorI);
+            dragAnchorI = reorder(anchorList, dragAnchorI);
             selectedAnchorI = dragAnchorI;
         }
     }
@@ -137,30 +138,34 @@ void mouseUp(sf::Event e, sf::Vector2f mousePos)
 
 void handleInput(sf::Event e)
 {
-    SegmentAnchor &selectedAnchor = segmentList[selectedAnchorI];
+    SegmentAnchor &selectedAnchor = anchorList[selectedAnchorI];
     switch (e.key.code) {
         case sf::Keyboard::Space: {
             SegmentAnchor newAnchor;
-            newAnchor.x = selectedAnchor.x+0.05;
+            newAnchor.x = selectedAnchor.x+(selectedAnchorI == anchorList.size()-1 ? -0.05 : 0.05);
             newAnchor.y = 0.5;
             newAnchor.kind = SegmentBehaviour::CONSTANT;
             //newAnchor.bezierControlPointList
             
-            segmentList.push_back(newAnchor);
+            anchorList.push_back(newAnchor);
             
-            int newAncorI = reorder(segmentList, segmentList.size()-1);
+            int newAncorI = reorder(anchorList, anchorList.size()-1);
             selectedAnchorI = newAncorI;
             break;
         }
         
+        case sf::Keyboard::Q: {
+            showLinearSpectrum = !showLinearSpectrum;
+            break;
+        }
         case sf::Keyboard::A: {
             selectedAnchorI--;
-            if (selectedAnchorI < 0) { selectedAnchorI = segmentList.size() - 1; }
+            if (selectedAnchorI < 0) { selectedAnchorI = anchorList.size() - 1; }
             break;
         }
         case sf::Keyboard::D: {
             selectedAnchorI++;
-            if (selectedAnchorI >= segmentList.size()) { selectedAnchorI = 0; }
+            if (selectedAnchorI >= anchorList.size()) { selectedAnchorI = 0; }
             break;
         }
         case sf::Keyboard::S: {
@@ -171,6 +176,12 @@ void handleInput(sf::Event e)
                 int newControlPointI = selectedAnchor.bezierControlPointList.size()-1;
                 newControlPointI = reorder(selectedAnchor.bezierControlPointList, newControlPointI);
             }
+            break;
+        }
+        case sf::Keyboard::W: {
+            if (selectedAnchorI == 0 || selectedAnchorI == anchorList.size()-1) { break; }
+            anchorList.erase(anchorList.begin()+selectedAnchorI);
+            selectedAnchorI--;
             break;
         }
         
@@ -189,7 +200,7 @@ void handleInput(sf::Event e)
         
         case sf::Keyboard::Left: {
             selectedAnchor.x = std::max(selectedAnchor.x-0.01, 0.00);
-            selectedAnchorI = reorder(segmentList, selectedAnchorI);
+            selectedAnchorI = reorder(anchorList, selectedAnchorI);
             break;
         }
         case sf::Keyboard::Right: {
@@ -197,7 +208,7 @@ void handleInput(sf::Event e)
                 break;
             }
             selectedAnchor.x = std::min(selectedAnchor.x+0.01, 1.00);
-            selectedAnchorI = reorder(segmentList, selectedAnchorI);
+            selectedAnchorI = reorder(anchorList, selectedAnchorI);
             break;
         }
         case sf::Keyboard::Up: {
@@ -239,6 +250,38 @@ sf::Vector2f bezier(double t, const std::vector<BezierControlPoint> &bezierContr
     return result;
 }
 
+double graphFunc(double x)
+{
+    double y = 1.0;
+    for(int segmentI = 0; segmentI < anchorList.size(); segmentI++) {
+        auto &currAnchor = anchorList[segmentI];
+        
+        if(x < currAnchor.x) {
+            continue;
+        }
+        if(segmentI == anchorList.size()-1) { break; }
+        auto &nextAnchor = anchorList[segmentI+1];
+        double t = (x-currAnchor.x)/(nextAnchor.x-currAnchor.x);
+        
+        switch(currAnchor.kind) {
+            case SegmentBehaviour::CONSTANT: {
+                y = currAnchor.y;
+                break;
+            }
+            case SegmentBehaviour::LINEAR: {
+                y = currAnchor.y+(nextAnchor.y-currAnchor.y)*t;
+                break;
+            }
+            case SegmentBehaviour::BEZIER: {
+                auto curveLocalPos = bezier(t, currAnchor.bezierControlPointList);
+                y = currAnchor.y+(nextAnchor.y-currAnchor.y)*curveLocalPos.y;
+            }
+        }
+    }
+    return y;
+}
+
+sf::Color hsv(int hue, float sat, float val);
 
 void loop()
 {
@@ -248,12 +291,12 @@ void loop()
     sf::Font font;
     font.loadFromFile("arial.ttf");
     
-    sf::Text hue;
-    hue.setColor(sf::Color(0,255,0));
-    hue.setPosition(0,240);
-    hue.setFont(font);
-    hue.setString("HUE");
-    hue.setCharacterSize(24);
+    sf::Text info;
+    info.setColor(sf::Color(255, 255, 255));
+    info.setPosition(3.0, graphSize+3.0);
+    info.setFont(font);
+    info.setString("SPACE: add anchor | W: remove anchor | LMB: drag | 1,2,3: change kind | S: add bezier point");
+    info.setCharacterSize(20);
     
     std::string str;
     
@@ -277,11 +320,22 @@ void loop()
         
         window.clear();
         
-        sf::VertexArray drawingVertexList(sf::LinesStrip, 0);
+        int columnCount = 200;
+        double columnWidth = graphSize/(double)columnCount;
+        for(int columnI = 0; columnI < columnCount; columnI++) {
+            double x = (double)columnI/(double)(columnCount-1);
+            double y = (showLinearSpectrum ? 1.0-x : graphFunc(x));
+            sf::RectangleShape rect(sf::Vector2f(columnWidth, graphSize));
+            rect.setFillColor(hsv(360.0*y, 1.0, 0.4));
+            rect.setPosition(columnI*columnWidth, 0);
+            window.draw(rect);
+        }
         
-        for(int segmentI = 0; segmentI < segmentList.size(); segmentI++) {
-            auto &currAnchor = segmentList[segmentI];
-            auto &nextAnchor = segmentList[segmentI+1];
+        
+        sf::VertexArray drawingVertexList(sf::LinesStrip, 0);
+        for(int segmentI = 0; segmentI < anchorList.size(); segmentI++) {
+            auto &currAnchor = anchorList[segmentI];
+            auto &nextAnchor = anchorList[segmentI+1];
             
             auto currAnchorPos = sf::Vector2f(currAnchor.x, currAnchor.y);
             auto nextAnchorPos = sf::Vector2f(nextAnchor.x, nextAnchor.y);
@@ -293,7 +347,7 @@ void loop()
             
             drawingVertexList.append(currAnchorPos*graphSize);
             
-            if(segmentI == segmentList.size()-1) { continue; }
+            if(segmentI == anchorList.size()-1) { continue; }
             
             switch(currAnchor.kind) {
                 case SegmentBehaviour::CONSTANT: {
@@ -332,52 +386,12 @@ void loop()
         }
         window.draw(drawingVertexList);
         
+        window.draw(info);
+        
         window.display();
         sf::sleep(sf::milliseconds(1));
     }
 }
-
-/*
-for (int i = 0; i < selectedAnchorI.size(); i++) {
-    ControlPoint c = selectedAnchorI[i];
-    sf::RectangleShape rect(sf::Vector2f(5,5));
-    rect.setPosition(c.position);
-    rect.setFillColor(sf::Color(255,0,0));
-
-    switch (c.type)
-    {
-        case 1:
-            vertices.append(sf::Vertex(sf::Vector2f(selectedAnchorI[i+1].position.x, c.position.y)));
-            vertices.append(sf::Vertex(selectedAnchorI[i+1].position));
-            break;
-        case 2:
-            vertices.append(sf::Vertex(selectedAnchorI[i+1].position));
-            break;
-        case 3:
-            std::vector<sf::Vector2f> v;
-            int j = 0;
-            while (selectedAnchorI[i+j].type == 3)
-            {
-                v.emplace_back(selectedAnchorI[i+j].position);
-                j++;
-            }
-            i += j;
-            
-            int lineToDrawCount = 25;
-            for(int lineToDrawI = 0; lineToDrawI < lineToDrawCount; lineToDrawI++) {
-                float t = lineToDrawI/(lineToDrawCount-1);
-                vertices.append(bezier(t, v));
-            }
-            
-            break;
-    }
-    if (i == curSelected)
-    {
-        rect.setFillColor(sf::Color(0,255,0));
-    }
-    window.draw(rect);
-
-}*/
 
 int main()
 {
@@ -386,7 +400,7 @@ int main()
         sa.x = 0.0;
         sa.y = 1.0;
         sa.kind = SegmentBehaviour::LINEAR;
-        segmentList.push_back(sa);
+        anchorList.push_back(sa);
     }
     /*{
         SegmentAnchor sa;
@@ -406,19 +420,51 @@ int main()
         cp3.x = 0.7; cp3.y = 0.9;
         sa.bezierControlPointList.push_back(cp3);
         
-        segmentList.push_back(sa);
+        anchorList.push_back(sa);
     }*/
     {
         SegmentAnchor sa;
         sa.x = 1.0;
         sa.y = 0.0;
         sa.kind = SegmentBehaviour::LINEAR;
-        segmentList.push_back(sa);
+        anchorList.push_back(sa);
     }
     
     loop();
     
     return 1;
+}
+
+
+
+sf::Color hsv(int hue, float sat, float val)
+{
+    hue %= 360;
+    while(hue<0) hue += 360;
+
+    if(sat<0.f) sat = 0.f;
+    if(sat>1.f) sat = 1.f;
+
+    if(val<0.f) val = 0.f;
+    if(val>1.f) val = 1.f;
+
+    int h = hue/60;
+    float f = float(hue)/60-h;
+    float p = val*(1.f-sat);
+    float q = val*(1.f-sat*f);
+    float t = val*(1.f-sat*(1-f));
+
+    switch(h)
+    {
+        default:
+        case 0:
+        case 6: return sf::Color(val*255, t*255, p*255);
+        case 1: return sf::Color(q*255, val*255, p*255);
+        case 2: return sf::Color(p*255, val*255, t*255);
+        case 3: return sf::Color(p*255, q*255, val*255);
+        case 4: return sf::Color(t*255, p*255, val*255);
+        case 5: return sf::Color(val*255, p*255, q*255);
+    }
 }
 
 
