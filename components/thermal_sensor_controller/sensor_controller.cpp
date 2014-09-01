@@ -42,6 +42,7 @@ void ThermalSensorController::init()
 
 /* Created by: Chris Webb
  * Date: 7/6/14
+ * Last Modified: 25/9/2014
  * Function: sensorThreadFunc()
  * Description:
  * Function is designed to be ran continuously within its own thread. Function creates
@@ -50,6 +51,9 @@ void ThermalSensorController::init()
  * 50 bytes back containing 255 and then sending 254 and if it receives 254 in return,
  * the device has been successfully synchronised. New sensor readings are atomically 
  * placed within a queue (readingQueue).
+ *
+ * Changelog:
+ * 25/9/2014: Now supports IMU data.
  */
 void ThermalSensorController::sensorThreadFunc()
 {
