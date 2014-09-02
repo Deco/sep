@@ -1,7 +1,3 @@
-/**
- * Class Created by: Aaron Nguyen
- **/
-
 #include <iostream> 
 #include <assert.h>
 #include <sstream>
@@ -10,24 +6,27 @@
 #include "Director.h"
 
 /**
+ * Created by: Aaron Nguyen
  * Constructor
- **/
+ */
 Director::Director() 
 {
 	ac->init();
 }
 
 /**
+ * Created by: Aaron Nguyen
  * Constantly update whether the actuator is idle or not.
- **/
+ */
 void Director::update()
 {
 	isIdle = !ac->getIsMoving();
 }
 
 /**
+ * Created by: Aaron Nguyen
  * Stop when actuator is moving, else, display output.
- **/
+ */
 void Director::haltMovement()
 {
 	if(isIdle) { //If actuator is already idle, then output message.
@@ -41,8 +40,9 @@ void Director::haltMovement()
 }
 
 /**
+ * Created by: Aaron Nguyen
  * Takes in a vector of Vec2d's which are the points the user selected.
- **/
+ */
 void Director::performRegionScan(std::vector<cv::Vec2d> pointsList)
 {
     //Select the region 
@@ -58,14 +58,16 @@ void Director::performRegionScan(std::vector<cv::Vec2d> pointsList)
 }
 
 /**
- * Performs a full scan of the whole screen.
- **/
+ * Created by: Aaron Nguyen
+ * Performs a full scan using the actuator's maximum and minumum yaw and
+ * pitch positions.
+ */
 std::vector<ActuatorMoveOrder> Director::performFullScan()
 {
 	std::vector<ActuatorMoveOrder> ordersList;
 	double inf = std::numeric_limits<double>::infinity();
 	std::vector<cv::Vec2d> selectedRegion = {{-150, -90}, {150, 90}};
-	//The region is the maximum and minimum degrees of the actuator.
+	//The region is the maximum and minimum rotation limits of the actuator.
 	if(isIdle) { //If actuator is not moving then scan
 		ordersList = scanAreaPrecision(selectedRegion);
 	}
@@ -77,8 +79,9 @@ std::vector<ActuatorMoveOrder> Director::performFullScan()
 }
 
 /**
- * Manual panning imports a single order
- **/
+ * Created by: Aaron Nguyen
+ * Manual panning imports a single order to move actuator to a single position
+ */
 void Director::performManualPan(ActuatorMoveOrder order)
 {
 	//std::cout << "Idle: " << isIdle << std::endl;
@@ -93,24 +96,26 @@ void Director::performManualPan(ActuatorMoveOrder order)
 }
 
 /**
- * Clears the data realm data
- **/
+ * Created by: Aaron Nguyen
+ * Clears the data realm data used later on.
+ */
 void Director::clearCollectedData(/*Add time to clear later */)
 {
 	//Data realm stuff
 }
 
 /**
- * A function that selects a region given the points the user selected
- * by increasing the max and min values.
- **/
+ * Created by: Aaron Nguyen
+ * Selects a region given the points the user selected
+ * by finding the max and min values for both yaw and pitch.
+ */
 void Director::selectArea(std::vector<cv::Vec2d> pointsList)
 {
-    //Initialize the vec2d as infinite
+    //Initialize the max and min values as infinite
 	double inf = std::numeric_limits<double>::infinity();
 	cv::Vec2d min = {inf, inf};
 	cv::Vec2d max = {-inf, -inf};
-	//Go through each points and find the max and min, x and y values.
+	//Go through each points and find the max and min, yaw and pitch values.
 	for(int i = 0; i < pointsList.size(); i++) {
 		if((pointsList[i])[0] < min[0]) {
 			min[0] = (pointsList[i])[0];
@@ -134,10 +139,11 @@ void Director::selectArea(std::vector<cv::Vec2d> pointsList)
 
 
 /**
+ * Created by: Aaron Nguyen
  * Scans a region given the region points.
  * A prototype that does not factor in the regions that have already been scanned.
  * Will be changed later on.
- **/
+ */
 void Director::scanArea(std::vector<cv::Vec2d> area_points)
 {
 	std::vector<ActuatorMoveOrder> ordersList;
@@ -182,9 +188,10 @@ void Director::scanArea(std::vector<cv::Vec2d> area_points)
 }
 
 /**
+ * Created by: Aaron Nguyen
  * A full scan prototype that does not factor in areas that have been already scanned.
  * Will be changed later on.
- **/
+ */
 std::vector<ActuatorMoveOrder> Director::scanAreaPrecision(std::vector<cv::Vec2d> area_points)
 {
 	std::vector<ActuatorMoveOrder> ordersList;
@@ -290,6 +297,7 @@ std::vector<ActuatorMoveOrder> Director::scanAreaPrecision(std::vector<cv::Vec2d
 }
 
 /**
+ * Created by: Aaron Nguyen
  * Calls queueMoves in the ActuatorController class to do multiple scans.
  **/
 void Director::addOrdersToQueue(std::vector<ActuatorMoveOrder> ordersList)
@@ -298,6 +306,7 @@ void Director::addOrdersToQueue(std::vector<ActuatorMoveOrder> ordersList)
 }
 
 /**
+ * Created by: Aaron Nguyen
  * Returns the current position of the actuator
  **/
 cv::Vec2d Director::getCurrentPositionAC()
@@ -306,6 +315,7 @@ cv::Vec2d Director::getCurrentPositionAC()
 }
 
 /**
+ * Created by: Aaron Nguyen
  * Returns the region the user selected
  **/
 std::vector<cv::Vec2d> Director::getSelectedRegion()

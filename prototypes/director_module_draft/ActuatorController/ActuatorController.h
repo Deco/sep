@@ -31,12 +31,11 @@ private:
 	// Atomic boolean used as a flag for the stop functionality
 	std::atomic_bool shouldStopAtom;
 
+	// Atomic boolean used as a flag for actuator's movement
 	std::atomic_bool isAcMoving;
 	
 	// Mutex to give exclusive access to the moveQueue
 	std::mutex moveQueueMutex;
-
-	std::mutex movingMutex;
 	
 	// Queue containing ActuatorMoveOrders
 	std::queue<ActuatorMoveOrder> moveQueue;
@@ -53,7 +52,10 @@ public:
 	// Current does nothing
 	void update();
 
+	//Imports void.
+	//Exports the actuator's current state.
 	bool getIsMoving();
+
 	// Imports void.
 	// Exports the current yaw and pitch position
 	// in servo coordinates within a vector.

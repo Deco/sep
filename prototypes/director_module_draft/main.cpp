@@ -77,7 +77,7 @@ int main()
 
 		    	}
 		    	else if(event.key.code == sf::Keyboard::C) {
-		    		//Empty everything
+		    		//Empty everything and stop
 		    		area_points.clear();
 		    		selected_points.clear();
 		    		ordersList.clear();

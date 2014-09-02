@@ -33,6 +33,7 @@ ActuatorController::ActuatorController(const std::string deviceName)
 {
 	//Initialises shouldStop atomic boolean to false.
 	shouldStopAtom.store(false);
+	//Initialises shouldStop atomic boolean to false.
 	isAcMoving.store(false);
 }
 
@@ -54,7 +55,10 @@ void ActuatorController::update() {
 	// 
 }
 
-
+/**
+* Created by: Aaron Nguyen 
+* Returns actuator's moving state. 
+*/
 bool ActuatorController::getIsMoving() 
 {
 	return isAcMoving.load();
@@ -251,6 +255,7 @@ void ActuatorController::updateThreadFunc()
 
 	while(true) {
 		bool isMoving = commObtainIsMoving();
+		//stored in atomic_bool for access on actuator's state
 		isAcMoving.store(isMoving);
 
 		cv::Vec2i currentCoords = commObtainCurrentCoords();

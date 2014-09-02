@@ -3,7 +3,7 @@
 
 class Director {
 private:
-    //Instiate ActuatorController
+    //Instantiate ActuatorController
 	ActuatorController *ac = new ActuatorController("/dev/tty.usbserial-A9S3VTXD");
 	//Boolean for when actuator is idle.
 	bool isIdle = true;
