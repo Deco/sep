@@ -5,9 +5,38 @@
 #ifndef EVENTS_H
 #define EVENTS_H
 
-typedef boost::signals2::signal Event;
-typedef boost::signals2::scoped_connection Hook;
+/* alias Event
+    Author: Declan White
+    Description:
+        An alias for the signal class provided by boost::signals2.
+        This should be used by classes providing events to be subscribed to by
+        other classes.
+    Changelog:
+        [2014-09-02 DWW] Created.
+*/
+using Event = boost::signals2::signal;
 
+/* alias Hook
+    Author: Declan White
+    Description:
+        An alias for the scoped_connection class provided by boost::signals2.
+        This should be used by classes subscribing to the events of other
+        classes.
+    Changelog:
+        [2014-09-02 DWW] Created.
+*/
+using Hook = boost::signals2::scoped_connection;
+
+
+/* class Observed
+    Author: Declan White
+    Description:
+        A convenience wrapper for primitive types which allows listeners to be
+        notified when the contained value changes.
+        The contained value is accessed in a thread-safe manner.
+    Changelog:
+        [2014-09-02 DWW] Created.
+*/
 template<typename T>
 class Observed
 {
@@ -32,5 +61,34 @@ private:
     Atom<T> value;
 
 }
+
+/* struct CancellableEvent
+    Author: Nathan Monteloene
+            http://stackoverflow.com/a/8438180/837856
+    Description:
+        Used to with an event (boost::signals2::signal) to make it possible for
+        listeners to cancel the propragation of the event to other listeners.
+        A return value of `true` indicates propragation of the event should
+        halt.
+    Changelog:
+        [2014-09-02 DWW] Sourced from StackOverflow (with syntax modifications).
+*/
+struct CancellableEvent {
+    typedef bool result_type;
+    
+    template<typename InputIterator>
+    result_type operator()(
+        InputIterator aFirstObserver,
+        InputIterator aLastObserver
+    ) const
+    {
+        result_type val = false;
+        for (; aFirstObserver != aLastObserver && !val; ++aFirstObserver) {
+            val = *aFirstObserver;
+        }
+        return val;
+    }
+    
+};
 
 #endif//EVENTS_H
