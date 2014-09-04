@@ -31,7 +31,7 @@ public: // Public concept classes
         STOP,
         MOVE,
         RESET
-    }
+    };
     
     /* struct ActuatorController::ActuatorMoveOrder
         Author: Declan White
@@ -53,7 +53,7 @@ public: // Public concept classes
         // for MOVE
         moment desiredCompletionTime;
         cv::Vec2d desiredOrientationDeg;
-    }
+    };
     
     /* interface ActuatorController::ActuatorOrderProvider
         Author: Declan White, Aaron Nguyen
@@ -74,7 +74,7 @@ public: // Public concept classes
         public:
             ActuatorMoveOrder getCurrentOrder();
             void markOrderComplete(moment completionTime);
-    }
+    };
     
     /* enum struct ActuatorController::ActuatorSystemState
         Author: Declan White
@@ -96,15 +96,15 @@ public: // Public concept classes
         CONNECTED,
         READY,
         ERROR,
-    }
+    };
     
 
 public: // Publicly subscribable events
     
-    /* ActuatorController::eventControllerStatusChange
+    /* ActuatorController::eventControllerStateChange
         Author: Declan White
         Description:
-            This event is fired when the overall status of the actuator system
+            This event is fired when the overall state of the actuator system
             has changed.
         Parameters:
             ActuatorSystemState state: The reported current state of the
@@ -114,7 +114,7 @@ public: // Publicly subscribable events
             [2014-09-02 DWW] Renamed from eventDeviceStatusChange to
                 eventControllerStatusChange.
     */
-    Event<void(ActuatorSystemState)> eventControllerStatusChange;
+    Event<void(ActuatorSystemState)> eventControllerStateChange;
     
     /* ActuatorController::eventOrientationUpdate
         Description:
@@ -127,26 +127,32 @@ public: // Publicly subscribable events
     */
     Event<void(cv::Vec2d)> eventOrientationUpdate;
     
+
 public:
+    
     /* ActuatorController::(primary constructor)
         Author: Declan White
         Description: TODO
         Parameters: TODO
-        Returns: TODO
         Changelog:
             [2014-09-02 DWW] Created.
+            [2014-09-04 DWW] Added `comm` parameter (for dependency injection).
     */
-    ActuatorController(ParamContext params);
+    virtual ActuatorController(
+        ParamContext params,
+        const std::shared_ptr<ActuatorComm> &comm
+    );
     
     /* ActuatorController::~ActuatorController
         Author: Declan White
         Description: TODO
-        Parameters: TODO
-        Returns: TODO
         Changelog:
             [2014-09-02 DWW] Created.
     */
-    ~ActuatorController();
+    virtual ~ActuatorController();
+    
+
+public:
     
     /* ActuatorController::connect
         Author: Declan White
@@ -160,7 +166,7 @@ public:
         Changelog:
             [2014-09-02 DWW] Created.
     */
-    void connect();
+    virtual void connect();
     
     /* ActuatorController::disconnect
         Author: Declan White
@@ -174,20 +180,7 @@ public:
         Changelog:
             [2014-09-02 DWW] Created.
     */
-    void disconnect();
-    
-    /* ActuatorController::halt
-        Author: Declan White
-        Description:
-            This method commands the controller to halt all communcation with
-            the actuators and disconnect all intermediate communication mediums
-            without following the proper shutdown procedure.
-        Parameters: TODO
-        Returns: TODO
-        Changelog:
-            [2014-09-02 DWW] Created.
-    */
-    void halt();
+    virtual void disconnect();
     
 
 private:

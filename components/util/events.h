@@ -2,10 +2,10 @@
 #include <boost/signals2/signal.hpp>
 #include "threads.h"
 
-#ifndef EVENTS_H
-#define EVENTS_H
+#ifndef eventS_H
+#define eventS_H
 
-/* alias Event
+/* alias event
     Author: Declan White
     Description:
         An alias for the signal class provided by boost::signals2.
@@ -14,9 +14,9 @@
     Changelog:
         [2014-09-02 DWW] Created.
 */
-using Event = boost::signals2::signal;
+using event = boost::signals2::signal;
 
-/* alias Hook
+/* alias hook
     Author: Declan White
     Description:
         An alias for the scoped_connection class provided by boost::signals2.
@@ -25,10 +25,10 @@ using Event = boost::signals2::signal;
     Changelog:
         [2014-09-02 DWW] Created.
 */
-using Hook = boost::signals2::scoped_connection;
+using hook = boost::signals2::scoped_connection;
 
 
-/* class Observed
+/* class observed
     Author: Declan White
     Description:
         A convenience wrapper for primitive types which allows listeners to be
@@ -38,14 +38,14 @@ using Hook = boost::signals2::scoped_connection;
         [2014-09-02 DWW] Created.
 */
 template<typename T>
-class Observed
+class observed
 {
 public:
-    Event<void(const T &newValue)> evChanged;
+    event<void(const T &newValue)> evChanged;
 
 public:
-    Observed() : value() { }
-    Observed(T initialValue) : value(initialValue) { }
+    observed() : value() { }
+    observed(T initialValue) : value(initialValue) { }
     
     void set(const T &newValue)
     {
@@ -58,11 +58,11 @@ public:
     }
 
 private:
-    Atom<T> value;
+    atom<T> value;
 
 }
 
-/* struct CancellableEvent
+/* struct Cancellableevent
     Author: Nathan Monteloene
             http://stackoverflow.com/a/8438180/837856
     Description:
@@ -73,7 +73,7 @@ private:
     Changelog:
         [2014-09-02 DWW] Sourced from StackOverflow (with syntax modifications).
 */
-struct CancellableEvent {
+struct cancellable {
     typedef bool result_type;
     
     template<typename InputIterator>
@@ -91,4 +91,4 @@ struct CancellableEvent {
     
 };
 
-#endif//EVENTS_H
+#endif//eventS_H
