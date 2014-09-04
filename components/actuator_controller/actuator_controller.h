@@ -2,6 +2,9 @@
 #include "events.h"
 #include <opencv2/core/core.hpp>
 
+#ifndef ACTUATOR_CONTROLLER_H
+#define ACTUATOR_CONTROLLER_H
+
 /* class ActuatorController
     Author: Declan White, Aaron Nguyen
     Description:
@@ -196,4 +199,6 @@ private:
     
 
 };
+
+#endif//ACTUATOR_CONTROLLER_H
 

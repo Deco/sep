@@ -21,8 +21,6 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/source")
 # define where executables, libraries, data, etc will be placed
 set(OUTPUT_DIR ${PROJECT_BINARY_DIR}/output)
 
-message(STATUS "test: " ${CMAKE_CURRENT_BINARY_DIR})
-
 # this is where data files will be (UI resources, images, etc)
 set(OUTPUT_RESOURCE_DIR ${OUTPUT_DIR}/res)
 
@@ -46,29 +44,29 @@ target_module(dependencies/libevent )
 target_module(dependencies/msgpack-c)
 
 # Internal components
-#target_module(components/thermal_sensor_controller)
-#target_module(components/actuator_controller      )
+target_module(components/thermal_sensor_controller)
+target_module(components/actuator_controller      )
 
 
 # add the include directories
 #include_directories("${INCLUDE_PATHS}")
 
 # add the source files of this target
-#set(SOURCE_FILES
-#    ${SOURCE_FILES}
-#    ${CMAKE_CURRENT_SOURCE_DIR}/source/main.cpp
-#)
+set(SOURCE_FILES
+    ${SOURCE_FILES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/main.cpp
+)
 
 # specify where the output executables and libraries will be placed
-#set(EXECUTABLE_OUTPUT_PATH ${OUTPUT_DIR})
-#set(LIBRARY_OUTPUT_PATH ${OUTPUT_DIR})
+set(EXECUTABLE_OUTPUT_PATH ${OUTPUT_DIR})
+set(LIBRARY_OUTPUT_PATH ${OUTPUT_DIR})
 
 # add the executable
-#add_executable(${PROJECT_NAME}
-#    ${SOURCE_FILES}
-#)
+add_executable(${PROJECT_NAME}
+    ${SOURCE_FILES}
+)
 
 # inform the executable of the linking paths
-#target_link_libraries(${PROJECT_NAME} LINK_PATHS)
+target_link_libraries(${PROJECT_NAME} LINK_PATHS)
 
 # done!
