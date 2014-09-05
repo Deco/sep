@@ -1,12 +1,24 @@
+//	This application is a basic proof of concept for creating
+//	a variable colour model that will allow temperature values
+//	to be represented by a varying RGB based on the user input.
+//	Initially the application will only deal with a 4-point
+//	cubic function for graphing, but will later be extended to deal
+//	with linear/flat and N-Grade curves (curves with more 3 or more
+//	control points).
+//	@author Sam Holmes 2014 
+
+
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
 
-	
 std::vector<sf::RectangleShape> points;
 int curSelected = 0;
 
-sf::Color hsv(int hue, float sat, float val)
+//	Function for converting hue values (0->360), saturation and 
+//	value (0->1) and converting them to sf::Color objects which
+//	can be used for drawing within the app.
+sf::Color hsvToRgb(int hue, float sat, float val)
 {
     hue %= 360;
     while(hue<0) hue += 360;
@@ -35,8 +47,13 @@ sf::Color hsv(int hue, float sat, float val)
         case 5: return sf::Color(val*255, p*255, q*255);
     }
 }
-
-std::vector<sf::Vector2f> CalcCubicBezier(
+//	Cubic Bezier calculator from:
+//	https://github.com/LaurentGomila/SFML/wiki/Source:-cubic-bezier-curve
+//	Credit goes to LaurentGomila
+//	Takes a start & end point and two control points and calculates 
+//	the points of a cubic line from these points, based on the number of 
+//	segments specified.
+std::vector<sf::Vector2f> calcCubicBezier(
         const sf::Vector2f &start,
         const sf::Vector2f &end,
         const sf::Vector2f &startControl,
@@ -44,20 +61,23 @@ std::vector<sf::Vector2f> CalcCubicBezier(
         const size_t numSegments)
 {
     std::vector<sf::Vector2f> ret;
-    if (!numSegments) // Any points at all?
+    if (!numSegments)
         return ret;
 
-    ret.push_back(start); // First point is fixed
+    ret.push_back(start);
     float p = 1.f / numSegments;
     float q = p;
-    for (size_t i = 1; i < numSegments; i++, p += q) // Generate all between
+    for (size_t i = 1; i < numSegments; i++, p += q)
         ret.push_back(p * p * p * (end + 3.f * (startControl - endControl) - start) +
                       3.f * p * p * (start - 2.f * startControl + endControl) +
                       3.f * p * (startControl - start) + start);
-    ret.push_back(end); // Last point is fixed
+    ret.push_back(end);
     return ret;
 }
 
+//	Handles input to move the control points of the graph. Points
+//	can only be moved up or down, affecting the hue displayed, and
+//	not affecting the temperature range.
 void movePoint(sf::Event e)
 {
 	switch (e.key.code)
@@ -83,11 +103,13 @@ void movePoint(sf::Event e)
 	}
 }
 
+//	Main render function for displaying content and receiving inputs
 void render()
 {
 	sf::RenderWindow window(sf::VideoMode(1280, 960), "Colour Diddler");
 	window.setFramerateLimit(30);
 
+//	Drawing of the grid/axis and labels for the graph.
 	sf::RectangleShape grid1(sf::Vector2f(2,380));
 	grid1.setFillColor(sf::Color(0,255,0));
 	grid1.setPosition(60,40);
@@ -134,6 +156,7 @@ void render()
 	hueMax.setString("360");
 	hueMax.setCharacterSize(24);
 
+//	Generates the 4 control points
  	for (int i = 0; i <= 3; i++)
  	{
  		sf::RectangleShape rect(sf::Vector2f(5,5));
@@ -142,6 +165,7 @@ void render()
 		points.emplace_back(rect);
  	}
 
+//	Main render loop
     while (window.isOpen())
     {
         sf::Event event;
@@ -155,10 +179,9 @@ void render()
 
         window.clear();
 
-       	// Create a vertex array for drawing; a line strip is perfect for this
+//	Create a vertex array for drawing
 		sf::VertexArray vertices(sf::LinesStrip, 0);
-
-		// Calculate the points on the curve (10 segments)
+//	Calculate the points on the curve (10 segments)
 		std::vector<sf::Vector2f> linePoints =
 		    CalcCubicBezier(
 		        points[0].getPosition(),
@@ -167,9 +190,10 @@ void render()
 		        points[2].getPosition(),
 		        360);
 
-		// Append the points as vertices to the vertex array
+//	Append the points as vertices to the vertex array
 		for (std::vector<sf::Vector2f>::const_iterator a = linePoints.begin(); a != linePoints.end(); ++a)
 		    vertices.append(sf::Vertex(*a, sf::Color::White));
+//	Draw stuff
 		window.draw(vertices);
 		window.draw(grid1);
 		window.draw(grid2);
@@ -178,22 +202,22 @@ void render()
 		window.draw(origin);
 		window.draw(tempMax);
 		window.draw(hueMax);
-        /// Spectrum drawing
+//	Spectrum drawing
         for (int i = 0; i < 360; i++)
 		{
 			sf::RectangleShape rect(sf::Vector2f(10,480));
 			
 			std::cout << 480 - linePoints[i].y - 70 << std::endl;
 		
-			rect.setFillColor(hsv(480 - linePoints[i].y - 70, 1, 1));
+			rect.setFillColor(hsvToRgb(480 - linePoints[i].y - 70, 1, 1));
 			rect.setPosition(i*2 + 640, 0);
 			window.draw(rect);
 		}
 
-		//std::cout << "Max Hue: " << (480 - linePoints[359].y  - 70) << std::endl;
-		//std::cout << "Min Hue: " << (480 - linePoints[0].y - 70) << std::endl;
+//std::cout << "Max Hue: " << (480 - linePoints[359].y  - 70) << std::endl;
+//std::cout << "Min Hue: " << (480 - linePoints[0].y - 70) << std::endl;
 
-		/// Dragable points drawing.
+//	Dragable points drawing.
 		for (sf::RectangleShape r : points)
 		{
 			window.draw(r);
