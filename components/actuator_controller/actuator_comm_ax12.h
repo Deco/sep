@@ -80,7 +80,7 @@ private:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    byte  readByte  (byte id, byte address);
+    byte readByte(byte id, byte address);
     
     /* ActuatorCommAX12::readShort
         Author: Declan White
@@ -90,7 +90,7 @@ private:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    short readShort (byte id, byte address);
+    short readShort(byte id, byte address);
     
     /* ActuatorCommAX12::writeByte
         Author: Declan White
@@ -100,7 +100,7 @@ private:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    void  writeByte (byte id, byte address, byte  value);
+    void writeByte(byte id, byte address, byte  value);
     
     /* ActuatorCommAX12::writeShort
         Author: Declan White
@@ -120,8 +120,8 @@ private:
         ActuatorInfo info;
         ActuatorState state;
         std::shared_ptr<ActuatorError> errorPtr;
-        double goalPos;
-        double goalVel;
+        double goalPos; bool goalPosIsDirty;
+        double goalVel; bool goalVelIsDirty;
     }
     
 
@@ -135,7 +135,9 @@ private:
     atom<std::vector<atom<ActuatorData>>> actuatorDataList;
     
     atom<std::vector<const ActuatorInfo>> actuatorInfoList;
-    hook paramSampleRateChanged;
+    
+    
+    hook hookParamSampleRateChanged;
 };
 
 #endif//ACTUATOR_COMM_AX12_H

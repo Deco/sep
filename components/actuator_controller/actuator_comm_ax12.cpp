@@ -40,9 +40,9 @@
 #define P_ALARM_LED           17
 #define P_ALARM_SHUTDOWN      18
 #define P_OPERATING_MODE      19
-#define P_KP                  20    // These names seem to suggest some form of PID controller
-#define P_KD                  21    // but the AX-12 manual calls address 20-23 up/down calibration
-#define P_KI                  22    // to compensate for potentiometer inaccuracies
+#define P_KP                  20
+#define P_KD                  21
+#define P_KI                  22
 #define P_IDAMP               23
 
 // Memory addresses: RAM area
@@ -87,7 +87,12 @@ ActuatorCommAX12::ActuatorCommAX12(
     serialPortPtr(serialPortIn),
 {
     
-    hookParamSampleRateSec = params.observe("sample_rate_sec", &ActuatorCommAX12::onSampleRateChanged, this);
+    /*paramsPtr->declare<duration>("sample_rate_sec");
+    
+    hookParamSampleRateSec = paramsPtr->observe(
+        "sample_rate_sec",
+        &ActuatorCommAX12::onSampleRateChanged, this
+    );*/
     
 }
 
@@ -105,13 +110,19 @@ ActuatorCommAX12::ActuatorCommAX12(
     Author: Declan White
     Changelog:
         [2014-09-02 DWW] Created.
+        [2014-09-04 DWW] Implemented.
 */
 void ActuatorCommAX12::connect()
 {
+    // If the thread already exists, we're already connected or connecting..
     if(serialThreadPtr) {
+        // ..so do nothing.
         return;
     }
-    serialThreadPtr = std::make_shared<std::thread>(&ActuatorCommAX12::serialThreadFunc, this);
+    // Otherwise, start the thread.
+    serialThreadPtr = std::make_shared<std::thread>(
+        &ActuatorCommAX12::serialThreadFunc, this
+    );
     
 }
 
@@ -119,14 +130,20 @@ void ActuatorCommAX12::connect()
     Author: Declan White
     Changelog:
         [2014-09-02 DWW] Created.
+        [2014-09-04 DWW] Implemented.
 */
 void ActuatorCommAX12::disconnect()
 {
+    // If the thred isn't running then we're not connected..
     if(!serialThreadPtr) {
+        // ..so do nothing.
         return;
     }
+    // Otherwise, signal the thread that it's time to disconnected..
     serialThreadShouldDisconnect.set(true);
+    // ..and wait for it to finish.
     serialThreadPtr->join();
+    // No more thread!
     serialThreadPtr.reset();
 }
 
@@ -134,15 +151,18 @@ void ActuatorCommAX12::disconnect()
     Author: Declan White
     Changelog:
         [2014-09-04 DWW] Created.
+        [2014-09-04 DWW] Implemented.
 */
 void ActuatorCommAX12::getActuatorInfoList(
     std::vector<ActuatorComm::ActuatorInfo> &infoList
 ) const
 {
-    actuatorDataList.access_read([](auto val) {
-        infoList.reserve(val.size());
+    // Lock the actuator data list..
+    actuatorDataList.access_read([](auto list) {
+        infoList.reserve(list.size());
         
-        for(auto actuatorData : val) {
+        // ..and retrieve all the actuator info structs.
+        for(auto actuatorData : list) {
             infoList.push_back(actuatorData.info);
         }
     });
@@ -152,20 +172,34 @@ void ActuatorCommAX12::getActuatorInfoList(
     Author: Declan White
     Changelog:
         [2014-09-04 DWW] Created.
+        [2014-09-05 DWW] Implemented.
 */
 ActuatorState ActuatorCommAX12::getActuatorState(int id) const
 {
-    //
+    ActuatorState state;
+    // Lock the actuator data list..
+    actuatorDataList.access_read([](auto list) {
+        // ..and retrieve the state of the specified actuator.
+        state = list.at(id).state;
+    });
+    return state;
 }
 
 /* ActuatorCommAX12::getActuatorState
     Author: Declan White
     Changelog:
         [2014-09-04 DWW] Created.
+        [2014-09-05 DWW] Implemented.
 */
 std::shared_ptr<ActuatorError> ActuatorCommAX12::getActuatorError(int id) const
 {
-    //
+    std::shared_ptr<ActuatorState> errorPtr;
+    // Lock the actuator data list..
+    actuatorDataList.access_read([](auto list) {
+        // ..and retrieve the error of the specified actuator.
+        errorPtr = list.at(id).errorPtr;
+    });
+    return errorPtr;
 }
 
 /* ActuatorCommAX12::recoverActuator
@@ -175,27 +209,42 @@ std::shared_ptr<ActuatorError> ActuatorCommAX12::getActuatorError(int id) const
 */
 void ActuatorCommAX12::recoverActuator(int id)
 {
-    //
+    throw std::runtime_error("NYI");
 }
 
 /* ActuatorCommAX12::getActuatorGoalPos
     Author: Declan White
     Changelog:
         [2014-09-04 DWW] Created.
+        [2014-09-05 DWW] Implemented.
 */
 double ActuatorCommAX12::getActuatorGoalPos(int id) const
 {
-    //
+    double goalPos;
+    // Lock the actuator data list..
+    actuatorDataList.access_read([](auto list) {
+        // ..and retrieve the goalPos of the specified actuator.
+        goalPos = list.at(id).goalPos;
+    });
+    return goalPos;
 }
 
 /* ActuatorCommAX12::setActuatorGoalPos
     Author: Declan White
     Changelog:
         [2014-09-04 DWW] Created.
+        [2014-09-05 DWW] Implemented.
 */
-void ActuatorCommAX12::setActuatorGoalPos(int id, double posDeg
+void ActuatorCommAX12::setActuatorGoalPos(int id, double posDeg)
 {
-    //
+    // Lock the actuator data list..
+    actuatorDataList.access_read([](auto list) {
+        // ..and set the goalPos of the specified actuator.
+        list.at(id).goalPos = posDeg;
+        // Ensure the goal pos is marked as dirty so that the new value
+        // is sent to the actuator when `initiateMovement` is called.
+        list.at(id).goalPosIsDirty = true;
+    });
 }
 
 /* ActuatorCommAX12::getActuatorGoalVel
@@ -205,19 +254,51 @@ void ActuatorCommAX12::setActuatorGoalPos(int id, double posDeg
 */
 double ActuatorCommAX12::getActuatorGoalVel(int id) const
 {
-    //
+    double goalVel;
+    // Lock the actuator data list..
+    actuatorDataList.access_read([](auto list) {
+        // ..and retrieve the goalVel of the specified actuator.
+        goalVel = list.at(id).goalVel;
+    });
+    return goalVel;
 }
 
 /* ActuatorCommAX12::setActuatorGoalVel
     Author: Declan White
     Changelog:
         [2014-09-04 DWW] Created.
+        [2014-09-13 DWW] Implemented.
 */
-void ActuatorCommAX12::setActuatorGoalVel(int id, double velDegPerSec
+void ActuatorCommAX12::setActuatorGoalVel(int id, double velDegPerSec)
 {
-    //
+    // Lock the actuator data list..
+    actuatorDataList.access_read([](auto list) {
+        // ..and set the goalVel of the specified actuator.
+        list.at(id).goalVel = velDegPerSec;
+        // Ensure the goal vel is marked as dirty so that the new value
+        // is sent to the actuator when `initiateMovement` is called.
+        list.at(id).goalVelIsDirty = true;
+    });
 }
-    
+
+/* ActuatorCommAX12::initiateMovement
+    Author: Declan White
+    Changelog:
+        [2014-09-13 DWW] Created.
+        [2014-09-13 DWW] Implemented.
+*/
+void ActuatorCommAX12::initiateMovement(int id)
+{
+    // Lock the actuator data list..
+    actuatorDataList.access_read([](auto list) {
+        for(ActuatorData data : list) {
+            if(data.goalVelIsDirty) {
+                
+            }
+        }
+    });
+}
+
 /* ActuatorCommAX12::serialThreadFunc
     Author: Declan White
     Changelog:
@@ -225,7 +306,8 @@ void ActuatorCommAX12::setActuatorGoalVel(int id, double velDegPerSec
 */
 void ActuatorCommAX12::serialThreadFunc()
 {
-    //
+    serialPortPtr = std::make_shared<SerialPort>();
+    
 }
 
 /* ActuatorCommAX12::sendPacket
@@ -233,8 +315,9 @@ void ActuatorCommAX12::serialThreadFunc()
     Changelog:
         [2014-09-04 DWW] Created.
 */
-void ActuatorCommAX12::sendPacket(byte id, byte instruction, const std::vector<byte> &data)
-{
+void ActuatorCommAX12::sendPacket(
+    byte id, byte instruction, const std::vector<byte> &data
+) {
     //
 }
 
@@ -243,8 +326,9 @@ void ActuatorCommAX12::sendPacket(byte id, byte instruction, const std::vector<b
     Changelog:
         [2014-09-04 DWW] Created.
 */
-void ActuatorCommAX12::receivePacket(byte &idRef, byte &errorRef, std::vector<byte> &parameterListRef)
-{
+void ActuatorCommAX12::receivePacket(
+    byte &idRef, byte &errorRef, std::vector<byte> &parameterListRef
+) {
     //
 }
 

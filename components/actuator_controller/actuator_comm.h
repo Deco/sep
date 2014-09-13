@@ -14,6 +14,10 @@
         management of the actuators and various associated IO handles.
     Changelog:
         [2014-09-04 DWW] Created.
+        [2014-09-05 DWW] Added an `initiateMovement` method;
+            `setActuatorGoalPos` and `setActuatorGoalVel` now do not affect
+            actuator movement until `initiateMovement` is called.
+        
 */
 class ActuatorComm {
 public:
@@ -206,7 +210,20 @@ public:
             [2014-09-04 DWW] Created.
     */
     virtual double getActuatorGoalPos(int id) const;
-    virtual void   setActuatorGoalPos(int id, double posDeg);
+    
+    /* ActuatorComm::setActuatorGoalPos
+        Author: Declan White
+        Description: TODO
+        Parameters: TODO
+        Returns: TODO
+        Throws: TODO
+        Notes:
+            This method should not affect actuator movement until 
+            `initiateMovement` is called.
+        Changelog:
+            [2014-09-04 DWW] Created.
+    */
+    virtual void setActuatorGoalPos(int id, double posDeg);
     
     /* ActuatorComm::getActuatorGoalVel
         Author: Declan White
@@ -218,7 +235,31 @@ public:
             [2014-09-04 DWW] Created.
     */
     virtual double getActuatorGoalVel(int id) const;
-    virtual void   setActuatorGoalVel(int id, double velDegPerSec);
+    
+    /* ActuatorComm::setActuatorGoalVel
+        Author: Declan White
+        Description: TODO
+        Parameters: TODO
+        Returns: TODO
+        Throws: TODO
+        Notes:
+            This method should not affect actuator movement until 
+            `initiateMovement` is called.
+        Changelog:
+            [2014-09-04 DWW] Created.
+    */
+    virtual void setActuatorGoalVel(int id, double velDegPerSec);
+    
+    /* ActuatorComm::initiateMovement
+        Author: Declan White
+        Description: TODO
+        Parameters: TODO
+        Returns: TODO
+        Throws: TODO
+        Changelog:
+            [2014-09-05 DWW] Created.
+    */
+    virtual void initiateMovement(int id);
     
     // [2014-09-04 DWW] I'm pretty sure this belongs as a parameter.
     ///* ActuatorComm::getActuatorGoalTorque
