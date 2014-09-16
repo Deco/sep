@@ -25,6 +25,7 @@ public:
             [2014-09-04 DWW] Created.
     */
     virtual ActuatorCommAX12(
+        std::shared_ptr<ApplicationContext> app,
         ParamContext params,
         const std::shared_ptr<SerialPort> &serialPort
     );
@@ -70,7 +71,10 @@ private:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    void receivePacket(byte &idRef, byte &errorRef, std::vector<byte> &parameterListRef);
+    void receivePacket(
+        byte &idRef, byte &errorRef,
+        std::vector<byte> &parameterListRef
+    );
     
     /* ActuatorCommAX12::readByte
         Author: Declan White
@@ -124,15 +128,22 @@ private:
         double goalVel; bool goalVelIsDirty;
     }
     
+    enum struct ActuatorOrderKind {
+        INITIATE_MOVEMENT,
+    }
+    
 
 private:
+    std::shared_ptr<ApplicationContext> app;
+    const std::shared_ptr<const boost::asio::io_service> ios;
     std::shared_ptr<ParamContext> paramsPtr;
     
     std::shared_ptr<std::thread> serialThreadPtr;
     atom<bool> serialThreadShouldDisconnect;
     std::shared_ptr<SerialPort> serialPortPtr;
     
-    atom<std::vector<atom<ActuatorData>>> actuatorDataList;
+    
+    atom<std::vector<ActuatorData>> actuatorDataList;
     
     atom<std::vector<const ActuatorInfo>> actuatorInfoList;
     

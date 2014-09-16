@@ -74,7 +74,9 @@ public:
             [2014-09-02 DWW] Renamed from eventDeviceStatusChange to
                 eventControllerStatusChange.
     */
-    event<void(const ActuatorInfo&, ActuatorState)> eventActuatorStateChange;
+    event<
+        void(const ActuatorInfo&, ActuatorState)
+    > eventActuatorStateChange;
     
     /* ActuatorComm::eventActuatorMovementUpdate
         Author: Declan White
@@ -94,7 +96,9 @@ public:
             [2014-09-02 DWW] Renamed from eventDeviceStatusChange to
                 eventControllerStatusChange.
     */
-    event<void(const ActuatorInfo&, double, double, bool)> eventActuatorMovementUpdate;
+    event<
+        void(const ActuatorInfo&, double, double, bool)
+    > eventActuatorMovementUpdate;
     
 
 public:
@@ -111,9 +115,10 @@ public:
             [2014-09-04 DWW] Created.
     */
     virtual ActuatorComm(
+        std::shared_ptr<ApplicationContext> app,
         ParamContext params,
         const std::shared_ptr<SerialPort> &serialPort
-    );
+    ) = 0;
     
     /* ActuatorComm::~ActuatorComm
         Author: Declan White
@@ -140,7 +145,7 @@ public:
         Changelog:
             [2014-09-02 DWW] Created.
     */
-    virtual void connect();
+    virtual void connect() = 0;
     
     /* ActuatorComm::disconnect
         Author: Declan White
@@ -154,7 +159,7 @@ public:
         Changelog:
             [2014-09-02 DWW] Created.
     */
-    virtual void disconnect();
+    virtual void disconnect() = 0;
     
     /* ActuatorComm::getActuatorInfoList
         Author: Declan White
@@ -166,7 +171,7 @@ public:
     */
     virtual void getActuatorInfoList(
         std::vector<ActuatorComm::ActuatorInfo> &infoList
-    ) const;
+    ) const = 0;
     
     /* ActuatorComm::getActuatorState
         Author: Declan White
@@ -176,7 +181,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    virtual ActuatorState getActuatorState(int id) const;
+    virtual ActuatorState getActuatorState(int id) const = 0;
     
     /* ActuatorComm::getActuatorState
         Author: Declan White
@@ -188,7 +193,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    virtual std::shared_ptr<ActuatorError> getActuatorError(int id) const;
+    virtual std::shared_ptr<ActuatorError> getActuatorError(int id) const = 0;
     
     /* ActuatorComm::recoverActuator
         Author: Declan White
@@ -198,7 +203,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    virtual void recoverActuator(int id);
+    virtual void recoverActuator(int id) = 0;
     
     /* ActuatorComm::getActuatorGoalPos
         Author: Declan White
@@ -209,7 +214,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    virtual double getActuatorGoalPos(int id) const;
+    virtual double getActuatorGoalPos(int id) const = 0;
     
     /* ActuatorComm::setActuatorGoalPos
         Author: Declan White
@@ -223,7 +228,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    virtual void setActuatorGoalPos(int id, double posDeg);
+    virtual void setActuatorGoalPos(int id, double posDeg) = 0;
     
     /* ActuatorComm::getActuatorGoalVel
         Author: Declan White
@@ -234,7 +239,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    virtual double getActuatorGoalVel(int id) const;
+    virtual double getActuatorGoalVel(int id) const = 0;
     
     /* ActuatorComm::setActuatorGoalVel
         Author: Declan White
@@ -248,7 +253,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    virtual void setActuatorGoalVel(int id, double velDegPerSec);
+    virtual void setActuatorGoalVel(int id, double velDegPerSec) = 0;
     
     /* ActuatorComm::initiateMovement
         Author: Declan White
@@ -259,7 +264,7 @@ public:
         Changelog:
             [2014-09-05 DWW] Created.
     */
-    virtual void initiateMovement(int id);
+    virtual void initiateMovement(int id) = 0;
     
     // [2014-09-04 DWW] I'm pretty sure this belongs as a parameter.
     ///* ActuatorComm::getActuatorGoalTorque
@@ -271,8 +276,8 @@ public:
     //    Changelog:
     //        [2014-09-04 DWW] Created.
     //*/
-    //virtual double getActuatorGoalTorque(int id);
-    //virtual void   setActuatorGoalTorque(int id, double torqueKgCm);
+    //virtual double getActuatorGoalTorque(int id) = 0;
+    //virtual void   setActuatorGoalTorque(int id, double torqueKgCm) = 0;
     
     // [2014-09-04 DWW] Another brand of actuator may not require polling (it may emit
     // events or something), so this belongs as a parameter.
@@ -285,8 +290,8 @@ public:
     //    Changelog:
     //        [2014-09-04 DWW] Created.
     //*/
-    //virtual duration getActuatorMovementSampleRate(int id);
-    //virtual void setActuatorMovementSampleRate(int id, duration sampleRate);
+    //virtual duration getActuatorMovementSampleRate(int id = 0);
+    //virtual void setActuatorMovementSampleRate(int id, duration sampleRate) = 0;
     
 
 };

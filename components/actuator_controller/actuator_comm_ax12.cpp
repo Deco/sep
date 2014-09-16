@@ -79,9 +79,12 @@
         [2014-09-04 DWW] Created.
 */
 ActuatorCommAX12::ActuatorCommAX12(
+    std::shared_ptr<ApplicationContext> appIn,
     const std::shared_ptr<ParamContext> &&paramsIn,
     const std::shared_ptr<SerialPort> &serialPortIn;
-) : paramsPtr(paramsIn),
+) : app(appIn),
+    ios(appIn->getIOService()),
+    paramsPtr(paramsIn),
     serialThreadPtr(nullptr),
     serialThreadShouldDisconnect(false),
     serialPortPtr(serialPortIn),
@@ -238,7 +241,7 @@ double ActuatorCommAX12::getActuatorGoalPos(int id) const
 void ActuatorCommAX12::setActuatorGoalPos(int id, double posDeg)
 {
     // Lock the actuator data list..
-    actuatorDataList.access_read([](auto list) {
+    actuatorDataList.access([](auto list) {
         // ..and set the goalPos of the specified actuator.
         list.at(id).goalPos = posDeg;
         // Ensure the goal pos is marked as dirty so that the new value
@@ -272,7 +275,7 @@ double ActuatorCommAX12::getActuatorGoalVel(int id) const
 void ActuatorCommAX12::setActuatorGoalVel(int id, double velDegPerSec)
 {
     // Lock the actuator data list..
-    actuatorDataList.access_read([](auto list) {
+    actuatorDataList.access([](auto list) {
         // ..and set the goalVel of the specified actuator.
         list.at(id).goalVel = velDegPerSec;
         // Ensure the goal vel is marked as dirty so that the new value
