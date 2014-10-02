@@ -13,7 +13,8 @@
     Changelog:
         [2014-09-02 DWW] Created.
 */
-class ActuatorController {
+class ActuatorController
+{
 public: // Public concept classes
     
     /* enum struct ActuatorController::OrderKind

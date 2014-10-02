@@ -100,14 +100,14 @@ public:
     void access_read(std::function<void(const T &valueRef)> func)
     {
         if(1) {
-            std::shared_lock writeLock(valueMutex);
+            std::shared_lock readLock(valueMutex);
             const T &valueRef = value;
             func(valueRef);
         }
-        valueConditionVariable.notify_all();
+        //valueConditionVariable.notify_all();
     }
     
-    /* atom::wait
+    /* atom::conditional_wait
         Author: Declan White
         Description: TODO
         Parameters: TODO
