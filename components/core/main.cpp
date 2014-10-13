@@ -27,11 +27,11 @@ std::cout << "hello world\n";
 
 
   Param::ParamType type = Param::ParamType::OBJ;
-  Param param(pAdr, type);
+  
 
-  int whatthefuck = 5;
+ 
 
-  ParamManager pManager(whatthefuck);
+  ParamManager pManager(pAdr, type);
 
 
 

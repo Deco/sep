@@ -269,8 +269,11 @@ private:
 class ParamManager {
 
 public:
-    ParamManager(int &inParam);
+    ParamManager(ParamAddress &fullAddressIn,
+                 Param::ParamType &typeIn
+    );
     
+
 
     //void addParam(Param paramIn);
     //void removeParam(ParamAddress paramAdrIn);
@@ -278,7 +281,7 @@ public:
     //std::string getJSONRoot();
 
 private:
-    int root;
+    Param root;
 
 };
 

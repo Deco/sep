@@ -146,9 +146,10 @@ ParamAddress::ParamAddress(
 
 
 ParamManager::ParamManager(
-  int &inParam
+    ParamAddress &fullAddressIn,
+    Param::ParamType &typeIn
 )
-    : root(inParam)
+: root(fullAddressIn, typeIn)
 {
       /*std::vector<std::string> adr;
       adr.push_back("root");
