@@ -1,12 +1,25 @@
+/* FILE: Params.h
+ * AUTHOR: Declan White
+ * CREATED: 02/09/2014
+ * CHANGELOG:
+ * 04/09/2014: 
+ * Lots of minor fixes to syntax to get it to compile.
+ * Added setter for ParamAddress
+ */
 
-#include <threads>
+#include <memory>
+#include <atomic>
 #include <vector>
 #include <map>
 #include <initializer_list>
 
+#include <boost/variant.hpp>
+#include "threads.h"
+
 
 #ifndef PARAMS_H
-#define PARAMS_H
+#define PARAMS_H 
+
 
 /* [Param system design]
     Author: Declan White
@@ -79,7 +92,7 @@
                     locked = true;
                 },
                 actuatorDataList = list {
-                    obj {
+                    actuator1 = obj {
                         enabled = boolean {
                             val = true;
                             default = true;
@@ -96,7 +109,7 @@
                             locked = true;
                         },
                     },
-                    obj {
+                    actuator2 = obj {
                         axis =  string {
                             val = "pitch";
                             choices = {"yaw", "pitch"};
@@ -120,18 +133,19 @@
 */
 
 
+
 class Param;
-class ParamAddress;
 class ParamManager;
 
-using ParamValue = boost::variant<
+typedef boost::variant<
     /* STRING  */ std::string,
     /* INT64   */ uint64_t,
-    /* FLOAT64 */ float64_t,
+    /* FLOAT64 */ double,
     /* BOOL    */ bool,
     /* OBJ     */ std::map<const std::string, const std::shared_ptr<Param>>,
-    /* LIST    */ std::vector<const std::shared_ptr<Param>>
->;
+    /* LIST    */ std::vector<std::shared_ptr<Param>>//std::vector<const std::shared_ptr<Param>>
+> ParamValue;
+
 
 /* class Param
     Author: Declan White
@@ -140,43 +154,67 @@ using ParamValue = boost::variant<
     Changelog:
         [2014-09-26 DWW] Created.
 */
-class Param
-{
+class Param {
 public:
     
-    enum class Type {
+    enum class ParamType {
         STRING,
         INT64,
         FLOAT64,
         BOOL,
         OBJ,
         LIST,
-    }
+    };
     
+
+
 protected:
+    friend class ParamManager;
     
     /* Param::(primary constructor)
         Author: Declan White
         Description:
-            This constructor should only be called by the ParamManager.
+            This constructor should only be called by the parent Param.
         Parameters: TODO
         Changelog:
             [2014-09-26 DWW] Created.
     */
-    void Param(
-        ParamManager &managerRefIn,
-        ParamAddress &&fullAddressIn,
-        ParamType &&typeIn
+    Param(
+        ParamType typeIn, 
+        ParamValue &&defaultValueIn,
+        std::string &&name
     );
-    void Param(
-        ParamManager &managerRefIn,
-        ParamAddress &&fullAddressIn,
-        ParamType &&typeIn,
-        ParamValue &&defaultValueIn
-    );
-    
+
+
 public:
     
+    ///////// This is for OBJECTS only ///////// 
+    const std::shared_ptr<Param>& getParam(
+        std::string &&key
+    );
+    
+    ///////// This is for OBJECTS only ///////// 
+    const std::shared_ptr<Param>& createParam(
+        std::string &&key,
+        ParamType type,
+        ParamValue &&defaultValue
+    );
+    
+    
+    ///////// This is for LISTS only ///////// 
+    const std::shared_ptr<Param>& getParam(
+        int key
+    );
+    
+    
+    ///////// This is for LISTS only ///////// 
+    const std::shared_ptr<Param>& createParam(
+        int key,
+        ParamType type,
+        ParamValue &&defaultValue
+    );
+    
+
     // 
     bool isTerminal() const;
     
@@ -184,7 +222,7 @@ public:
     const ParamAddress &getAddress() const;
     
     // For terminal types
-    ParamValue getValue() const;
+    ParamValue getValue();
     void setValue(ParamValue value);
     
     // For all types
@@ -198,43 +236,43 @@ public:
     int getMaxLength();
     
     // 
-    bool isLocked() const;
+    bool isLocked();
     void setIsLocked(bool value);
     
     // 
     int getChildCount();
     
+    //returns name of the parameter
+    std::string getName();
+
+    
 private:
     
-    ParamManager &managerRef;
-    const ParamAddress fullAddress;
-    const ParamType type;
-    const ParamValue defaultValue;
+    const std::string name;
+    const ParamType type; 
+    const ParamValue defaultValue; 
     atom<ParamValue> currentValueAtom;
     // It might be better to deal with these attributes using inheritance,
     // but that would increase complexity and reduce performance.
     atom<ParamValue> minimumValueAtom;
     atom<ParamValue> maximumValueAtom; // Used for both `max` and string's `maxlen`
-    atom<bool> isLocked;
-}
+    atom<bool> isLockedBool;
+};
 
-/* class ParamAddress
-    Author: Declan White
-    Description:
-        TODO
-    Changelog:
-        [2014-09-26 DWW] Created.
-*/
-class ParamAddress
-{
+
+
+class ParamManager {
+
 public:
+    ParamManager();
     
-    ParamAddress(std::vector<std::string> keyListIn);
-    ParamAddress(std::initializer_list<std::string> keyListIn);
+    const std::shared_ptr<Param>& getRootParam();
     
 private:
-    const std::vector<std::string> keyList;
-}
+    std::shared_ptr<Param> rootParamPtr;
+
+};
+
 
 
 #endif//PARAMS_H
