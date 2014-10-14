@@ -1,0 +1,24 @@
+
+{
+    "actuator_controller": {
+        // 
+    },
+    "actuator_comm": {
+        "serial_port": "/dev/tty.usbserial-A9S3VTXD",
+        "baud_rate": 1000000,
+        "sample_rate": 0.05,
+        "actuator_list": [
+            {   "dynamixel_id": 1,
+                "position_offset_deg": 0.0,
+                "position_min_deg": -150.0,
+                "position_max_deg": 150.0,
+            },
+            {   "dynamixel_id": 16,
+                "position_offset_deg": 0.0,
+                "position_min_deg": -90.0,
+                "position_max_deg": 90.0,
+            },
+        ],
+    },
+}
+

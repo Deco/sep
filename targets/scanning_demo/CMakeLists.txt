@@ -22,7 +22,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/source")
 set(OUTPUT_DIR ${PROJECT_BINARY_DIR}/output)
 
 # this is where data files will be (UI resources, images, etc)
-set(OUTPUT_DATA_DIR ${OUTPUT_DIR}/data)
+set(OUTPUT_RESOURCE_DIR ${OUTPUT_DIR}/res)
 
 # Specify each module needed by this target here
 # CMake will recurse into their folders and execute their CMakeLists.txt
@@ -35,12 +35,21 @@ set(OUTPUT_DATA_DIR ${OUTPUT_DIR}/data)
 # Note: components will not add other components!
 #       You must add their dependencies for them.
 #
-add_subdirectory(${CMAKE_PROJECT_ROOT}/components/thermal_sensor_controller)
-add_subdirectory(${CMAKE_PROJECT_ROOT}/components/actuator_controller)
+function(target_module DIRECTORY)
+    add_subdirectory("${CMAKE_PROJECT_ROOT}/${DIRECTORY}" "${CMAKE_CURRENT_BINARY_DIR}/${DIRECTORY}")
+endfunction()
+
+# External dependencies
+target_module(dependencies/libevent )
+target_module(dependencies/msgpack-c)
+
+# Internal components
+target_module(components/thermal_sensor_controller)
+target_module(components/actuator_controller      )
 
 
 # add the include directories
-include_directories("${INCLUDE_PATHS}")
+#include_directories("${INCLUDE_PATHS}")
 
 # add the source files of this target
 set(SOURCE_FILES
