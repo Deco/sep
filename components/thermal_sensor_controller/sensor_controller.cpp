@@ -6,6 +6,7 @@
  * what kind of data the sensor is sending */
 #define AMBIENT_TEMP_DATA 0x11
 #define SENSOR_DATA 0x12    
+#define IMU_DATA 0x13
 
 // TODO: create a way to stop the thread: set running = false and stop thread
 
@@ -41,6 +42,7 @@ void ThermalSensorController::init()
 
 /* Created by: Chris Webb
  * Date: 7/6/14
+ * Last Modified: 25/9/2014
  * Function: sensorThreadFunc()
  * Description:
  * Function is designed to be ran continuously within its own thread. Function creates
@@ -49,6 +51,9 @@ void ThermalSensorController::init()
  * 50 bytes back containing 255 and then sending 254 and if it receives 254 in return,
  * the device has been successfully synchronised. New sensor readings are atomically 
  * placed within a queue (readingQueue).
+ *
+ * Changelog:
+ * 25/9/2014: Now supports IMU data.
  */
 void ThermalSensorController::sensorThreadFunc()
 {
@@ -63,6 +68,7 @@ void ThermalSensorController::sensorThreadFunc()
     Reading newReading;
     newReading.img.create(4, 16);  // 4 rows 16 cols
     newReading.time = time(0);     // set time = to current time
+    
     
     // Create a new serial connection to device
     SerialConn sc(deviceName, 115200);
@@ -102,9 +108,11 @@ void ThermalSensorController::sensorThreadFunc()
 
     // loop until controller has requested to stop
     while (running){
+	bool waitingForOrientation = false;
         
         // read sentinal byte
         sc.read((char*)&buff, 1);
+	//std::cout << "This byte should be 255!" << buff[0] << std::endl;
         assert(buff[0] == 255); 
 
         // read id byte representing what sensor is sending
@@ -133,22 +141,36 @@ void ThermalSensorController::sensorThreadFunc()
                 break;
             };
             case SENSOR_DATA: {
-                std::cout << "Reading new sensor data!" << std::endl;
+                std::cout << "Reading new MLX data!" << std::endl;
                 assert(len == 64*sizeof(float));
                 // create pointer to the new images data
                 float *imgDataPtr = (float*)newReading.img.data; 
                 if(1) {
                     std::lock_guard<std::mutex> readingQueueLock(readingQueueMutex);
                     memcpy(imgDataPtr, buff, sizeof(float)*64);
+		    waitingForOrientation = true; // not used
                     readingQueue.push(newReading);
                 }
                 break;
             };
+	    case IMU_DATA: {
+		std::cout << "Reading new IMU data!" << std::endl;
+		assert(len == 3*sizeof(float));
+                
+		//float roll = *((float*)buff);
+		float *imu = (float*)buff;
+		// add orientation to newReading should be around here
+		std::cout << "roll: " << imu[0];
+		std::cout << ", pitch:: " << imu[1];
+		std::cout << ", yaw: " << imu[2] <<  std::endl;
+		break;
+	    }
             default: {
                 assert(1 == 0);
             }
         }
-    }
+        
+    }// end while
 }
 
 

@@ -1,7 +1,7 @@
+
 #include "sensor_mlx90620.h"
 
 #include "MLX90620_registers.h"
-
 #include "i2cmaster.h"
 
 float alpha_ij[64] = {
@@ -301,3 +301,4 @@ boolean MLX90620::checkConfig_MLX90620()
   else
     return false;
 }
+

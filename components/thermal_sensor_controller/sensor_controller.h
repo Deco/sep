@@ -26,10 +26,12 @@ public:
     bool popThermopileReading(cv::Mat &matRef, time_t &timeRef);
     
 private:
-    // Represents a single 16X4 reading from the MLX sensor and the time it was read.
+    // Represents a single 16X4 reading from the MLX sensor, the time it was read
+    // and the orientation of the sensor at the time of scan.
     struct Reading {
         cv::Mat_<float> img;
         time_t time;
+	    cv::Vec3f orientation;
     };
 private:
     // Seperate thread to continuously read from sensor.
