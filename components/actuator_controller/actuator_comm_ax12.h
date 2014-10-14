@@ -1,6 +1,5 @@
 
 #include "actuator_comm.h"
-
 #include "threads.h"
 
 #ifndef ACTUATOR_COMM_AX12_H
@@ -24,11 +23,13 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    virtual ActuatorCommAX12(
-        std::shared_ptr<ApplicationContext> app,
+    ActuatorCommAX12(
+        std::shared_ptr<ApplicationCore> app,
         ParamContext params,
         const std::shared_ptr<SerialPort> &serialPort
-    );
+    ){
+        //
+    }
     
     /* ActuatorCommAX12::~ActuatorCommAX12
         Author: Declan White
@@ -39,6 +40,19 @@ public:
             [2014-09-04 DWW] Created.
     */
     virtual ~ActuatorCommAX12();
+    void connect();
+    void disconnect();
+    void getActuatorInfoList(
+    std::vector<ActuatorComm::ActuatorInfo> &infoList
+    ) const;
+    ActuatorComm::ActuatorState getActuatorState(int id) const;
+    std::shared_ptr<ActuatorError> getActuatorError(int id) const;
+    void recoverActuator(int id);
+    double getActuatorGoalPos(int id) const;
+    void setActuatorGoalPos(int id, double posDeg);
+    double getActuatorGoalVel(int id) const;
+    void setActuatorGoalVel(int id, double velDegPerSec);
+    void initiateMovement(int id);
     
 
 private:
@@ -126,15 +140,15 @@ private:
         std::shared_ptr<ActuatorError> errorPtr;
         double goalPos; bool goalPosIsDirty;
         double goalVel; bool goalVelIsDirty;
-    }
+    };
     
     enum struct ActuatorOrderKind {
         INITIATE_MOVEMENT,
-    }
+    };
     
 
 private:
-    std::shared_ptr<ApplicationContext> app;
+    std::shared_ptr<ApplicationCore> app;
     const std::shared_ptr<const boost::asio::io_service> ios;
     std::shared_ptr<ParamContext> paramsPtr;
     

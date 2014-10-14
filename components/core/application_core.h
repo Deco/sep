@@ -26,8 +26,7 @@ public:
         INFO,
         DEBUG,
         TRACE
-    }
-    
+    };    
 
 public:
     
@@ -86,6 +85,7 @@ public:
             [2014-09-26 DWW] Created.
     */
     std::weak_ptr<Param> &findParam(ParamAddress &&addr) const;
+
     
     /* ApplicationCore::log
         Author: Declan White
@@ -114,7 +114,7 @@ private:
         Changelog:
             [2014-09-26 DWW] Created.
     */
-    void ApplicationCore();
+    ApplicationCore();
     
     /* ApplicationCore::workerThreadFunc
         Author: Declan White
@@ -168,11 +168,11 @@ private:
     */
     static void handleRawSignal(int signum);
 
-private
+private:
     
     static std::weak_ptr<ApplicationCore> singletonInstanceWeakPtr;
 
-}
+};
 
 
 

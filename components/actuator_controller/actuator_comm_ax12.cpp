@@ -79,15 +79,15 @@
         [2014-09-04 DWW] Created.
 */
 ActuatorCommAX12::ActuatorCommAX12(
-    std::shared_ptr<ApplicationContext> appIn,
+    std::shared_ptr<ApplicationCore> appIn,
     const std::shared_ptr<ParamContext> &&paramsIn,
-    const std::shared_ptr<SerialPort> &serialPortIn;
+    const std::shared_ptr<SerialPort> &serialPortIn
 ) : app(appIn),
     ios(appIn->getIOService()),
     paramsPtr(paramsIn),
     serialThreadPtr(nullptr),
     serialThreadShouldDisconnect(false),
-    serialPortPtr(serialPortIn),
+    serialPortPtr(serialPortIn)
 {
     
     /*paramsPtr->declare<duration>("sample_rate_sec");
@@ -104,7 +104,7 @@ ActuatorCommAX12::ActuatorCommAX12(
     Changelog:
         [2014-09-04 DWW] Created.
 */
-~ActuatorCommAX12::ActuatorCommAX12()
+ActuatorCommAX12::~ActuatorCommAX12()
 {
     disconnect();
 }
@@ -177,7 +177,7 @@ void ActuatorCommAX12::getActuatorInfoList(
         [2014-09-04 DWW] Created.
         [2014-09-05 DWW] Implemented.
 */
-ActuatorState ActuatorCommAX12::getActuatorState(int id) const
+ActuatorComm::ActuatorState ActuatorCommAX12::getActuatorState(int id) const
 {
     ActuatorState state;
     // Lock the actuator data list..
