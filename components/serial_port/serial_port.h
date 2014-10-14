@@ -22,7 +22,7 @@ public:
     */
     class SerialFailure : std::runtime_error {
         // 
-    }
+    };
 
 public:
     /* SerialPort::(primary constructor)

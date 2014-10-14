@@ -3,6 +3,9 @@
 #include <mutex>
 #include <queue>
 #include <ctime>
+#include <memory>
+
+#include "serial_port_bsd.hpp"
 
 
 class ThermalSensorController
@@ -48,6 +51,8 @@ private:
     bool running;
     // function to be ran in parallel to read from device
     void sensorThreadFunc();
+
+    std::shared_ptr<ApplicationCore> app_core;
 };
 
 

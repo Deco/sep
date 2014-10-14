@@ -1,5 +1,5 @@
 #include "sensor_controller.h"
-#include "serialconn.h"
+#include "serial_port.h"
 #include <mutex>
 
 /* Definitions for the ID byte read from sensor telling us 
@@ -17,8 +17,8 @@
  * Function: ThermalSensorController Constructor
  */
 ThermalSensorController::ThermalSensorController(
-    const std::string _deviceName, unsigned int _baudRate
-)   : deviceName(_deviceName), deviceBaudRate(_baudRate), readingQueue()
+    ApplicationCore &core, const std::string _deviceName, unsigned int _baudRate
+)   : app_core(core), deviceName(_deviceName), deviceBaudRate(_baudRate), readingQueue()
 {
     //
 }

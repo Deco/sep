@@ -23,3 +23,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
         PARENT_SCOPE
     )
 endif()
+
+
+
+add_include_directory(${CMAKE_CURRENT_SOURCE_DIR})
