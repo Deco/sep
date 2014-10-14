@@ -6,42 +6,65 @@
  * main for testing.
  * 13/10/2014: Added name field for parameters. Implemented adding new parameters to tree. Tested 
  * structure
- * 14/10/2014: Added createParam/getParam for objects
+ * 14/10/2014: Added createParam/getParam for objects. Added appendParam/getParam for lists.
+ * Refactored constructors for non-terminals/terminals.
  */
 
 #include "params.h"
 #include <iostream>
+#include <sstream>
 #include <boost/variant.hpp> 
 
 using namespace std;
 
 
+//Constructor for terminals (STRING, INT64, FLOAT64, BOOL)
 Param::Param(
     ParamType typeIn,
-    ParamValue &&defaultValueIn,
-    std::string &&nameIn
+    ParamValue defaultValueIn,
+    std::string nameIn
 )
     : type(typeIn)
     , defaultValue(defaultValueIn)
     , currentValueAtom(defaultValueIn)
     , name(nameIn)
 {
-    // 
+    if (    type != ParamType::STRING
+        &&  type != ParamType::INT64
+        &&  type != ParamType::FLOAT64
+        &&  type != ParamType::BOOL)
+    {
+        throw new std::runtime_error(
+            "Invalid Param constructor call. Non-terminal type passed to terminal constructor"
+            );
+    }
 }
 
+Param::Param(
+    ParamType typeIn,
+    std::string nameIn
+)
+    : type(typeIn)
+    , name(nameIn)
+{
+    if (    type != ParamType::OBJ
+        &&  type != ParamType::LIST)
+    {
+        throw new std::runtime_error(
+            "Invalid Param constructor call. Terminal type passed to non-terminal constructor"
+            );
+    }
+}
 
 ///////// This is for OBJECTS only ///////// 
-const std::shared_ptr<Param>& getParam(
+std::shared_ptr<Param> Param::getParam(
     std::string &&key
 ) {
     //If parameter is not an object, throw an exception
     if(type != ParamType::OBJ) {
-        try {
-            throw "Tried to get non-obj parameter in object getParam()";
-        }
-        catch (std::string e) {
-             std::cout << "An exception occurred. " << e << std::endl;
-        }
+        throw new std::runtime_error(
+            "Tried to get non-obj parameter in object getParam()"
+            );
     }
     
     //Create pointer for param to get from map
@@ -59,65 +82,81 @@ const std::shared_ptr<Param>& getParam(
 
     //Return the pointer to the parameter
     return returnParamPtr;
-    
-    /* Ok, so to summarise:
-        currentValueAtom.access_read blocks until the "boxed" value is ready to read safely
-        It then calls the lambda function
-        with `valueRef` being a reference to the "boxed" value
-        We know this param is an object, so:
-        we use boost::get to "de-variant-ise" out the std::map
-        and we store a reference to it in objectValue (no copying, yay!)
-        we then use the key passed in to access that map
-        and we set childParamPtr to point to obtained value
-    */
-    
 }
 
 
 ///////// This is for OBJECTS only ///////// 
-const std::shared_ptr<Param>& createParam(
+//Creating a object parameter with a terminal child
+std::shared_ptr<Param> Param::createParam(
     std::string &&key,
-    ParamType type,
-    ParamValue &&defaultValue
+    ParamType childType,
+    ParamValue &&childDefaultValue
 ) {
     if(type != ParamType::OBJ) {
-        try {
-            throw "Tried to create non-obj parameter in object createParam()";
-        }
-        catch (std::string e) {
-             std::cout << "An exception occurred. " << e << std::endl;
-        }
+        throw new std::runtime_error(
+            "Tried to create non-obj parameter in object createParam()"
+            );
     }
 
     //Create pointer for new parameter
     std::shared_ptr<Param> newParamPtr;
 
     //Access to get the map (stored in objectValue)
-    currentValueAtom.access([&key, &newParamPtr] (const ParamValue &valueRef) {
-        auto& objectValue = boost::get<std::map<const std::string, const std::shared_ptr<Param>>>(
+    currentValueAtom.access([&key, &newParamPtr, &childType, &childDefaultValue] (ParamValue &valueRef) {
+        auto &objectValue = boost::get<std::map<const std::string, const std::shared_ptr<Param>>>(
             valueRef
         );
         //Create parameter and place it in map. Sets pointer to it's value for returning
-        newParamPtr = objectValue.emplace(key, type, defaultValue, key);
+        const std::string &keyc = key;
+        newParamPtr = std::make_shared<Param>(childType, childDefaultValue, key);
+        const auto &childPtr = newParamPtr;
+        objectValue.insert(std::make_pair(keyc, childPtr));
     });
 
     //Create the pointer to the new parameter
     return newParamPtr;
 }
 
+///////// This is for OBJECTS only /////////
+//Creating a object parameter with a non-terminal child
+std::shared_ptr<Param> Param::createParam( 
+    std::string &&key,
+    ParamType childType
+) {
+    if(type != ParamType::OBJ) {
+        throw new std::runtime_error(
+            "Tried to create non-obj parameter in object createParam()"
+            );
+    }
+
+    //Create pointer for new parameter
+    std::shared_ptr<Param> newParamPtr;
+
+    //Access to get the map (stored in objectValue)
+    currentValueAtom.access([&key, &newParamPtr, &childType] (ParamValue &valueRef) {
+        auto &objectValue = boost::get<std::map<const std::string, const std::shared_ptr<Param>>>(
+            valueRef
+        );
+        //Create parameter and place it in map. Sets pointer to it's value for returning
+        const std::string &keyc = key;
+        newParamPtr = std::make_shared<Param>(childType, key);
+        const auto &childPtr = newParamPtr;
+        objectValue.insert(std::make_pair(keyc, childPtr));
+    });
+
+    //Create the pointer to the new parameter
+    return newParamPtr;
+}
 
 ///////// This is for LISTS only ///////// 
-const std::shared_ptr<Param>& getParam(
+std::shared_ptr<Param> Param::getParam(
     int key
 ) {
     //If this parameter isn't a list, throw an exception
     if(type != ParamType::LIST) {
-        try {
-            throw "Tried to get non-list parameter in list getParam()";
-        }
-        catch (std::string e) {
-             std::cout << "An exception occurred. " << e << std::endl;
-        }
+        throw new std::runtime_error(
+            "Tried to get non-list parameter in list getParam()"
+            );
     }
 
     //Create pointer for the return parameter
@@ -125,12 +164,13 @@ const std::shared_ptr<Param>& getParam(
 
     //Get the vector list to access
     currentValueAtom.access_read([&key, &returnParamPtr] (const ParamValue &valueRef) {
-        auto& objectValue = boost::get<std::vector<const std::shared_ptr<Param>>>(
+        auto& objectValue = boost::get<std::vector<std::shared_ptr<Param>>>(
             valueRef
         );
 
         //Index the vector for the parameter to return
-        returnParamPtr = objectValue.at(key);
+        const int &keyc = key;
+        objectValue.at(keyc);
         
     });
     
@@ -140,29 +180,62 @@ const std::shared_ptr<Param>& getParam(
 
 
 ///////// This is for LISTS only ///////// 
-const std::shared_ptr<Param>& appendParam(
+//Creating a list parameter with a terminal child
+std::shared_ptr<Param> Param::appendParam( // NEED ANOTHER VERSION OF THIS WITHOUT DEFAULT VALUE!!!!
     int key,
-    ParamType type,
-    ParamValue &&defaultValue
+    ParamType childType,
+    ParamValue &&childDefaultValue
 ) {
     if(type != ParamType::LIST) {
-        try {
-            throw "Tried to create non-list parameter in list appendParam()";
-        }
-        catch (std::string e) {
-             std::cout << "An exception occurred. " << e << std::endl;
-        }
+        throw new std::runtime_error(
+            "Tried to create non-list parameter in list appendParam()"
+            );
     }
     //Create pointer for new parameter
     std::shared_ptr<Param> newParamPtr;
 
     //Access to get the map (stored in objectValue)
-    currentValueAtom.access([&key, &newParamPtr] (const ParamValue &valueRef) {
-        auto& objectValue = boost::get<std::vector<const std::shared_ptr<Param>>>(
+    currentValueAtom.access([&key, &newParamPtr, &childType, &childDefaultValue] (ParamValue &valueRef) {
+        auto& objectValue = boost::get<std::vector<std::shared_ptr<Param>>>(
             valueRef
         );
         //Create parameter and place at the back of the list. Sets pointer for returning
-        newParamPtr = objectValue.emplace_back(type, defaultValue, key);
+        std::stringstream nameStr;
+        nameStr << '#' << key;
+        newParamPtr = std::make_shared<Param>(childType, childDefaultValue, nameStr.str());
+        const auto &childPtr = newParamPtr;
+        objectValue.push_back(childPtr);
+    });
+
+    //Create the pointer to the new parameter
+    return newParamPtr;
+}
+
+///////// This is for LISTS only ///////// 
+//Creating a list parameter with a non-terminal child
+std::shared_ptr<Param> Param::appendParam( 
+    int key,
+    ParamType childType
+) {
+    if(type != ParamType::LIST) {
+        throw new std::runtime_error(
+            "Tried to create non-list parameter in list appendParam()"
+            );
+    }
+    //Create pointer for new parameter
+    std::shared_ptr<Param> newParamPtr;
+
+    //Access to get the map (stored in objectValue)
+    currentValueAtom.access([&key, &newParamPtr, &childType] (ParamValue &valueRef) {
+        auto& objectValue = boost::get<std::vector<std::shared_ptr<Param>>>(
+            valueRef
+        );
+        //Create parameter and place at the back of the list. Sets pointer for returning
+        std::stringstream nameStr;
+        nameStr << '#' << key;
+        newParamPtr = std::make_shared<Param>(childType, nameStr.str());
+        const auto &childPtr = newParamPtr;
+        objectValue.push_back(childPtr);
     });
 
     //Create the pointer to the new parameter
@@ -170,7 +243,7 @@ const std::shared_ptr<Param>& appendParam(
 }
 
 
-
+//Returns true if the parameter is a terminal, false if it is an object or list
 bool Param::isTerminal() const
 {
     return (
@@ -181,25 +254,25 @@ bool Param::isTerminal() const
     );
 }
 
-
+//Value getter
 ParamValue Param::getValue() 
 {
     return currentValueAtom.get();
 }
 
-
+//Value setter
 void Param::setValue(ParamValue valueIn)
 {
     currentValueAtom.set(valueIn);
 }
 
-
+//Returns the default value for this parameter
 const ParamValue& Param::getDefault()
 {
     return defaultValue;
 }
 
-
+//Returns the minimum value for a parameter (assuming its a float64/int64)
 ParamValue Param::getMinValue()
 {
     if(type != ParamType::INT64 && type != ParamType::FLOAT64) {
@@ -210,7 +283,7 @@ ParamValue Param::getMinValue()
     return minimumValueAtom.get();
 }
 
-
+//Returns the maximum value for a parameter (assuming its a float64/int64)
 ParamValue Param::getMaxValue()
 {
     if(type != ParamType::INT64 && type != ParamType::FLOAT64) {
@@ -221,7 +294,7 @@ ParamValue Param::getMaxValue()
     return maximumValueAtom.get();
 }
 
-
+//Returns the length of a parameter (assuming its a string)
 int Param::getMaxLength()
 {
     if(type != ParamType::STRING) {
@@ -232,23 +305,22 @@ int Param::getMaxLength()
     return boost::get<uint64_t>(maximumValueAtom.get());
 }
 
-
+//Checks to see if the parameter is locked
 bool Param::isLocked() 
 {
     return isLockedBool.get();
 }
 
-
+//Locks or unlocks the parameter
 void Param::setIsLocked(bool value)
 {
     isLockedBool.set(value);
 }
 
-//Author: Tom || Date: 13/10/14
+//Returns the name/key of the parameter
 std::string Param::getName() {
     return name;
 }
-
 
 
 /********* PARAM MANAGER *********/
@@ -256,8 +328,11 @@ ParamManager::ParamManager(
     // 
 )
 {
-    rootParamPtr = std::make_shared(
-        // todo
+    std::string rootName = "root";
+
+    rootParamPtr = std::make_shared<Param>(
+        ParamType::OBJ,
+        rootName
     );
 }
 
