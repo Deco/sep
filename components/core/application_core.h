@@ -1,6 +1,7 @@
 
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
+#include <params.h>
 
 #ifndef CORE_H
 #define CORE_H
@@ -26,7 +27,7 @@ public:
         INFO,
         DEBUG,
         TRACE
-    }
+    };
     
 
 public:
@@ -114,7 +115,7 @@ private:
         Changelog:
             [2014-09-26 DWW] Created.
     */
-    void ApplicationCore();
+    ApplicationCore();
     
     /* ApplicationCore::workerThreadFunc
         Author: Declan White
@@ -168,11 +169,11 @@ private:
     */
     static void handleRawSignal(int signum);
 
-private
+private:
     
     static std::weak_ptr<ApplicationCore> singletonInstanceWeakPtr;
 
-}
+};
 
 
 

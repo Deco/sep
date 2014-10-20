@@ -85,8 +85,6 @@ ActuatorCommAX12::ActuatorCommAX12(
 ) : app(appIn),
     ios(appIn->getIOService()),
     paramsPtr(paramsIn),
-    serialThreadPtr(nullptr),
-    serialThreadShouldDisconnect(false),
     serialPortPtr(serialPortIn),
 {
     
@@ -300,17 +298,6 @@ void ActuatorCommAX12::initiateMovement(int id)
             }
         }
     });
-}
-
-/* ActuatorCommAX12::serialThreadFunc
-    Author: Declan White
-    Changelog:
-        [2014-09-04 DWW] Created.
-*/
-void ActuatorCommAX12::serialThreadFunc()
-{
-    serialPortPtr = std::make_shared<SerialPort>();
-    
 }
 
 /* ActuatorCommAX12::sendPacket

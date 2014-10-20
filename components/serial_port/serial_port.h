@@ -22,7 +22,7 @@ public:
     */
     class SerialFailure : std::runtime_error {
         // 
-    }
+    };
 
 public:
     /* SerialPort::(primary constructor)
@@ -127,7 +127,7 @@ public:
     */
     void flushRead();
     
-private
+private:
     std::shared_ptr<void> internalData;
 };
 
