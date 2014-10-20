@@ -1,6 +1,6 @@
 
 #include "sensor_controller.h"
-#include "serial_port_bsd.hpp"
+#include "serial_port.h"
 
 int main()
 {

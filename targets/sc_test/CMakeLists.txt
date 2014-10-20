@@ -1,45 +1,35 @@
+#set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+#set(SOURCE_FILES
+   # ${SOURCE_FILES}
+  #  ${CMAKE_CURRENT_SOURCE_DIR}/sensor_conntroller.cpp
+ #   PARENT_SCOPE
+#)
+
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+
 cmake_minimum_required(VERSION 2.8)
 
-# define our project!
-project(scanning_demo)
 
-# WARNING: DEBUG BUILD
-message(STATUS "WARNING: DEBUG BUILD")
-set(CMAKE_CXX_FLAGS "-ggdb -O0")
+#IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+#    add_definitions(-DSERIALCONN_USE_IKARUS=1)
+#else(UNIX)
+    add_definitions(-DSERIALCONN_USE_BOOST=1)
+#endif()
 
-# ensure the compiler is using C++11
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-# find the repository root, so we can get to components and dependencies
+
 if(NOT DEFINED CMAKE_PROJECT_ROOT)
-    set(CMAKE_PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../)
+    set(CMAKE_PROJECT_ROOT
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../
+    )
 endif()
 
-# for configuration headers, add this target's source directory to the include path
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/source")
 
-# define where executables, libraries, data, etc will be placed
-set(OUTPUT_DIR ${PROJECT_BINARY_DIR}/output)
+set(CMAKE_CXX_FLAGS "-std=c++11 -ggdb")
 
-# this is where data files will be (UI resources, images, etc)
-set(OUTPUT_RESOURCE_DIR ${OUTPUT_DIR}/res)
 
-# Specify each module needed by this target here
-# CMake will recurse into their folders and execute their CMakeLists.txt
-# Those will do the following:
-#  - Add their directories to INCLUDE_PATHS
-#  - Add their source files to SOURCE_FILES
-#  - Add linking libraries to LINK_PATHS
-#  - Copy their data files to OUTPUT_DATA_DIR
-#
-# Note: components will not add other components!
-#       You must add their dependencies for them.
-#
-function(target_module DIRECTORY)
-    add_subdirectory("${CMAKE_PROJECT_ROOT}/${DIRECTORY}" "${CMAKE_CURRENT_BINARY_DIR}/${DIRECTORY}")
-endfunction()
-
-# External dependencies
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/")
 
 
@@ -49,36 +39,22 @@ INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
+set (serialconn_SOURCE ${CMAKE_PROJECT_ROOT}components/thermal_sensor_controller/)
+set (thermal_controller_SOURCE ${CMAKE_PROJECT_ROOT}components/thermal_sensor_controller/)
 
-# Internal components
-target_module(components/thermal_sensor_controller)
-target_module(components/actuator_controller      )
+message(serialconn_SOURCE: ${serialconn_SOURCE})
 
-
-# add the include directories
-#include_directories("${INCLUDE_PATHS}")
-
-# add the source files of this target
-set(SOURCE_FILES
-    ${SOURCE_FILES}
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+add_executable(main
+    #main.cpp
+    #serialconn 
+    #sensor_controller.cpp
+    main
+    ${serialconn_SOURCE}/serialconn.h
+    ${thermal_controller_SOURCE}/serialconn.cpp
+    ${serialconn_SOURCE}/sensor_controller.h
+    ${thermal_controller_SOURCE}/sensor_controller.cpp
 )
 
-# specify where the output executables and libraries will be placed
-set(EXECUTABLE_OUTPUT_PATH ${OUTPUT_DIR})
-set(LIBRARY_OUTPUT_PATH ${OUTPUT_DIR})
+TARGET_LINK_LIBRARIES( main ${Boost_LIBRARIES} )
 
-# add the executable
-add_executable(${PROJECT_NAME}
-    ${SOURCE_FILES}
-)
-
-# inform the executable of the linking paths
-target_link_libraries(${PROJECT_NAME} LINK_PATHS)
-
-# done!
-
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${Boost_LIBRARIES} )
-
-target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
-
+target_link_libraries( main ${OpenCV_LIBS} )

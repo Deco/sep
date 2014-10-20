@@ -1,3 +1,7 @@
+
+#ifndef SERIALCONN_H
+#define SERIALCONN_H
+
 #include <boost/asio.hpp>
 
 
@@ -16,3 +20,4 @@ class SerialConn {
 };
 
 
+#endif
