@@ -219,7 +219,7 @@ public:
     bool isTerminal() const;
     
     // For all types
-    const ParamAddress &getAddress() const;
+    //const ParamAddress &getAddress() const;
     
     // For terminal types
     ParamValue getValue();

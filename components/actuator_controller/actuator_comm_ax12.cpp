@@ -80,7 +80,7 @@
 */
 ActuatorCommAX12::ActuatorCommAX12(
     std::shared_ptr<ApplicationCore> appIn,
-    const std::shared_ptr<ParamContext> &&paramsIn,
+    const std::shared_ptr<Param> &&paramsIn,
     const std::shared_ptr<SerialPort> &serialPortIn
 ) : app(appIn),
     ios(appIn->getIOService()),
@@ -104,10 +104,10 @@ ActuatorCommAX12::ActuatorCommAX12(
     Changelog:
         [2014-09-04 DWW] Created.
 */
-ActuatorCommAX12::~ActuatorCommAX12()
+/*ActuatorCommAX12::~ActuatorCommAX12()
 {
     disconnect();
-}
+}*/
 
 /* ActuatorCommAX12::connect
     Author: Declan White
@@ -156,12 +156,12 @@ void ActuatorCommAX12::disconnect()
         [2014-09-04 DWW] Created.
         [2014-09-04 DWW] Implemented.
 */
-void ActuatorCommAX12::getActuatorInfoList(
+void ActuatorCommAX12::obtainActuatorInfoList(
     std::vector<ActuatorComm::ActuatorInfo> &infoList
-) const
+)
 {
     // Lock the actuator data list..
-    actuatorDataList.access_read([](auto list) {
+    actuatorDataList.access_read([&](const std::vector<ActuatorData> & list) {
         infoList.reserve(list.size());
         
         // ..and retrieve all the actuator info structs.
@@ -177,11 +177,11 @@ void ActuatorCommAX12::getActuatorInfoList(
         [2014-09-04 DWW] Created.
         [2014-09-05 DWW] Implemented.
 */
-ActuatorComm::ActuatorState ActuatorCommAX12::getActuatorState(int id) const
+ActuatorComm::ActuatorState ActuatorCommAX12::getActuatorState(int id)
 {
     ActuatorState state;
     // Lock the actuator data list..
-    actuatorDataList.access_read([](auto list) {
+    actuatorDataList.access_read([&](const std::vector<ActuatorData> & list) {
         // ..and retrieve the state of the specified actuator.
         state = list.at(id).state;
     });
@@ -194,11 +194,11 @@ ActuatorComm::ActuatorState ActuatorCommAX12::getActuatorState(int id) const
         [2014-09-04 DWW] Created.
         [2014-09-05 DWW] Implemented.
 */
-std::shared_ptr<ActuatorError> ActuatorCommAX12::getActuatorError(int id) const
+std::shared_ptr<ActuatorError> ActuatorCommAX12::getActuatorError(int id)
 {
-    std::shared_ptr<ActuatorState> errorPtr;
+    std::shared_ptr<ActuatorError> errorPtr;
     // Lock the actuator data list..
-    actuatorDataList.access_read([](auto list) {
+    actuatorDataList.access_read([&](const std::vector<ActuatorData> & list) {
         // ..and retrieve the error of the specified actuator.
         errorPtr = list.at(id).errorPtr;
     });
@@ -221,11 +221,11 @@ void ActuatorCommAX12::recoverActuator(int id)
         [2014-09-04 DWW] Created.
         [2014-09-05 DWW] Implemented.
 */
-double ActuatorCommAX12::getActuatorGoalPos(int id) const
+double ActuatorCommAX12::getActuatorGoalPos(int id)
 {
     double goalPos;
     // Lock the actuator data list..
-    actuatorDataList.access_read([](auto list) {
+    actuatorDataList.access_read([&](const std::vector<ActuatorData> & list) {
         // ..and retrieve the goalPos of the specified actuator.
         goalPos = list.at(id).goalPos;
     });
@@ -241,7 +241,7 @@ double ActuatorCommAX12::getActuatorGoalPos(int id) const
 void ActuatorCommAX12::setActuatorGoalPos(int id, double posDeg)
 {
     // Lock the actuator data list..
-    actuatorDataList.access([](auto list) {
+    actuatorDataList.access([&](std::vector<ActuatorData> & list) {
         // ..and set the goalPos of the specified actuator.
         list.at(id).goalPos = posDeg;
         // Ensure the goal pos is marked as dirty so that the new value
@@ -255,11 +255,11 @@ void ActuatorCommAX12::setActuatorGoalPos(int id, double posDeg)
     Changelog:
         [2014-09-04 DWW] Created.
 */
-double ActuatorCommAX12::getActuatorGoalVel(int id) const
+double ActuatorCommAX12::getActuatorGoalVel(int id)
 {
     double goalVel;
     // Lock the actuator data list..
-    actuatorDataList.access_read([](auto list) {
+    actuatorDataList.access_read([&](const std::vector<ActuatorData> & list) {
         // ..and retrieve the goalVel of the specified actuator.
         goalVel = list.at(id).goalVel;
     });
@@ -275,7 +275,7 @@ double ActuatorCommAX12::getActuatorGoalVel(int id) const
 void ActuatorCommAX12::setActuatorGoalVel(int id, double velDegPerSec)
 {
     // Lock the actuator data list..
-    actuatorDataList.access([](auto list) {
+    actuatorDataList.access([&](std::vector<ActuatorData> & list) {
         // ..and set the goalVel of the specified actuator.
         list.at(id).goalVel = velDegPerSec;
         // Ensure the goal vel is marked as dirty so that the new value
@@ -293,7 +293,7 @@ void ActuatorCommAX12::setActuatorGoalVel(int id, double velDegPerSec)
 void ActuatorCommAX12::initiateMovement(int id)
 {
     // Lock the actuator data list..
-    actuatorDataList.access_read([](auto list) {
+    actuatorDataList.access_read([&](const std::vector<ActuatorData> & list) {
         for(ActuatorData data : list) {
             if(data.goalVelIsDirty) {
                 

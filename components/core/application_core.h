@@ -1,6 +1,7 @@
 
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
+#include "params.h"
 
 #ifndef CORE_H
 #define CORE_H
@@ -84,9 +85,10 @@ public:
         Changelog:
             [2014-09-26 DWW] Created.
     */
-    std::weak_ptr<Param> &findParam(ParamAddress &&addr) const;
+    //std::weak_ptr<Param> &findParam(ParamAddress &&addr) const;
 
-    
+    const std::shared_ptr<const boost::asio::io_service> getIOService();
+
     /* ApplicationCore::log
         Author: Declan White
         Description:

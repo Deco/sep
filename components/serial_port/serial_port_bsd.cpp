@@ -1,10 +1,13 @@
 
 #include "serial_port.h"
 
+#include <termios.h>
+#include <stdlib.h>
 #include <algorithm>
 #include <limits>
+#include <string>
 
-inline void throwSerialError(const char *message, const char *deviceName) {
+inline void throwSerialError(const char *message, const std::string deviceName) {
     char *what;
     assert(0 < asprintf(&what,
         "%s (\"%s\"): %s",
@@ -12,14 +15,14 @@ inline void throwSerialError(const char *message, const char *deviceName) {
         deviceName,
         strerror(errno)
     ));
-    std::string str(what);
+    std::string str = what;
     free(what);
     throw SerialFailure(str);
 }
 
 struct SeralPortInternalData {
     int fileDescriptor;
-}
+};
 
 /* SerialPort::(primary constructor)
     Author: Declan White
@@ -123,7 +126,7 @@ void SerialPort::open(const std::string &&deviceName, unsigned long baudRate, bo
         
         const speed_t TGTBAUD = baudRate;
         if(-1 == ioctl(fd, IOSSIOSPEED, &TGTBAUD)) { // sets also non-standard baud rates
-            throwSerialError("failed to set baud rate for serial device \"%s\": %s", deviceName);
+            throwSerialError(failed to set baud rate for serial device \"%s\": %s", deviceName);
             return;
         }
     #endif
@@ -179,7 +182,7 @@ bool SerialPort::isOpen()
     if(-1 == fcntl(bsdInternalData->fileDescriptor, F_GETFD)) {
         return false;
     } else if(errno == EBADF) {
-        return false
+        return false;
     }
     return true;
 }

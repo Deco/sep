@@ -1,6 +1,7 @@
 
 #include "actuator_comm.h"
 #include "threads.h"
+#include "params.h"
 
 #ifndef ACTUATOR_COMM_AX12_H
 #define ACTUATOR_COMM_AX12_H
@@ -25,11 +26,9 @@ public:
     */
     ActuatorCommAX12(
         std::shared_ptr<ApplicationCore> app,
-        ParamContext params,
+        const std::shared_ptr<Param> &&params,
         const std::shared_ptr<SerialPort> &serialPort
-    ){
-        //
-    }
+    );
     
     /* ActuatorCommAX12::~ActuatorCommAX12
         Author: Declan White
@@ -42,15 +41,15 @@ public:
     virtual ~ActuatorCommAX12();
     void connect();
     void disconnect();
-    void getActuatorInfoList(
+    void obtainActuatorInfoList(
     std::vector<ActuatorComm::ActuatorInfo> &infoList
-    ) const;
-    ActuatorComm::ActuatorState getActuatorState(int id) const;
-    std::shared_ptr<ActuatorError> getActuatorError(int id) const;
+    );
+    ActuatorComm::ActuatorState getActuatorState(int id);
+    std::shared_ptr<ActuatorError> getActuatorError(int id);
     void recoverActuator(int id);
-    double getActuatorGoalPos(int id) const;
+    double getActuatorGoalPos(int id);
     void setActuatorGoalPos(int id, double posDeg);
-    double getActuatorGoalVel(int id) const;
+    double getActuatorGoalVel(int id);
     void setActuatorGoalVel(int id, double velDegPerSec);
     void initiateMovement(int id);
     
@@ -150,7 +149,7 @@ private:
 private:
     std::shared_ptr<ApplicationCore> app;
     const std::shared_ptr<const boost::asio::io_service> ios;
-    std::shared_ptr<ParamContext> paramsPtr;
+    std::shared_ptr<Param> paramsPtr;
     
     std::shared_ptr<std::thread> serialThreadPtr;
     atom<bool> serialThreadShouldDisconnect;

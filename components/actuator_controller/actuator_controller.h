@@ -1,5 +1,6 @@
 
 #include "events.h"
+#include "actuator_comm.h"
 #include <opencv2/core/core.hpp>
 
 #ifndef ACTUATOR_CONTROLLER_H
@@ -66,11 +67,12 @@ public: // Public concept classes
     */
     class OrderProvider {
         public:
-            virtual OrderProvider() = default;
+            OrderProvider() = default;
             virtual ~OrderProvider() = default;
+            struct ActuatorMoveOrder{};
         
         public:
-            Event<void(ActuatorMoveOrder)> eventCurrentOrderChanged;
+            event<void(ActuatorMoveOrder)> eventCurrentOrderChanged;
         
         public:
             ActuatorMoveOrder getCurrentOrder();
@@ -115,7 +117,7 @@ public: // Publicly subscribable events
             [2014-09-02 DWW] Renamed from eventDeviceStatusChange to
                 eventControllerStatusChange.
     */
-    Event<void(ActuatorSystemState)> eventControllerStateChange;
+    event<void(ActuatorSystemState)> eventControllerStateChange;
     
     /* ActuatorController::eventOrientationUpdate
         Description:
@@ -126,7 +128,7 @@ public: // Publicly subscribable events
         Changelog:
             [2014-09-02 DWW] Created.
     */
-    Event<void(cv::Vec2d)> eventOrientationUpdate;
+    event<void(cv::Vec2d)> eventOrientationUpdate;
     
 
 public:
@@ -139,8 +141,8 @@ public:
             [2014-09-02 DWW] Created.
             [2014-09-04 DWW] Added `comm` parameter (for dependency injection).
     */
-    virtual ActuatorController(
-        ParamContext params,
+    ActuatorController(
+        Param params,
         const std::shared_ptr<ActuatorComm> &comm
     );
     
@@ -189,7 +191,7 @@ private:
     
 
 private:
-    Hook hookOnSerialData;
+    hook hookOnSerialData;
     
 
 };

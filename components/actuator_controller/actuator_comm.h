@@ -107,7 +107,7 @@ public:
     
 
 public:
-    
+    ActuatorComm();
     /* ActuatorComm::(primary constructor)
         Author: Declan White
         Description: TODO
@@ -121,7 +121,7 @@ public:
     */
     ActuatorComm(
         std::shared_ptr<ApplicationCore> app,
-        ParamContext params,
+        Param params,
         const std::shared_ptr<SerialPort> &serialPort
     ){
         //
@@ -176,7 +176,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    virtual void getActuatorInfoList(
+    virtual void obtainActuatorInfoList(
         std::vector<ActuatorComm::ActuatorInfo> &infoList
     ) const = 0;
     
