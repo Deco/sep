@@ -1,15 +1,24 @@
+/*
+Originally written by Declan with modifications by Chris to include
+support for the gyro sensors.
+
+IMU code sourced from Pololu (https://github.com/pololu/minimu-9-ahrs-arduino)
+Accessed: 1/09/2014
+Licence is GNU GENERAL PUBLIC LICENSE
+
+*/
+
 
 #include "sensor.h"
 #include "sensor_mlx90620.h"
 #include <L3G.h>
 #include <LSM303.h>
-
 #include "firmware_registers.h"
-
 #include "i2cmaster.h"
+#include <Wire.h>
 
 
-// ************* copied from MinIMU9AHRS.ino and unchanged **************
+// ************* Unchanged from MinIMU9AHRS.ino **************
 // Uncomment the below line to use this axis definition: 
    // X axis pointing forward
    // Y axis pointing to the right 
@@ -29,7 +38,7 @@ int SENSOR_SIGN[9] = {1,1,1,-1,-1,-1,1,1,1}; //Correct directions x,y,z - gyro, 
 
 // tested with Arduino Uno with ATmega328 and Arduino Duemilanove with ATMega168
 
-#include <Wire.h>
+
 
 // LSM303 accelerometer: 8 g sensitivity
 // 3.9 mg/digit; 1 g = 256
@@ -131,81 +140,89 @@ float Temporary_Matrix[3][3]={
   ,{
     0,0,0  }
 };
-// ************* copied from MinIMU9AHRS.ino and unchanged **************
+// ************* Unchanged from MinIMU9AHRS.ino **************
 
 
 
 
-
+// Sensors on the arduino
 MLX90620 mlx;
+// TODO: make gyro and compass inherit from our Sensor class to make code easier to manage in the future
+
 
 void outputMLXSensorNodeData(byte code, Sensor &sensorRef, int nodeId);
 void outputIMUdata();
 void imuSetup();
 void imuLoop();
 
+
 void setup()
 {
     Serial.begin(115200);
     
+	// Setup i2c connection for MLX using twimaster.cpp file
+	// 		note: MLX sensor can't be connected using the wire.h library (as far as I know searching the internet)
     i2c_init();
-
-
     delay(5);
-
     mlx.init();
     mlx.calibrate();
+	
+	// Setup i2c connection for gyro and compass using wire.h and initilise sensors.
     imuSetup();
 }
 
-
-void imuSetup(){
-Serial.begin(115200);
-  pinMode (STATUS_LED,OUTPUT);  // Status LED
+// Extended setup function to encapsulate the setup of the IMU. Written by Pololu
+void imuSetup()
+{
+    pinMode (STATUS_LED,OUTPUT);  // Status LED
   
-  I2C_Init();
+    I2C_Init();
 
-  Serial.println("Pololu MinIMU-9 + Arduino AHRS");
-
-  digitalWrite(STATUS_LED,LOW);
-  delay(1500);
+    digitalWrite(STATUS_LED,LOW);
+    delay(1500);
  
-  Accel_Init();
-  Compass_Init();
-  Gyro_Init();
+	// Initilise all sensors
+    Accel_Init();
+    Compass_Init();
+    Gyro_Init();
   
-  delay(20);
-  
-  for(int i=0;i<32;i++)    // We take some readings...
-    {
-    Read_Gyro();
-    Read_Accel();
-    for(int y=0; y<6; y++)   // Cumulate values
-      AN_OFFSET[y] += AN[y];
     delay(20);
-    }
+   
+    // Calibration ****   
+    for(int i=0;i<32;i++)    // We take some readings...
+      {
+      Read_Gyro();
+      Read_Accel();
+      for(int y=0; y<6; y++)   // Cumulate values
+        AN_OFFSET[y] += AN[y];
+      delay(20);
+      }
     
-  for(int y=0; y<6; y++)
-    AN_OFFSET[y] = AN_OFFSET[y]/32;
+    for(int y=0; y<6; y++)
+      AN_OFFSET[y] = AN_OFFSET[y]/32;
     
-  AN_OFFSET[5]-=GRAVITY*SENSOR_SIGN[5];
-  
-  //Serial.println("Offset:");
-  for(int y=0; y<6; y++)
+    AN_OFFSET[5]-=GRAVITY*SENSOR_SIGN[5];
+    // Calibration ****  
+	
+	/* Enable this to print offset values
+    Serial.println("Offset:");
+    for(int y=0; y<6; y++)
     Serial.println(AN_OFFSET[y]);
+	*/
   
-  delay(2000);
-  digitalWrite(STATUS_LED,HIGH);
+    delay(2000);
+    digitalWrite(STATUS_LED,HIGH);
     
-  timer=millis();
-  delay(20);
-  counter=0;
+    timer=millis();
+    delay(20);
+    counter=0;
 
 }
 
 
 void loop()
 {
+	// Synchronisation of Arduino written by Declan
     while(!Serial) { /* spin */ };
     
     if(Serial.available() > 0) {
@@ -235,8 +252,10 @@ void loop()
 	
 	imuLoop();
 	
-    
 }
+
+// Outputs sensor data to Serial. Written by Declan
+// TODO: Use this function to output IMU data, requires modification of L3G and LSM303 files
 void outputMLXSensorNodeData(byte code, Sensor &sensorRef, int nodeId)
 {
     unsigned short dataSize; byte *dataPtr;
@@ -250,13 +269,17 @@ void outputMLXSensorNodeData(byte code, Sensor &sensorRef, int nodeId)
     }
 }
 
-
+// Used to write IMU data to serial for now. Written by Chris
 void outputIMUdata(){
   
   float data[3];
   data[0] = (float)ToDeg(roll);
   data[1] = (float)ToDeg(pitch);
   data[2] = (float)ToDeg(yaw);
+  
+  // Output order of data for Sensor Controller:
+  // Sentinal value -> ID of sensor -> size of data to send -> data
+  // example: 255 -> 0x13 -> (length,1) -> (data, length)
   
   Serial.write(255);
   Serial.write(COMM_ID_GYROSCOPE);
@@ -270,6 +293,9 @@ void outputIMUdata(){
   
 }
 
+// Loop to get sensor data and calculate roll, pitch and yaw. 
+// Extended main loop to seperate IMU interaction from MLX. 
+// Written by Pololu.
 void imuLoop(){
   if((millis()-timer)>=20)  // Main loop runs at 50Hz
   {

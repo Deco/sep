@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 # define our project!
-project(scanning_demo)
+project(actuator_controller_test)
 
 # WARNING: DEBUG BUILD
 message(STATUS "WARNING: DEBUG BUILD")
@@ -27,6 +27,7 @@ set(OUTPUT_RESOURCE_DIR ${OUTPUT_DIR}/res)
 # Source files and include paths lists
 set(SOURCE_FILES "")
 set(INCLUDE_PATHS "")
+set(LINK_PATHS "");
 
 # Specify each module needed by this target here
 # CMake will recurse into their folders and execute their CMakeLists.txt
@@ -44,16 +45,16 @@ function(target_module DIRECTORY)
 endfunction()
 
 # External dependencies
-target_module(dependencies/libevent )
-target_module(dependencies/msgpack-c)
+target_module(dependencies/boost)
 
 # Internal components
-target_module(components/thermal_sensor_controller)
-target_module(components/actuator_controller      )
-
+target_module(components/util               )
+target_module(components/core               )
+target_module(components/serial_port        )
+target_module(components/actuator_controller)
 
 # add the include directories
-#include_directories("${INCLUDE_PATHS}")
+include_directories("${INCLUDE_PATHS}")
 
 # add the source files of this target
 set(SOURCE_FILES
