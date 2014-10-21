@@ -1,9 +1,11 @@
 #include "sensor_controller.h"
-#include "serialconn.h"
+//#include "serialconn.h"
+#include "serial_port.h"
 #include "application_core.h"
 #include <iostream>
 #include <thread>
 #include <mutex>
+#include <vector>
 
 /* Definitions for the ID byte read from sensor telling us 
  * what kind of data the sensor is sending */
@@ -24,7 +26,7 @@ ThermalSensorController::ThermalSensorController(
 )   
     : app_core(core), deviceName(_deviceName), deviceBaudRate(_baudRate), readingQueue()
 {
-    std::cout << "executing ThermalSensorController c'tor\n";
+    //
 }
 
 
@@ -64,9 +66,11 @@ void ThermalSensorController::sensorThreadFunc()
     std::cout << "Opening sensor device: " << deviceName << std::endl;
 
     // buffer of data to be written to device
-    unsigned char data[255]; 
+    //unsigned char data[255]; 
+    std::vector<byte> data;
     // buffer of data read from device
-    unsigned char buff[255];
+    //unsigned char buff[255];
+    std::vector<byte> buff;
 
     // Create a new Reading object to store the sensor data
     Reading newReading;
@@ -75,18 +79,21 @@ void ThermalSensorController::sensorThreadFunc()
     
     
     // Create a new serial connection to device
-    SerialConn sc(deviceName, 115200);
-    int readCount;
+    SerialPort sc;
+    sc.openDevice(deviceName.c_str(), 115200);
+    size_t readCount;
 
     // Start synchronisation process by sending a 255 byte
     data[0] = 255;
-    int sent = sc.write((char*)&data, 1);
+    //int sent = sc.write((char*)&data, 1);
+    size_t sent = sc.writeDevice(data);
     assert(sent == 1);
+    //data.clear
 
     // Read bytes until 50 continuous 255 bytes have been read.
     int count = 0;
     do {
-        readCount = sc.read((char*)&buff, 1);
+        readCount = sc.readDevice(buff, 1);
         if(readCount > 0) {
             if(buff[0] == 255) {
                 count++;
@@ -98,12 +105,12 @@ void ThermalSensorController::sensorThreadFunc()
 
     // write 254 to sensor
     data[0] = 254;
-    sent = sc.write((char*)&data, 1);
+    sent = sc.writeDevice(data);
     assert(sent == 1);
 
     // if 254 is returned by sensor, synchronisation is complete
     do {
-        readCount = sc.read((char*)&buff, 1);
+        readCount = sc.readDevice(buff, 1);
         if(readCount > 0 && buff[0] == 254) {
             break;
         }
@@ -115,20 +122,22 @@ void ThermalSensorController::sensorThreadFunc()
 	bool waitingForOrientation = false;
         
         // read sentinal byte
-        sc.read((char*)&buff, 1);
+        sc.readDevice(buff, 1);
 	//std::cout << "This byte should be 255!" << buff[0] << std::endl;
         assert(buff[0] == 255); 
-
+    
         // read id byte representing what sensor is sending
-        sc.read((char*)&buff, 1);
+        sc.readDevice(buff, 1);
         unsigned char id = buff[0];
 
         // read length of data that sensor is going to send
-        sc.read((char*)&buff, 2);
-        unsigned short len = *((unsigned short*)buff);
+        sc.readDevice(buff, 2);
+        //unsigned short len = *((unsigned short*)buff);
+        // TODO WHEN I HAVE SENSOR: figure out how to typecast this properly using vector
+        unsigned short len = 2;// delete me
 
         // read sensor data into buffer
-        sc.read((char*)&buff, len);
+        sc.readDevice(buff, len);
 
 
         float ambientTemp = 0;
@@ -139,11 +148,13 @@ void ThermalSensorController::sensorThreadFunc()
             case AMBIENT_TEMP_DATA: {
                 std::cout << "Reading new Ambient temp data!" << std::endl;
                 assert(len == sizeof(float));
-                float ambient = *((float*)buff);
+                //float ambient = *((float*)buff);
+                float ambient = 10.5f;
+                //memcpy(&ambient,buff[0],sizeof(float));
                 ambientTemp = ambient;
                 std::cout << "ambient temp: " << ambientTemp << std::endl;
                 break;
-            };
+            };}}/*
             case SENSOR_DATA: {
                 std::cout << "Reading new MLX data!" << std::endl;
                 assert(len == 64*sizeof(float));
@@ -174,7 +185,7 @@ void ThermalSensorController::sensorThreadFunc()
             }
         }
         
-    }// end while
+    }// end while*/
 }
 
 

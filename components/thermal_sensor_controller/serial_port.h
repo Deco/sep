@@ -96,7 +96,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    size_t writeDevice(const std::vector<byte> &&data);
+    size_t writeDevice(const std::vector<byte> &data);
     
     /* SerialPort::read
         Author: Declan White

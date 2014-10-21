@@ -6,11 +6,10 @@
 
 int main()
 {
-    std::cout << "hello world!\n";
     std::shared_ptr<Application_core> core = Application_core::instantiate();
     ThermalSensorController sc(core, "/dev/ttyACM0", 115200);
 
-    SerialPort sp();
+    std::cout << "ThermalSensorController successfully created.\n";
     
 
     //Application_core asd;

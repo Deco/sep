@@ -217,7 +217,7 @@ bool SerialPort::isOpen()
         [2014-09-04 DWW] Created.
         [2014-10-21 CW] Corrected syntax to compile.
 */
-size_t SerialPort::writeDevice(const std::vector<byte> &&data)
+size_t SerialPort::writeDevice(const std::vector<byte> &data)
 {
     if(!internalData) {
         throw std::logic_error("cannot write to a closed serial device");
