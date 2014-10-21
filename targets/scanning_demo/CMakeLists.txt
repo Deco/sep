@@ -8,7 +8,7 @@ message(STATUS "WARNING: DEBUG BUILD")
 set(CMAKE_CXX_FLAGS "-ggdb -O0")
 
 # ensure the compiler is using C++11
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # find the repository root, so we can get to components and dependencies
 if(NOT DEFINED CMAKE_PROJECT_ROOT)
@@ -23,6 +23,10 @@ set(OUTPUT_DIR ${PROJECT_BINARY_DIR}/output)
 
 # this is where data files will be (UI resources, images, etc)
 set(OUTPUT_RESOURCE_DIR ${OUTPUT_DIR}/res)
+
+# Source files and include paths lists
+set(SOURCE_FILES "")
+set(INCLUDE_PATHS "")
 
 # Specify each module needed by this target here
 # CMake will recurse into their folders and execute their CMakeLists.txt
