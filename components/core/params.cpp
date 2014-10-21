@@ -263,7 +263,14 @@ ParamValue Param::getValue()
 //Value setter
 void Param::setValue(ParamValue valueIn)
 {
-    currentValueAtom.set(valueIn);
+    if (isLockedBool.get()) {
+        throw new std::runtime_error (
+            "Attempted to set value of a locked parameter"
+            );
+    }
+    else {
+        currentValueAtom.set(valueIn);
+    }
 }
 
 //Returns the default value for this parameter

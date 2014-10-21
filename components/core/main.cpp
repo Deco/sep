@@ -1,53 +1,63 @@
-#include "newParams.h"
+#include "params.h"
 #include <iostream>
 #include <boost/variant.hpp> 
 
-
+/*
+  File used to test server-side of the Parameter system
+*/
 
 int main(int argc, char* argv[]) {
 
 
   // test data
 
+  std::cout << "hello world" << std::endl;
+
+  /* Used before ParamManager adapted to self-create root param
+  std::string name = "root";
+  Param rootParam(ParamType::OBJ, name);
+  */
+
+  //Testing accessing the root parameter
+  ParamManager paramSystem();
+
+  std::shared_ptr<Param> systemRoot = paramSystem.getRootParam();
+
+  std::cout << systemRoot.getName() << std::endl; //Should just print "root"
+  
+
+  //Testing adding a new object to the root parameter
+  std::string newParamName = "TestObject";
+
+  systemRoot.createParam(newParamName, ParamType::OBJ);
+
+  std::cout << systemRoot.getParam("TestObject").getName() << std::endl; //Should output "TestObject"
 
 
 
-std::cout << "hello world\n";
-  std::vector<std::string> tempAddress;;
-  tempAddress.push_back("root");
-  ParamAddress pAdr(tempAddress);
+  //Test adding terminal to objects
+  //Testing boolean
+  systemRoot.createParam("TestBool", ParamType::BOOL, false);
+
+  if (systemRoot.getParam("TestBool").getValue() == false) {
+      std::cout << "TestBool is false" << std:endl; //Should be outputted
+  }
+  else std::cout << "TestBool is true(Something is wrong)" << std:endl; //Should NOT be outputted
 
 
-  //std::map<std::string, std::shared_ptr<int>> mapper;
-  //std::shared_ptr<int> testa(new int(10));// = testb;
-  //mapper["Hello world"]= testa;
-  //ParamValue v = 35.5f;
+  //Test adding an integer, locking it and trying to access it. Then unlocking & accessing
+  systemRoot.createParam("TestInts", ParamType::INT64, 32); //How to set min/max values??
 
+  systemRoot.getParam("TestInts").setIsLocked(true);
 
+  systemRoot.getParam("TestInts").setValue(16); //Should throw a runtime error
 
+  systemRoot.getParam("TestInts").setIsLocked(false);
 
-  Param::ParamType type = Param::ParamType::OBJ;
-  Param param(pAdr, type);
+  systemRoot.getParam("TestInts").setValue(64);
 
-  int whatthefuck = 5;
-
-  ParamManager pManager(whatthefuck);
-
-
-
-/*
-  ParamAddress adrTest = param.getAddress();
-  std::vector<std::string> blah = adrTest.getList();
-
-  for (auto c : blah)
-    std::cout << c;
-  std::cout << '\n';
-
-
-
-  atom<ParamValue> a1(v);
-  ParamValue var1 =  a1.get();
-*/
+  //Should output 64
+  std::cout << "value of testInts: " << systemRoot.getParam("TestInts").getValue() << std::endl;
 
   return 0;
 }
