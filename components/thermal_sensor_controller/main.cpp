@@ -2,12 +2,15 @@
 #include <opencv2/core/core.hpp>
 #include "sensor_controller.h"
 #include "application_core.h"
+#include "serial_port.h"
 
 int main()
 {
     std::cout << "hello world!\n";
     std::shared_ptr<Application_core> core = Application_core::instantiate();
     ThermalSensorController sc(core, "/dev/ttyACM0", 115200);
+
+    SerialPort sp();
     
 
     //Application_core asd;
