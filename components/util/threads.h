@@ -6,10 +6,7 @@
  */
 #include <mutex>
 #include <condition_variable>
-<<<<<<< HEAD
 #include <thread>
-=======
->>>>>>> master
 
 #ifndef THREADS_H
 #define THREADS_H

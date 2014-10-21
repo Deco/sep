@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 #include "actuator_comm_ax12.h"
 
 /* Dynamixel AX-12 sentinel values
@@ -377,8 +375,6 @@ void ActuatorCommAX12::writeShort(byte id, byte address, short value)
     //
 }
 
-=======
-
 #include "actuator_comm_ax12.h"
 
 /* Dynamixel AX-12 sentinel values
@@ -743,4 +739,3 @@ void ActuatorCommAX12::writeShort(byte id, byte address, short value)
     //
 }
 
->>>>>>> master

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* FILE: Params.h
  * AUTHOR: Declan White
  * CREATED: 02/09/2014
@@ -277,7 +276,6 @@ private:
 
 
 #endif//PARAMS_H
-=======
 
 #include <thread>
 #include <vector>
@@ -496,7 +494,7 @@ private:
     atom<ParamValue> minimumValueAtom;
     atom<ParamValue> maximumValueAtom; // Used for both `max` and string's `maxlen`
     atom<bool> isLocked;
-}
+};
 
 /* class ParamAddress
     Author: Declan White
@@ -514,8 +512,7 @@ public:
     
 private:
     const std::vector<std::string> keyList;
-}
+};
 
 
 #endif//PARAMS_H
->>>>>>> master

@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 #include "params.h"
@@ -181,7 +179,6 @@ private:
 
 
 #endif//CORE_H
-=======
 
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
@@ -363,4 +360,3 @@ private:
 
 
 #endif//CORE_H
->>>>>>> master

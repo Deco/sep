@@ -1,22 +1,14 @@
 cmake_minimum_required(VERSION 2.8)
 
 # define our project!
-<<<<<<< HEAD
-project(scanning_demo)
-=======
 project(actuator_controller_test)
->>>>>>> master
 
 # WARNING: DEBUG BUILD
 message(STATUS "WARNING: DEBUG BUILD")
 set(CMAKE_CXX_FLAGS "-ggdb -O0")
 
 # ensure the compiler is using C++11
-<<<<<<< HEAD
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
-=======
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
->>>>>>> master
 
 # find the repository root, so we can get to components and dependencies
 if(NOT DEFINED CMAKE_PROJECT_ROOT)
@@ -32,14 +24,11 @@ set(OUTPUT_DIR ${PROJECT_BINARY_DIR}/output)
 # this is where data files will be (UI resources, images, etc)
 set(OUTPUT_RESOURCE_DIR ${OUTPUT_DIR}/res)
 
-<<<<<<< HEAD
-=======
 # Source files and include paths lists
 set(SOURCE_FILES "")
 set(INCLUDE_PATHS "")
-set(LINK_PATHS "");
+set(LINK_PATHS "")
 
->>>>>>> master
 # Specify each module needed by this target here
 # CMake will recurse into their folders and execute their CMakeLists.txt
 # Those will do the following:
@@ -56,18 +45,14 @@ function(target_module DIRECTORY)
 endfunction()
 
 # External dependencies
-<<<<<<< HEAD
 target_module(dependencies/libevent )
 target_module(dependencies/msgpack-c)
 
 # Internal components
-target_module(components/thermal_sensor_controller)
 target_module(components/actuator_controller      )
-
 
 # add the include directories
 #include_directories("${INCLUDE_PATHS}")
-=======
 target_module(dependencies/boost)
 
 # Internal components
@@ -78,7 +63,6 @@ target_module(components/actuator_controller)
 
 # add the include directories
 include_directories("${INCLUDE_PATHS}")
->>>>>>> master
 
 # add the source files of this target
 set(SOURCE_FILES

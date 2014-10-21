@@ -8,14 +8,10 @@
 #define ACTUATOR_COMM_H
 
 class ActuatorError {
-<<<<<<< HEAD
     //
 };
-=======
     // todo!
 };
-
->>>>>>> master
 /* abstract class ActuatorComm
     Author: Declan White
     Description:
@@ -127,16 +123,13 @@ public:
     */
     ActuatorComm(
         std::shared_ptr<ApplicationCore> app,
-<<<<<<< HEAD
         Param params,
         const std::shared_ptr<SerialPort> &serialPort
     ){
         //
-=======
         const std::shared_ptr<SerialPort> &serialPort
     ) {
         // 
->>>>>>> master
     }
     
     /* ActuatorComm::~ActuatorComm

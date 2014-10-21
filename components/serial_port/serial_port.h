@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 #include <cstddef>
 #include <exception>
 #include <vector>
@@ -135,8 +133,6 @@ private:
 
 #endif//SERIAL_PORT_H
 
-=======
-
 #include <cstddef>
 #include <exception>
 
@@ -270,5 +266,3 @@ private:
 };
 
 #endif//SERIAL_PORT_H
-
->>>>>>> master
