@@ -1,5 +1,4 @@
 #include "sensor_controller.h"
-//#include "serialconn.h"
 #include "serial_port.h"
 #include "application_core.h"
 #include <iostream>
@@ -7,19 +6,25 @@
 #include <mutex>
 #include <vector>
 
+#include <boost/bind.hpp>
+#include <boost/asio.hpp>
+
 /* Definitions for the ID byte read from sensor telling us 
  * what kind of data the sensor is sending */
 #define AMBIENT_TEMP_DATA 0x11
 #define SENSOR_DATA 0x12    
 #define IMU_DATA 0x13
 
-// TODO: create a way to stop the thread: set running = false and stop thread
-
+// TODO: Ambient temp data reading not being added to queue.
 
 
 /* Created by: Chris Webb
- * Date: 7/6/14
+ * Date Created: 7/6/14
  * Function: ThermalSensorController Constructor
+ *
+ * Changelog:
+ * 21/10/2014: Modified to import a pointer to an Application_core object used 
+ *             to start io_service work. CW
  */
 ThermalSensorController::ThermalSensorController(
     std::shared_ptr<Application_core> core, const std::string _deviceName, unsigned int _baudRate
@@ -32,7 +37,7 @@ ThermalSensorController::ThermalSensorController(
 
 
 /* Created by: Chris Webb
- * Date: 7/6/14
+ * Date Created: 7/6/14
  * Function: init()
  * Description:
  * Set the bool(running) representing the sensors state to true then create a thread
@@ -41,14 +46,24 @@ ThermalSensorController::ThermalSensorController(
 void ThermalSensorController::init()
 {
     running = true;
-    sensorThread = std::thread(&ThermalSensorController::sensorThreadFunc, this);
+    //sensorThread = std::thread(&ThermalSensorController::sensorThreadFunc, this);
+
+  /*  boost::shared_ptr< boost::asio::io_service > io_service(
+        new boost::asio::io_service
+    );*/
+
+    io_service->post( boost::bind( &ThermalSensorController::sensorThreadFunc, 3) );
+ //   while (running) { //temp loop for now
+        //io_service->post( boost::bind( &ThermalSensorController::sensorThreadFunc) );
+    //    io_service->post( boost::bind( &ThermalSensorController::sensorThreadFunc, 3 ) );
+ //   }
 }
 
 
 
 /* Created by: Chris Webb
- * Date: 7/6/14
- * Last Modified: 25/9/2014
+ * Date Created: 7/6/14
+ * Last Modified: 22/10/2014
  * Function: sensorThreadFunc()
  * Description:
  * Function is designed to be ran continuously within its own thread. Function creates
@@ -59,7 +74,9 @@ void ThermalSensorController::init()
  * placed within a queue (readingQueue).
  *
  * Changelog:
- * 25/9/2014: Now supports IMU data.
+ * 7/6/14: Created. CW
+ * 25/9/2014: Now supports IMU data. CW
+ * 21/10/2014: Updated to use vectors instead of arrays and now using Declans SerialPort class. CW
  */
 void ThermalSensorController::sensorThreadFunc()
 {
@@ -88,7 +105,6 @@ void ThermalSensorController::sensorThreadFunc()
     //int sent = sc.write((char*)&data, 1);
     size_t sent = sc.writeDevice(data);
     assert(sent == 1);
-    //data.clear
 
     // Read bytes until 50 continuous 255 bytes have been read.
     int count = 0;
@@ -123,7 +139,7 @@ void ThermalSensorController::sensorThreadFunc()
         
         // read sentinal byte
         sc.readDevice(buff, 1);
-	//std::cout << "This byte should be 255!" << buff[0] << std::endl;
+	    //std::cout << "This byte should be 255!" << buff[0] << std::endl;
         assert(buff[0] == 255); 
     
         // read id byte representing what sensor is sending
@@ -132,29 +148,30 @@ void ThermalSensorController::sensorThreadFunc()
 
         // read length of data that sensor is going to send
         sc.readDevice(buff, 2);
-        //unsigned short len = *((unsigned short*)buff);
-        // TODO WHEN I HAVE SENSOR: figure out how to typecast this properly using vector
-        unsigned short len = 2;// delete me
+        unsigned short len = *((unsigned short*)buff.data());
+        //byte buff2[sizeof(unsigned short)];
+        //memcpy(&buff2,&buff,sizeof(unsigned short));
+        //unsigned short len = buff2[0];
 
         // read sensor data into buffer
         sc.readDevice(buff, len);
 
 
-        float ambientTemp = 0;
-        
+        float ambientTemp = 0;        
         // What we do with the recently read sensor data is defined by the
         // id of the reading
         switch(id) {
             case AMBIENT_TEMP_DATA: {
                 std::cout << "Reading new Ambient temp data!" << std::endl;
                 assert(len == sizeof(float));
-                //float ambient = *((float*)buff);
-                float ambient = 10.5f;
-                //memcpy(&ambient,buff[0],sizeof(float));
+                float ambient = *((float*)buff.data());
+                
+                //memcpy(convert.b, &buff, sizeof(float));   
+
                 ambientTemp = ambient;
                 std::cout << "ambient temp: " << ambientTemp << std::endl;
                 break;
-            };}}/*
+            };
             case SENSOR_DATA: {
                 std::cout << "Reading new MLX data!" << std::endl;
                 assert(len == 64*sizeof(float));
@@ -162,8 +179,8 @@ void ThermalSensorController::sensorThreadFunc()
                 float *imgDataPtr = (float*)newReading.img.data; 
                 if(1) {
                     std::lock_guard<std::mutex> readingQueueLock(readingQueueMutex);
-                    memcpy(imgDataPtr, buff, sizeof(float)*64);
-		    waitingForOrientation = true; // not used
+                    memcpy(imgDataPtr, buff.data(), sizeof(float)*64);
+		            waitingForOrientation = true; // not used
                     readingQueue.push(newReading);
                 }
                 break;
@@ -173,7 +190,7 @@ void ThermalSensorController::sensorThreadFunc()
 		assert(len == 3*sizeof(float));
                 
 		//float roll = *((float*)buff);
-		float *imu = (float*)buff;
+		float *imu = (float*)buff.data();
 		// add orientation to newReading should be around here
 		std::cout << "roll: " << imu[0];
 		std::cout << ", pitch:: " << imu[1];
@@ -185,7 +202,7 @@ void ThermalSensorController::sensorThreadFunc()
             }
         }
         
-    }// end while*/
+    }// end while
 }
 
 
@@ -203,6 +220,9 @@ void ThermalSensorController::sensorThreadFunc()
  * Description:
  * Removes a Reading from the readingQueue atomically using mutexes and returns the 
  * values.
+ *
+ * Changelog:
+ * 7/6/14: Created. CW
  */
 bool ThermalSensorController::popThermopileReading(cv::Mat &matRef, time_t &timeRef)
 {
@@ -232,6 +252,9 @@ bool ThermalSensorController::popThermopileReading(cv::Mat &matRef, time_t &time
  * Function: shutdown()
  * Description:
  * Set the bool(running) representing the sensors state to false.
+ *
+ * Changelog:
+ * 7/6/14: Created. CW
  */
 void ThermalSensorController::shutdown() 
 {

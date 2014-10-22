@@ -9,9 +9,16 @@
 std::weak_ptr<Application_core> Application_core::singletonInstanceWeakPtr;
 
 Application_core::Application_core()
+    : ios()
 {
 	//
 }
+
+boost::asio::io_service& Application_core::getIOS()
+{
+    return ios;
+}
+
 
 
 std::shared_ptr<Application_core> Application_core::instantiate() {

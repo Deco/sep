@@ -2,6 +2,7 @@
 #define APP_CORE_H
 
 #include <memory>
+#include <boost/asio.hpp>
 
 
 class Application_core{
@@ -14,9 +15,11 @@ Application_core();
 
 static std::shared_ptr<Application_core> instantiate();
 
+boost::asio::io_service& getIOS();
+
 private:
 	static std::weak_ptr<Application_core> singletonInstanceWeakPtr;
-	//Application_core *core;
+	boost::asio::io_service ios;
 };
 
 
