@@ -38,7 +38,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    virtual ~ActuatorCommAX12();
+    ~ActuatorCommAX12();
     void connect();
     void disconnect();
     void obtainActuatorInfoList(

@@ -80,7 +80,7 @@ public:
     void set(T newValue)
     {
         if(1) {
-            std::unique_lock<std::mutex> lock(valueMutex,std::try_to_lock);
+            std::unique_lock<std::mutex> lock(valueMutex, std::try_to_lock);
             //std::unique_lock writeLock(valueMutex);
             value = newValue;
         }

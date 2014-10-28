@@ -20,7 +20,6 @@
 #ifndef PARAMS_H
 #define PARAMS_H 
 
-
 /* [Param system design]
     Author: Declan White
     
@@ -142,8 +141,8 @@ typedef boost::variant<
     /* INT64   */ uint64_t,
     /* FLOAT64 */ double,
     /* BOOL    */ bool,
-    /* OBJ     */ std::map<const std::string, const std::shared_ptr<Param>>,
-    /* LIST    */ std::vector<std::shared_ptr<Param>>//std::vector<const std::shared_ptr<Param>>
+    /* OBJ     */ std::map<std::string, std::shared_ptr<Param>>,
+    /* LIST    */ std::vector<std::shared_ptr<Param>>
 > ParamValue;
 
 //ParamType enumeration

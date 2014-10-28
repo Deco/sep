@@ -100,10 +100,10 @@ public:
     */
     void log(LogLevel level, std::string msg);
     void log(LogLevel level, std::stringstream msgStream);
-    void log(LogLevel level, std::function<void(std::stringstream)> msgStreamBuilderFunc);
+    void log(LogLevel level, std::function<void(std::stringstream&)> msgStreamBuilderFunc);
     
 
-private:
+public://private:
     
     /* ApplicationCore::(primary constructor)
         Author: Declan White
@@ -116,7 +116,9 @@ private:
             [2014-09-26 DWW] Created.
     */
     ApplicationCore();
-    
+
+private:
+
     /* ApplicationCore::workerThreadFunc
         Author: Declan White
         Description:

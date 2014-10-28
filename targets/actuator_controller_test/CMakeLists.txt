@@ -9,7 +9,7 @@ message(STATUS "WARNING: DEBUG BUILD")
 set(CMAKE_CXX_FLAGS "-ggdb -O0")
 
 # ensure the compiler is using C++11
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
 
 # find the repository root, so we can get to components and dependencies
 if(NOT DEFINED CMAKE_PROJECT_ROOT)
@@ -73,9 +73,15 @@ set(SOURCE_FILES
 )
 
 # 
-message(STATUS "SOURCE_FILES: " ${SOURCE_FILES})
-message(STATUS "INCLUDE_PATHS: " ${INCLUDE_PATHS})
-message(STATUS "LINK_PATHS: " ${LINK_PATHS})
+foreach(path ${SOURCE_FILES})
+  message(STATUS "source: ${path}")
+endforeach()
+foreach(path ${INCLUDE_PATHS})
+  message(STATUS "include: ${path}")
+endforeach()
+foreach(path ${LINK_PATHS})
+  message(STATUS "link: ${path}")
+endforeach()
 
 # specify where the output executables and libraries will be placed
 set(EXECUTABLE_OUTPUT_PATH ${OUTPUT_DIR})

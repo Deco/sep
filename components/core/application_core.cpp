@@ -2,20 +2,22 @@
 #include "application_core.h"
 #include <csignal>
 #include <functional>
+#include <cstddef>
+
+std::weak_ptr<ApplicationCore> ApplicationCore::singletonInstanceWeakPtr = std::weak_ptr<ApplicationCore>();
 
 /* ApplicationCore::instantiate
     Author: Declan White
     Changelog:
         [2014-09-26 DWW] Created.
 */
-static std::shared_ptr<ApplicationCore>
-ApplicationCore::instantiate(
+std::shared_ptr<ApplicationCore> ApplicationCore::instantiate(
     //
 ) {
     
-    if(singletonInstanceWeakPtr) { // If there is already a singleton instance..
+    if(!singletonInstanceWeakPtr.expired()) { // If there is already a singleton instance..
         // ..throw an error.
-        throw new std::runtime_exception(
+        throw new std::runtime_error(
             "Attempt to create two instances of ApplicationCore!"
         );
     }
@@ -44,7 +46,7 @@ ApplicationCore::ApplicationCore(
 )
     : iosPtr(std::make_shared<boost::asio::io_service>()) // Construct the IO service
     , workerThreadGroup() // Construct the worker thread group
-    , logStrand(iosPtr) // Construct the logging strand so that it works on ios
+    , logStrand(*iosPtr) // Construct the logging strand so that it works on ios
 {
     // 
 }
@@ -62,7 +64,7 @@ void ApplicationCore::run(
     // Give the IO service some fake work to do so that `io_service.run()`
     // doesn't terminate when there is nothing to do.
     boost::shared_ptr<boost::asio::io_service::work> fakeWork(
-        new boost::asio::io_service::work(ios)
+        new boost::asio::io_service::work(*iosPtr)
     );
     
     std::cout << "Spawning worker threads..." << std::endl;
@@ -71,9 +73,9 @@ void ApplicationCore::run(
     // of the host platform's processor.
     int coreCount = boost::thread::hardware_concurrency();
     for(int threadI = 0; threadI < coreCount; threadI++) {
-        workerThreadGroup.create_thread(
-            std::bind(&ApplicationCore::workerThreadFunc, io_service)
-        );
+        workerThreadGroup.create_thread([this,threadI]() {
+            workerThreadFunc(threadI);
+        });
     }
     
     // Block the main thread until the worker threads exit (when the application
@@ -99,7 +101,7 @@ void ApplicationCore::stop(
     // We post this through the log strand to ensure all log messages are
     // handled before stopping the IO service
     
-    logStrand.post(std::bind(boost::asio::io_service::stop, iosPtr));
+    logStrand.post(std::bind(&boost::asio::io_service::stop, iosPtr));
 }
 
 /* ApplicationCore::workerThreadFunc
@@ -111,23 +113,23 @@ void ApplicationCore::workerThreadFunc(
     int threadNum
 ) {
     // Run any work the IO service has queued.
-    log(INFO, std::stringstream()
+    log(LogLevel::INFO, std::stringstream()
         << "Worker thread #" << threadNum << " running. "
     );
     try {
         iosPtr->run();
     } catch (const std::exception& ex) {
-        log(FATAL, std::stringstream()
-            << "Exception in IO service handler: " + ex.what()
+        log(LogLevel::FATAL, std::stringstream()
+            << "Exception in IO service handler: " << ex.what()
         );
         stop();
     } catch (const std::string& ex) {
-        log(FATAL, std::stringstream()
-            << "Exception in IO service handler: " + ex
+        log(LogLevel::FATAL, std::stringstream()
+            << "Exception in IO service handler: " << ex
         );
         stop();
     } catch (...) {
-        log(FATAL, std::stringstream()
+        log(LogLevel::FATAL, std::stringstream()
             << "Exception in IO service handler: UNKNOWN"
         );
         stop();
@@ -147,7 +149,7 @@ void ApplicationCore::log(LogLevel level, std::stringstream msgStream)
 {
     log(level, msgStream.str());
 }
-void ApplicationCore::log(LogLevel level, std::function<void(std::stringstream)> msgStreamBuilderFunc)
+void ApplicationCore::log(LogLevel level, std::function<void(std::stringstream&)> msgStreamBuilderFunc)
 {
     std::stringstream ss;
     msgStreamBuilderFunc(ss);
@@ -184,24 +186,24 @@ void ApplicationCore::logHandler(LogLevel level, std::string msg)
     Changelog:
         [2014-09-26 DWW] Created.
 */
-static void ApplicationCore::handleRawSignal(
+void ApplicationCore::handleRawSignal(
     int signum
 ) {
     auto appPtr = singletonInstanceWeakPtr.lock();
     
     bool shouldQuit = false;
     if(signum == SIGTERM) {
-        appPtr->log(FATAL, std::stringstream()
+        appPtr->log(LogLevel::FATAL, std::stringstream()
             << "Received SIGTERM; Quitting..."
         );
         shouldQuit = true;
     } else if(signum == SIGINT) {
-        appPtr->log(FATAL, std::stringstream()
+        appPtr->log(LogLevel::FATAL, std::stringstream()
             << "Received SIGINT; Quitting..."
         );
         shouldQuit = true;
     } else {
-        appPtr->log(WARN, std::stringstream()
+        appPtr->log(LogLevel::WARN, std::stringstream()
             << "Received unknown signal: " << signum
         );
     }
@@ -210,7 +212,7 @@ static void ApplicationCore::handleRawSignal(
         appPtr->stop();
     }
 }
-#error blah blah
+
 const std::shared_ptr<boost::asio::io_service> ApplicationCore::getIOService()
 {
     return iosPtr;
