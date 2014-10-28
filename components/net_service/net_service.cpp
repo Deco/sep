@@ -47,8 +47,8 @@ private:
 		wss.init_asio();
 
 		//Set handler for http connection requests
-		wss.set_http_handler([](WSServer *svr, websocketpp::connection_hdl hdl) {
-			WSServer::connection_ptr con = svr->get_con_from_hdl(hdl);
+		wss.set_http_handler([&](websocketpp::connection_hdl hdl) {
+			WSServer::connection_ptr con = wss.get_con_from_hdl(hdl);
 			
 			std::stringstream output;
 			output << "<!doctype html><html><body>You requested "
