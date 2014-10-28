@@ -44,6 +44,17 @@ public:
     
 
 public:
+    /* ApplicationCore::(primary constructor)
+        Author: Declan White
+        Description:
+            Constructs the singleton instance.
+        Note:
+            Must be private to prevent multipl constructions.
+        Parameters: TODO
+        Changelog:
+            [2014-09-26 DWW] Created.
+    */
+    ApplicationCore();
     
     /* ApplicationCore::run
         Author: Declan White
@@ -105,18 +116,6 @@ public:
 
 private:
     
-    /* ApplicationCore::(primary constructor)
-        Author: Declan White
-        Description:
-            Constructs the singleton instance.
-        Note:
-            Must be private to prevent multipl constructions.
-        Parameters: TODO
-        Changelog:
-            [2014-09-26 DWW] Created.
-    */
-    ApplicationCore();
-    
     /* ApplicationCore::workerThreadFunc
         Author: Declan White
         Description:
@@ -170,7 +169,6 @@ private:
     static void handleRawSignal(int signum);
 
 private:
-    
     static std::weak_ptr<ApplicationCore> singletonInstanceWeakPtr;
 
 };

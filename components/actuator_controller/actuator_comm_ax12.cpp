@@ -103,10 +103,10 @@ ActuatorCommAX12::ActuatorCommAX12(
     Changelog:
         [2014-09-04 DWW] Created.
 */
-/*ActuatorCommAX12::~ActuatorCommAX12()
+ActuatorCommAX12::~ActuatorCommAX12()
 {
     disconnect();
-}*/
+}
 
 /* ActuatorCommAX12::connect
     Author: Declan White

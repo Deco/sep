@@ -6,8 +6,10 @@
 #include <vector>
 #include <cstring>
 #include <assert.h>
+#include <string>
+#include <errno.h>
 
- #include <sys/stat.h>
+#include <sys/stat.h>
 #include <termios.h>
 
 // Serial requirements
@@ -57,7 +59,10 @@ SerialPort::SerialPort()
 */
 SerialPort::~SerialPort()
 {
-    closeDevice();
+    if (isOpen()) {
+        closeDevice();
+    }
+
 }
 
 /* SerialPort::open
@@ -216,7 +221,7 @@ bool SerialPort::isOpen()
         [2014-09-04 DWW] Created.
         [2014-10-21 CW] Corrected syntax to compile.
 */
-size_t SerialPort::writeDevice(const std::vector<byte> &&data)
+size_t SerialPort::writeDevice(const std::vector<byte> &data)
 {
     if(!internalData) {
         throw std::logic_error("cannot write to a closed serial device");

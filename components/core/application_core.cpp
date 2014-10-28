@@ -1,19 +1,22 @@
 
-#include "aplicaiton_core.h"
+#include "application_core.h"
+
 #include <csignal>
 #include <functional>
+#include <memory>
+#include <stdexcept>
 
 /* ApplicationCore::instantiate
     Author: Declan White
     Changelog:
         [2014-09-26 DWW] Created.
 */
-static std::shared_ptr<ApplicationCore>
+std::shared_ptr<ApplicationCore>
 ApplicationCore::instantiate(
     //
 ) {
     
-    if(singletonInstanceWeakPtr) { // If there is already a singleton instance..
+    if(auto test = singletonInstanceWeakPtr.lock()) { // If there is already a singleton instance..
         // ..throw an error.
         throw new std::runtime_exception(
             "Attempt to create two instances of ApplicationCore!"
@@ -102,6 +105,11 @@ void ApplicationCore::stop(
     logStrand.post(std::bind(&ios.stop, &ios));
 }
 
+const std::shared_ptr<const boost::asio::io_service> ApplicationCore::getIOService()
+{
+
+}
+
 /* ApplicationCore::workerThreadFunc
     Author: Declan White
     Changelog:
@@ -111,23 +119,23 @@ void ApplicationCore::workerThreadFunc(
     int threadNum
 ) {
     // Run any work the IO service has queued.
-    log(INFO, std::stringstream()
+    log(LogLevel::INFO, std::stringstream()
         << "Worker thread #" << threadNum << " running. "
     );
     try {
         ios.run();
     } catch (const std::exception& ex) {
-        log(FATAL, std::stringstream()
-            << "Exception in IO service handler: " + ex.what()
+        log(LogLevel::FATAL, std::stringstream()
+            << "Exception in IO service handler: " << ex.what()
         );
         stop();
     } catch (const std::string& ex) {
-        log(FATAL, std::stringstream()
+        log(LogLevel::FATAL, std::stringstream()
             << "Exception in IO service handler: " + ex
         );
         stop();
     } catch (...) {
-        log(FATAL, std::stringstream()
+        log(LogLevel::FATAL, std::stringstream()
             << "Exception in IO service handler: UNKNOWN"
         );
         stop();
@@ -184,24 +192,24 @@ void ApplicationCore::logHandler(LogLevel level, std::string msg)
     Changelog:
         [2014-09-26 DWW] Created.
 */
-static void ApplicationCore::handleRawSignal(
+void ApplicationCore::handleRawSignal(
     int signum
 ) {
     auto appPtr = singletonInstanceWeakPtr.lock();
     
     bool shouldQuit = false;
     if(signum == SIGTERM) {
-        appPtr->log(FATAL, std::stringstream()
+        appPtr->log(LogLevel::FATAL, std::stringstream()
             << "Received SIGTERM; Quitting..."
         );
         shouldQuit = true;
     } else if(signum == SIGINT) {
-        appPtr->log(FATAL, std::stringstream()
+        appPtr->log(LogLevel::FATAL, std::stringstream()
             << "Received SIGINT; Quitting..."
         );
         shouldQuit = true;
     } else {
-        appPtr->log(WARN, std::stringstream()
+        appPtr->log(LogLevel::WARN, std::stringstream()
             << "Received unknown signal: " << signum
         );
     }

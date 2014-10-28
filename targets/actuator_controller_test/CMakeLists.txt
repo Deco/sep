@@ -60,15 +60,18 @@ include_directories(
 	"${CMAKE_PROJECT_ROOT}/components/util" 
 	"${CMAKE_PROJECT_ROOT}/components/core"       
 	"${CMAKE_PROJECT_ROOT}/components/serial_port"
+	"${CMAKE_PROJECT_ROOT}/components/actuator_controller"
 )
 
 
 # add the source files of this target
 set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/sources/main.cpp
-    ${CMAKE_PROJECT_ROOT}/components/actuator_controller/actuator_controller.cpp
+    ${CMAKE_PROJECT_ROOT}/components/actuator_controller/actuator_comm.cpp
     ${CMAKE_PROJECT_ROOT}/components/actuator_controller/actuator_comm_ax12.cpp
+    ${CMAKE_PROJECT_ROOT}/components/actuator_controller/actuator_controller.cpp
     ${CMAKE_PROJECT_ROOT}/components/serial_port/serial_port_bsd.cpp
+    ${CMAKE_PROJECT_ROOT}/components/core/application_core.cpp
 )
 
 # specify where the output executables and libraries will be placed
