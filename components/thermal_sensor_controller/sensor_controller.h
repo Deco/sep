@@ -1,5 +1,5 @@
 #ifndef SENSOR_CONTROLLER_H
-#define SENSOR_COTRNOLLER_H
+#define SENSOR_CONTROLLER_H
 
 #include <opencv2/opencv.hpp>
 #include <thread>
@@ -24,7 +24,7 @@ public:
     // Constructor that imports a device name and baud rate of the sensor
     /*ThermalSensorController(std::shared_ptr<ParamSet> pset);*/
     ThermalSensorController(
-        std::shared_ptr<Application_core> core,
+        std::shared_ptr<ApplicationCore> core,
         const std::string _deviceName,
         unsigned int _baudRate=115200
     );
@@ -63,7 +63,7 @@ private:
     // function to be ran in parallel to read from device
     bool sensorThreadFunc();
 
-    std::shared_ptr<Application_core> app_core;
+    std::shared_ptr<ApplicationCore> app_core;
     boost::shared_ptr< boost::asio::io_service > ios; // temp, probably take pointer from app_core when its implemented
 
     bool sync(std::vector<byte> &data, std::vector<byte> &buff);
