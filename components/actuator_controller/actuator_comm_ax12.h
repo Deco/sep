@@ -27,7 +27,7 @@ public:
     ActuatorCommAX12(
         std::shared_ptr<ApplicationCore> app,
         const std::shared_ptr<Param> &&params,
-        const std::shared_ptr<SerialPort> &serialPortIn
+        const std::shared_ptr<SerialPort> &serialPort
     );
     
     /* ActuatorCommAX12::~ActuatorCommAX12
@@ -38,7 +38,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    virtual ~ActuatorCommAX12();
+    ~ActuatorCommAX12();
     void connect();
     void disconnect();
     void obtainActuatorInfoList(

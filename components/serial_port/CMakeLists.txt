@@ -1,10 +1,13 @@
+cmake_minimum_required(VERSION 2.8)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+get_property(SOURCE_FILES GLOBAL PROPERTY PROJECT_SOURCE_FILES)
+get_property(INCLUDE_PATHS GLOBAL PROPERTY PROJECT_INCLUDE_PATHS)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(SOURCE_FILES
         ${SOURCE_FILES}
         ${CMAKE_CURRENT_SOURCE_DIR}/serial_port_bsd.cpp
-        PARENT_SCOPE
     )
 endif()
 
@@ -12,7 +15,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(SOURCE_FILES
         ${SOURCE_FILES}
         ${CMAKE_CURRENT_SOURCE_DIR}/serial_port_bsd.cpp
-        PARENT_SCOPE
     )
 endif()
 
@@ -20,13 +22,13 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(SOURCE_FILES
         ${SOURCE_FILES}
         ${CMAKE_CURRENT_SOURCE_DIR}/serial_port_win.cpp
-        PARENT_SCOPE
     )
 endif()
 
 set(INCLUDE_PATHS
+    ${INCLUDE_PATHS}
     ${CMAKE_CURRENT_SOURCE_DIR}/
-    PARENT_SCOPE
 )
 
-
+set_property(GLOBAL PROPERTY PROJECT_SOURCE_FILES ${SOURCE_FILES})
+set_property(GLOBAL PROPERTY PROJECT_INCLUDE_PATHS ${INCLUDE_PATHS})

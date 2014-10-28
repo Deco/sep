@@ -1,24 +1,23 @@
 
 #include "application_core.h"
-
 #include <csignal>
 #include <functional>
-#include <memory>
-#include <stdexcept>
+#include <cstddef>
+
+std::weak_ptr<ApplicationCore> ApplicationCore::singletonInstanceWeakPtr = std::weak_ptr<ApplicationCore>();
 
 /* ApplicationCore::instantiate
     Author: Declan White
     Changelog:
         [2014-09-26 DWW] Created.
 */
-std::shared_ptr<ApplicationCore>
-ApplicationCore::instantiate(
+std::shared_ptr<ApplicationCore> ApplicationCore::instantiate(
     //
 ) {
     
-    if(auto test = singletonInstanceWeakPtr.lock()) { // If there is already a singleton instance..
+    if(!singletonInstanceWeakPtr.expired()) { // If there is already a singleton instance..
         // ..throw an error.
-        throw new std::runtime_exception(
+        throw new std::runtime_error(
             "Attempt to create two instances of ApplicationCore!"
         );
     }
@@ -45,9 +44,9 @@ ApplicationCore::instantiate(
 ApplicationCore::ApplicationCore(
     //
 )
-    : ios() // Construct the IO service
+    : iosPtr(std::make_shared<boost::asio::io_service>()) // Construct the IO service
     , workerThreadGroup() // Construct the worker thread group
-    , logStrand(ios) // Construct the logging strand so that it works on ios
+    , logStrand(*iosPtr) // Construct the logging strand so that it works on ios
 {
     // 
 }
@@ -65,7 +64,7 @@ void ApplicationCore::run(
     // Give the IO service some fake work to do so that `io_service.run()`
     // doesn't terminate when there is nothing to do.
     boost::shared_ptr<boost::asio::io_service::work> fakeWork(
-        new boost::asio::io_service::work(ios)
+        new boost::asio::io_service::work(*iosPtr)
     );
     
     std::cout << "Spawning worker threads..." << std::endl;
@@ -74,9 +73,9 @@ void ApplicationCore::run(
     // of the host platform's processor.
     int coreCount = boost::thread::hardware_concurrency();
     for(int threadI = 0; threadI < coreCount; threadI++) {
-        workerThreadGroup.create_thread(
-            std::bind(&ApplicationCore::workerThreadFunc, io_service)
-        );
+        workerThreadGroup.create_thread([this,threadI]() {
+            workerThreadFunc(threadI);
+        });
     }
     
     // Block the main thread until the worker threads exit (when the application
@@ -102,12 +101,7 @@ void ApplicationCore::stop(
     // We post this through the log strand to ensure all log messages are
     // handled before stopping the IO service
     
-    logStrand.post(std::bind(&ios.stop, &ios));
-}
-
-const std::shared_ptr<const boost::asio::io_service> ApplicationCore::getIOService()
-{
-
+    logStrand.post(std::bind(&boost::asio::io_service::stop, iosPtr));
 }
 
 /* ApplicationCore::workerThreadFunc
@@ -123,7 +117,7 @@ void ApplicationCore::workerThreadFunc(
         << "Worker thread #" << threadNum << " running. "
     );
     try {
-        ios.run();
+        iosPtr->run();
     } catch (const std::exception& ex) {
         log(LogLevel::FATAL, std::stringstream()
             << "Exception in IO service handler: " << ex.what()
@@ -131,7 +125,7 @@ void ApplicationCore::workerThreadFunc(
         stop();
     } catch (const std::string& ex) {
         log(LogLevel::FATAL, std::stringstream()
-            << "Exception in IO service handler: " + ex
+            << "Exception in IO service handler: " << ex
         );
         stop();
     } catch (...) {
@@ -155,7 +149,7 @@ void ApplicationCore::log(LogLevel level, std::stringstream msgStream)
 {
     log(level, msgStream.str());
 }
-void ApplicationCore::log(LogLevel level, std::function<void(std::stringstream)> msgStreamBuilderFunc)
+void ApplicationCore::log(LogLevel level, std::function<void(std::stringstream&)> msgStreamBuilderFunc)
 {
     std::stringstream ss;
     msgStreamBuilderFunc(ss);
@@ -219,6 +213,10 @@ void ApplicationCore::handleRawSignal(
     }
 }
 
+const std::shared_ptr<boost::asio::io_service> ApplicationCore::getIOService()
+{
+    return iosPtr;
+}
 
 
 

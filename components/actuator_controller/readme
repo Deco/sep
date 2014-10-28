@@ -1,7 +1,0 @@
-Things commented out:
-destructor for actuator_comm_ax12.cpp
-
-All lines that is related to param.h because the file is still incomplete:
-application_core.h 87
-actuator_comm.h 124
-actuator_comm_ax12.h 28 151 83

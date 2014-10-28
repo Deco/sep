@@ -20,7 +20,6 @@
 #ifndef PARAMS_H
 #define PARAMS_H 
 
-
 /* [Param system design]
     Author: Declan White
     
@@ -142,9 +141,19 @@ typedef boost::variant<
     /* INT64   */ uint64_t,
     /* FLOAT64 */ double,
     /* BOOL    */ bool,
-    /* OBJ     */ std::map<const std::string, const std::shared_ptr<Param>>,
-    /* LIST    */ std::vector<std::shared_ptr<Param>>//std::vector<const std::shared_ptr<Param>>
+    /* OBJ     */ std::map<std::string, std::shared_ptr<Param>>,
+    /* LIST    */ std::vector<std::shared_ptr<Param>>
 > ParamValue;
+
+//ParamType enumeration
+enum class ParamType {
+    STRING,
+    INT64,
+    FLOAT64,
+    BOOL,
+    OBJ,
+    LIST,
+};
 
 
 /* class Param
@@ -155,20 +164,9 @@ typedef boost::variant<
         [2014-09-26 DWW] Created.
 */
 class Param {
+
+//protected:
 public:
-    
-    enum class ParamType {
-        STRING,
-        INT64,
-        FLOAT64,
-        BOOL,
-        OBJ,
-        LIST,
-    };
-    
-
-
-protected:
     friend class ParamManager;
     
     /* Param::(primary constructor)
@@ -179,47 +177,59 @@ protected:
         Changelog:
             [2014-09-26 DWW] Created.
     */
+    //Default values only valid for terminals (non-object/list constru)
     Param(
         ParamType typeIn, 
-        ParamValue &&defaultValueIn,
-        std::string &&name
+        ParamValue defaultValueIn,
+        std::string name
+    );
+    //Constructor for non-terminals (objects/lists)
+    Param(
+        ParamType typeIn,
+        std::string name
     );
 
 
 public:
     
     ///////// This is for OBJECTS only ///////// 
-    const std::shared_ptr<Param>& getParam(
+    std::shared_ptr<Param> getParam(
         std::string &&key
     );
     
     ///////// This is for OBJECTS only ///////// 
-    const std::shared_ptr<Param>& createParam(
+    std::shared_ptr<Param> createParam(
         std::string &&key,
         ParamType type,
         ParamValue &&defaultValue
     );
     
+    ///////// This is for OBJECTS only ///////// 
+    std::shared_ptr<Param> createParam(
+        std::string &&key,
+        ParamType type
+    );
     
     ///////// This is for LISTS only ///////// 
-    const std::shared_ptr<Param>& getParam(
+    std::shared_ptr<Param> getParam(
         int key
     );
     
-    
     ///////// This is for LISTS only ///////// 
-    const std::shared_ptr<Param>& appendParam(
+    std::shared_ptr<Param> appendParam(
         int key,
         ParamType type,
         ParamValue &&defaultValue
     );
-    
+
+    ///////// This is for LISTS only ///////// 
+    std::shared_ptr<Param> appendParam(
+        int key,
+        ParamType type
+    );
 
     // 
     bool isTerminal() const;
-    
-    // For all types
-    //const ParamAddress &getAddress() const;
     
     // For terminal types
     ParamValue getValue();

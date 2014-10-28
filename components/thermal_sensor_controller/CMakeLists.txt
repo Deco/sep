@@ -1,40 +1,19 @@
 cmake_minimum_required(VERSION 2.8)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+get_property(SOURCE_FILES GLOBAL PROPERTY PROJECT_SOURCE_FILES)
+get_property(INCLUDE_PATHS GLOBAL PROPERTY PROJECT_INCLUDE_PATHS)
 
-#IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-#    add_definitions(-DSERIALCONN_USE_IKARUS=1)
-#else(UNIX)
-    add_definitions(-DSERIALCONN_USE_BOOST=1)
-#endif()
-
-
-
-if(NOT DEFINED CMAKE_PROJECT_ROOT)
-    set(CMAKE_PROJECT_ROOT
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../../
-    )
-endif()
-
-set(CMAKE_CXX_FLAGS "-std=c++11 -ggdb")
-
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/")
-
-
-FIND_PACKAGE( Boost 1.40 COMPONENTS system REQUIRED )
-INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
-
-find_package( OpenCV REQUIRED )
-include_directories( ${OpenCV_INCLUDE_DIRS} )
-
-add_executable(main
-    main.cpp
-    serialconn.cpp
-    sensor_controller.cpp
+set(SOURCE_FILES
+    ${SOURCE_FILES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/sensor_conntroller.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/serialconn.cpp
 )
 
-TARGET_LINK_LIBRARIES( main ${Boost_LIBRARIES} )
+set(INCLUDE_PATHS
+    ${INCLUDE_PATHS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/
+)
 
-target_link_libraries( main ${OpenCV_LIBS} )
-
-
+set_property(GLOBAL PROPERTY PROJECT_SOURCE_FILES ${SOURCE_FILES})
+set_property(GLOBAL PROPERTY PROJECT_INCLUDE_PATHS ${INCLUDE_PATHS})
