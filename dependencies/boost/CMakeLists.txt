@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-find_package(Boost 1.45 COMPONENTS program_options system REQUIRED)
+find_package(Boost 1.45 COMPONENTS thread date_time program_options filesystem system REQUIRED)
 
 set(INCLUDE_PATHS
     ${INCLUDE_PATHS}
