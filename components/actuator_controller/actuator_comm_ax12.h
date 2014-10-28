@@ -151,6 +151,8 @@ private:
     const std::shared_ptr<const boost::asio::io_service> ios;
     std::shared_ptr<Param> paramsPtr;
     
+    std::shared_ptr<std::thread> serialThreadPtr;
+    atom<bool> serialThreadShouldDisconnect;
     std::shared_ptr<SerialPort> serialPortPtr;
     
     
@@ -163,4 +165,3 @@ private:
 };
 
 #endif//ACTUATOR_COMM_AX12_H
-

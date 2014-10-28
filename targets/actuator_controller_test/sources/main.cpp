@@ -3,11 +3,11 @@
 
 int main()
 {
-    std::shared_ptr<ApplicationCore> core = ApplicationCore::instantiate();
+    //std::shared_ptr<ApplicationCore> core = ApplicationCore::instantiate();
     
-    fdakjhfdsakljfdasjklfdsa
+    //fdakjhfdsakljfdasjklfdsa
     
-    core->run();
+    //core->run();
     
     return 0;
 }

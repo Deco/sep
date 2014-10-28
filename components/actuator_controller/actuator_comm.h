@@ -1,4 +1,3 @@
-
 #include "common.h"
 #include "serial_port.h"
 #include "events.h"
@@ -9,8 +8,6 @@
 
 class ActuatorError {
     //
-};
-    // todo!
 };
 /* abstract class ActuatorComm
     Author: Declan White
@@ -127,9 +124,6 @@ public:
         const std::shared_ptr<SerialPort> &serialPort
     ){
         //
-        const std::shared_ptr<SerialPort> &serialPort
-    ) {
-        // 
     }
     
     /* ActuatorComm::~ActuatorComm
@@ -304,8 +298,8 @@ public:
     //*/
     //virtual duration getActuatorMovementSampleRate(int id = 0);
     //virtual void setActuatorMovementSampleRate(int id, duration sampleRate) = 0;
+    
 
 };
 
 #endif//ACTUATOR_COMM_H
-

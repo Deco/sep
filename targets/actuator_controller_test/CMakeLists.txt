@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 # define our project!
 project(actuator_controller_test)
 
+
 # WARNING: DEBUG BUILD
 message(STATUS "WARNING: DEBUG BUILD")
 set(CMAKE_CXX_FLAGS "-ggdb -O0")
@@ -45,14 +46,6 @@ function(target_module DIRECTORY)
 endfunction()
 
 # External dependencies
-target_module(dependencies/libevent )
-target_module(dependencies/msgpack-c)
-
-# Internal components
-target_module(components/actuator_controller      )
-
-# add the include directories
-#include_directories("${INCLUDE_PATHS}")
 target_module(dependencies/boost)
 
 # Internal components
@@ -62,24 +55,37 @@ target_module(components/serial_port        )
 target_module(components/actuator_controller)
 
 # add the include directories
-include_directories("${INCLUDE_PATHS}")
+#include_directories("${INCLUDE_PATHS}")
+include_directories(
+	"${CMAKE_PROJECT_ROOT}/components/util" 
+	"${CMAKE_PROJECT_ROOT}/components/core"       
+	"${CMAKE_PROJECT_ROOT}/components/serial_port"
+)
+
 
 # add the source files of this target
 set(SOURCE_FILES
-    ${SOURCE_FILES}
-    ${CMAKE_CURRENT_SOURCE_DIR}/source/main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/sources/main.cpp
+    ${CMAKE_PROJECT_ROOT}/components/actuator_controller/actuator_controller.cpp
+    ${CMAKE_PROJECT_ROOT}/components/actuator_controller/actuator_comm_ax12.cpp
+    ${CMAKE_PROJECT_ROOT}/components/serial_port/serial_port_bsd.cpp
 )
 
 # specify where the output executables and libraries will be placed
 set(EXECUTABLE_OUTPUT_PATH ${OUTPUT_DIR})
 set(LIBRARY_OUTPUT_PATH ${OUTPUT_DIR})
 
-# add the executable
-add_executable(${PROJECT_NAME}
-    ${SOURCE_FILES}
-)
+find_package(Boost) 
+find_package(Boost 1.45 COMPONENTS program_options system REQUIRED)
 
-# inform the executable of the linking paths
-target_link_libraries(${PROJECT_NAME} LINK_PATHS)
+# add the executable
+if(Boost_FOUND)
+	include_directories(${Boost_INCLUDE_DIRS}) 
+	add_executable(actuator_controller_test
+	    ${SOURCE_FILES}
+	)
+	target_link_libraries(actuator_controller_test ${Boost_LIBRARIES})   
+endif()
+
 
 # done!
