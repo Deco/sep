@@ -1,24 +1,16 @@
-#include <iostream>
-#include <opencv2/core/core.hpp>
+
 #include "sensor_controller.h"
-#include "application_core.h"
 #include "serial_port.h"
 
 int main()
 {
-    std::shared_ptr<Application_core> core = Application_core::instantiate();
-    ThermalSensorController sc(core, "/dev/ttyACM0", 115200);
-
-
-    std::cout << "ThermalSensorController successfully created.\n";
+    std::shared_ptr<ApplicationCore> core = ApplicationCore::instantiate();
+    ThermalSensorController sc(&core, "/dev/ttyACM0", 115200);
     
-
     cv::Mat_<float> img;
     time_t timeOfRead;
-
-
     sc.init();
-/*
+
     while(1) {
         bool wasDataRead = sc.popThermopileReading(img, timeOfRead);
         if(wasDataRead) {
@@ -29,7 +21,7 @@ int main()
                 printf("\n");
             }
         }
-    }*/
+    }
     
     return 0;
 }
