@@ -8,9 +8,15 @@
 #include <ctime>
 #include <memory>
 
-#include "serialconn.h"
+#include "serial_port.h"
 #include "application_core.h"
 
+
+#include <boost/shared_ptr.hpp>
+#include <boost/thread.hpp>
+#include <boost/thread/mutex.hpp>
+
+typedef unsigned char byte;
 
 class ThermalSensorController
 {
@@ -32,7 +38,7 @@ public:
     // Remove a reading from the queue of Readings and return by passed in references.
     // Return the result of queue pop
     bool popThermopileReading(cv::Mat &matRef, time_t &timeRef);
-    
+
 private:
     // Represents a single 16X4 reading from the MLX sensor, the time it was read
     // and the orientation of the sensor at the time of scan.
@@ -55,9 +61,14 @@ private:
     // Boolean representing state of a device and if it's being read.
     bool running;
     // function to be ran in parallel to read from device
-    void sensorThreadFunc();
+    bool sensorThreadFunc();
 
     std::shared_ptr<Application_core> app_core;
+    boost::shared_ptr< boost::asio::io_service > ios; // temp, probably take pointer from app_core when its implemented
+
+    bool sync(std::vector<byte> &data, std::vector<byte> &buff);
+    bool takeReading(std::vector<byte> &data, std::vector<byte> &buff);
+    SerialPort sport;
 };
 
 

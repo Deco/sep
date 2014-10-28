@@ -1,10 +1,10 @@
 
 GCC = g++ -std=c++11
-LIBS = -lboost_system -lopencv_core
+LIBS = -lboost_system -lopencv_core -lboost_thread
 OBJECTS = main.o application_core.o sensor_controller.o serial_port_bsd.o
 
-run: program
-	./program
+#run: program
+#	./program
 
 program: ${OBJECTS}
 	${GCC} -o program ${OBJECTS} ${LIBS}

@@ -2,7 +2,8 @@
 #include <memory>
 #include <iostream>
 #include <exception>
-
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/ref.hpp>
 
 
 
@@ -14,9 +15,17 @@ Application_core::Application_core()
 	//
 }
 
-boost::asio::io_service& Application_core::getIOS()
+std::shared_ptr<boost::asio::io_service>&Application_core::getIOS()
 {
-    return ios;
+   /* std::shared_ptr< boost::asio::io_service > io_service(
+        //new boost::asio::io_service
+        &ios
+    );*/
+
+    //auto io_service = std::make_shared<tcp::acceptor>(boost::ref(&ios));
+
+
+    //return io_service;
 }
 
 

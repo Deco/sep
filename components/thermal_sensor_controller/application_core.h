@@ -15,7 +15,7 @@ Application_core();
 
 static std::shared_ptr<Application_core> instantiate();
 
-boost::asio::io_service& getIOS();
+std::shared_ptr<boost::asio::io_service>& getIOS();
 
 private:
 	static std::weak_ptr<Application_core> singletonInstanceWeakPtr;

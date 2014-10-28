@@ -58,7 +58,10 @@ SerialPort::SerialPort()
 */
 SerialPort::~SerialPort()
 {
-    closeDevice();
+    if (isOpen()) {
+        closeDevice();
+    }
+
 }
 
 /* SerialPort::open
