@@ -3,18 +3,18 @@ cmake_minimum_required(VERSION 2.8)
 # define our project!
 project(actuator_controller_test)
 
-
 # WARNING: DEBUG BUILD
 message(STATUS "WARNING: DEBUG BUILD")
-set(CMAKE_CXX_FLAGS "-ggdb -O0")
 
 # ensure the compiler is using C++11
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # find the repository root, so we can get to components and dependencies
 if(NOT DEFINED CMAKE_PROJECT_ROOT)
     set(CMAKE_PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../)
 endif()
+
+include(${CMAKE_PROJECT_ROOT}/targets/common/CMakeLists.txt)
 
 # for configuration headers, add this target's source directory to the include path
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/source")
