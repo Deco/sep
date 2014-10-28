@@ -1,19 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
 
-find_package(Boost 1.45 COMPONENTS thread date_time program_options filesystem system REQUIRED)
-
 get_property(SOURCE_FILES GLOBAL PROPERTY PROJECT_SOURCE_FILES)
 get_property(INCLUDE_PATHS GLOBAL PROPERTY PROJECT_INCLUDE_PATHS)
 get_property(LINK_PATHS GLOBAL PROPERTY PROJECT_LINK_PATHS)
 
 set(INCLUDE_PATHS
     ${INCLUDE_PATHS}
-    ${Boost_INCLUDE_DIR}
-)
-
-set(LINK_PATHS
-    ${LINK_PATHS}
-    ${Boost_LIBRARIES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/websocketpp/websocketpp/
 )
 
 set_property(GLOBAL PROPERTY PROJECT_SOURCE_FILES ${SOURCE_FILES})
