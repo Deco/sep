@@ -106,36 +106,7 @@ public:
     
 
 public:
-    ActuatorComm();
-    /* ActuatorComm::(primary constructor)
-        Author: Declan White
-        Description: TODO
-        Parameters: TODO
-        Returns: TODO
-        Notes:
-            This may need to be modified to accept multiple serial connections
-            if not all the actuators are connected via one serial port.
-        Changelog:
-            [2014-09-04 DWW] Created.
-    */
-    ActuatorComm(
-        std::shared_ptr<ApplicationCore> app,
-        Param params,
-        const std::shared_ptr<SerialPort> &serialPort
-    ){
-        //
-    }
-    
-    /* ActuatorComm::~ActuatorComm
-        Author: Declan White
-        Description: TODO
-        Parameters: TODO
-        Returns: TODO
-        Changelog:
-            [2014-09-04 DWW] Created.
-    */
-    virtual ~ActuatorComm();
-    
+    //
 
 public:
     
