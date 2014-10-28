@@ -3,6 +3,7 @@
 #include <csignal>
 #include <functional>
 #include <cstddef>
+#include <sstream>
 
 std::weak_ptr<ApplicationCore> ApplicationCore::singletonInstanceWeakPtr = std::weak_ptr<ApplicationCore>();
 
@@ -113,25 +114,25 @@ void ApplicationCore::workerThreadFunc(
     int threadNum
 ) {
     // Run any work the IO service has queued.
-    log(LogLevel::INFO, std::stringstream()
-        << "Worker thread #" << threadNum << " running. "
-    );
+    log(LogLevel::INFO, [&](std::stringstream &ss) {
+        ss << "Worker thread #" << threadNum << " running. ";
+    });
     try {
         iosPtr->run();
     } catch (const std::exception& ex) {
-        log(LogLevel::FATAL, std::stringstream()
-            << "Exception in IO service handler: " << ex.what()
-        );
+        log(LogLevel::FATAL, [&](std::stringstream &ss) {
+            ss << "Exception in IO service handler: " << ex.what();
+        });
         stop();
     } catch (const std::string& ex) {
-        log(LogLevel::FATAL, std::stringstream()
-            << "Exception in IO service handler: " << ex
-        );
+        log(LogLevel::FATAL, [&](std::stringstream &ss) {
+            ss << "Exception in IO service handler: " << ex;
+        });
         stop();
     } catch (...) {
-        log(LogLevel::FATAL, std::stringstream()
-            << "Exception in IO service handler: UNKNOWN"
-        );
+        log(LogLevel::FATAL, [&](std::stringstream &ss) {
+            ss << "Exception in IO service handler: UNKNOWN";
+        });
         stop();
     }
 }
@@ -193,19 +194,15 @@ void ApplicationCore::handleRawSignal(
     
     bool shouldQuit = false;
     if(signum == SIGTERM) {
-        appPtr->log(LogLevel::FATAL, std::stringstream()
-            << "Received SIGTERM; Quitting..."
-        );
+        appPtr->log(LogLevel::FATAL, "Received SIGTERM; Quitting...");
         shouldQuit = true;
     } else if(signum == SIGINT) {
-        appPtr->log(LogLevel::FATAL, std::stringstream()
-            << "Received SIGINT; Quitting..."
-        );
+        appPtr->log(LogLevel::FATAL, "Received SIGINT; Quitting...");
         shouldQuit = true;
     } else {
-        appPtr->log(LogLevel::WARN, std::stringstream()
-            << "Received unknown signal: " << signum
-        );
+        appPtr->log(LogLevel::WARN, [&](std::stringstream &ss) {
+            ss << "Received unknown signal: " << signum;
+        });
     }
     if(shouldQuit) {
         auto appPtr = singletonInstanceWeakPtr.lock();
@@ -217,6 +214,8 @@ const std::shared_ptr<boost::asio::io_service> ApplicationCore::getIOService()
 {
     return iosPtr;
 }
+
+
 
 
 

@@ -60,7 +60,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    void openDevice(
+    void open(
         const std::string &&deviceName,
         unsigned long baudRate,
         bool shouldBlock = false
@@ -75,7 +75,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    void closeDevice();
+    void close();
     
     /* SerialPort::isOpen
         Author: Declan White
@@ -97,7 +97,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    size_t writeDevice(const std::vector<byte> &&data);
+    size_t write(const std::vector<byte> &data);
     
     /* SerialPort::read
         Author: Declan White
@@ -108,8 +108,8 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    size_t readDevice(std::vector<byte> &data);
-    size_t readDevice(std::vector<byte> &data, size_t maxSize);
+    size_t read(std::vector<byte> &data);
+    size_t read(std::vector<byte> &data, size_t maxSize);
     
     /* SerialPort::flushWrite
         Author: Declan White
@@ -138,3 +138,4 @@ private:
 };
 
 #endif//SERIAL_PORT_H
+

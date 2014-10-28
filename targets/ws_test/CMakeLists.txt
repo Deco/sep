@@ -1,13 +1,12 @@
 
 # External dependencies
 target_module(dependencies/boost)
+target_module(dependencies/websocketpp)
 
 # Internal components
-target_module(components/util               )
-target_module(components/core               )
-target_module(components/serial_port        )
-target_module(components/actuator_controller)
-
+target_module(components/util       )
+target_module(components/core       )
+target_module(components/net_service)
 
 # Include paths
 get_property(INCLUDE_PATHS GLOBAL PROPERTY PROJECT_INCLUDE_PATHS)
