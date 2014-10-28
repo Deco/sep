@@ -145,7 +145,7 @@ public:
         Param params,
         const std::shared_ptr<ActuatorComm> &comm
     );
-    
+
     /* ActuatorController::~ActuatorController
         Author: Declan White
         Description: TODO

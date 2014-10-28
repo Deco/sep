@@ -8,3 +8,26 @@
 {
     
 }*/
+
+ActuatorController::ActuatorController(
+    Param params,
+    const std::shared_ptr<ActuatorComm> &comm
+) 
+{
+	
+}
+
+void ActuatorController::connect()
+{
+
+}
+
+void ActuatorController::disconnect()
+{
+
+}
+
+ActuatorController::~ActuatorController()
+{
+
+}

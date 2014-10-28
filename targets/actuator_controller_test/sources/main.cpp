@@ -7,9 +7,9 @@ int main()
 {
     std::shared_ptr<ApplicationCore> core = ApplicationCore::instantiate();
     
-    //fdakjhfdsakljfdasjklfdsa
     
-    //core->run();
+    
+    core->run();
 
     std::cout << "meow" << std::endl;
     
