@@ -86,7 +86,7 @@ public:
     */
     //std::weak_ptr<Param> &findParam(ParamAddress &&addr) const;
 
-    const std::shared_ptr<const boost::asio::io_service> getIOService();
+    const std::shared_ptr<boost::asio::io_service> getIOService();
 
     /* ApplicationCore::log
         Author: Declan White
@@ -147,7 +147,7 @@ private:
 private:
     
     // IO service used to execute everything in the application
-    boost::asio::io_service ios;
+    const std::shared_ptr<boost::asio::io_service> iosPtr;
     
     // A group of threads for the IO service to execute on
     boost::thread_group workerThreadGroup;

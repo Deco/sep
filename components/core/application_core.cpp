@@ -1,5 +1,5 @@
 
-#include "aplicaiton_core.h"
+#include "application_core.h"
 #include <csignal>
 #include <functional>
 
@@ -42,9 +42,9 @@ ApplicationCore::instantiate(
 ApplicationCore::ApplicationCore(
     //
 )
-    : ios() // Construct the IO service
+    : iosPtr(std::make_shared<boost::asio::io_service>()) // Construct the IO service
     , workerThreadGroup() // Construct the worker thread group
-    , logStrand(ios) // Construct the logging strand so that it works on ios
+    , logStrand(iosPtr) // Construct the logging strand so that it works on ios
 {
     // 
 }
@@ -99,7 +99,7 @@ void ApplicationCore::stop(
     // We post this through the log strand to ensure all log messages are
     // handled before stopping the IO service
     
-    logStrand.post(std::bind(&ios.stop, &ios));
+    logStrand.post(std::bind(boost::asio::io_service::stop, iosPtr));
 }
 
 /* ApplicationCore::workerThreadFunc
@@ -115,7 +115,7 @@ void ApplicationCore::workerThreadFunc(
         << "Worker thread #" << threadNum << " running. "
     );
     try {
-        ios.run();
+        iosPtr->run();
     } catch (const std::exception& ex) {
         log(FATAL, std::stringstream()
             << "Exception in IO service handler: " + ex.what()
@@ -209,6 +209,11 @@ static void ApplicationCore::handleRawSignal(
         auto appPtr = singletonInstanceWeakPtr.lock();
         appPtr->stop();
     }
+}
+#error blah blah
+const std::shared_ptr<boost::asio::io_service> ApplicationCore::getIOService()
+{
+    return iosPtr;
 }
 
 

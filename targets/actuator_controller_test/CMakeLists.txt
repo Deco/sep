@@ -30,6 +30,10 @@ set(SOURCE_FILES "")
 set(INCLUDE_PATHS "")
 set(LINK_PATHS "")
 
+set_property(GLOBAL PROPERTY PROJECT_SOURCE_FILES ${SOURCE_FILES})
+set_property(GLOBAL PROPERTY PROJECT_INCLUDE_PATHS ${INCLUDE_PATHS})
+set_property(GLOBAL PROPERTY PROJECT_LINK_PATHS ${LINK_PATHS})
+
 # Specify each module needed by this target here
 # CMake will recurse into their folders and execute their CMakeLists.txt
 # Those will do the following:
@@ -54,38 +58,34 @@ target_module(components/core               )
 target_module(components/serial_port        )
 target_module(components/actuator_controller)
 
-# add the include directories
-#include_directories("${INCLUDE_PATHS}")
-include_directories(
-	"${CMAKE_PROJECT_ROOT}/components/util" 
-	"${CMAKE_PROJECT_ROOT}/components/core"       
-	"${CMAKE_PROJECT_ROOT}/components/serial_port"
-)
+# Retrieve properties
+get_property(SOURCE_FILES GLOBAL PROPERTY PROJECT_SOURCE_FILES)
+get_property(INCLUDE_PATHS GLOBAL PROPERTY PROJECT_INCLUDE_PATHS)
+get_property(LINK_PATHS GLOBAL PROPERTY PROJECT_LINK_PATHS)
 
+# add the include directories
+include_directories("${INCLUDE_PATHS}")
 
 # add the source files of this target
 set(SOURCE_FILES
+    ${SOURCE_FILES}
     ${CMAKE_CURRENT_SOURCE_DIR}/sources/main.cpp
-    ${CMAKE_PROJECT_ROOT}/components/actuator_controller/actuator_controller.cpp
-    ${CMAKE_PROJECT_ROOT}/components/actuator_controller/actuator_comm_ax12.cpp
-    ${CMAKE_PROJECT_ROOT}/components/serial_port/serial_port_bsd.cpp
 )
+
+# 
+message(STATUS "SOURCE_FILES: " ${SOURCE_FILES})
+message(STATUS "INCLUDE_PATHS: " ${INCLUDE_PATHS})
+message(STATUS "LINK_PATHS: " ${LINK_PATHS})
 
 # specify where the output executables and libraries will be placed
 set(EXECUTABLE_OUTPUT_PATH ${OUTPUT_DIR})
 set(LIBRARY_OUTPUT_PATH ${OUTPUT_DIR})
 
-find_package(Boost) 
-find_package(Boost 1.45 COMPONENTS program_options system REQUIRED)
-
 # add the executable
-if(Boost_FOUND)
-	include_directories(${Boost_INCLUDE_DIRS}) 
-	add_executable(actuator_controller_test
-	    ${SOURCE_FILES}
-	)
-	target_link_libraries(actuator_controller_test ${Boost_LIBRARIES})   
-endif()
+add_executable(actuator_controller_test
+    ${SOURCE_FILES}
+)
+target_link_libraries(actuator_controller_test ${LINK_PATHS})
 
 
 # done!

@@ -1,1 +1,0 @@
-find_package(Boost 1.45 COMPONENTS program_options system REQUIRED)
