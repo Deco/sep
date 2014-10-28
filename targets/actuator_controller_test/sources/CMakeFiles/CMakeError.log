@@ -1,0 +1,939 @@
+Determining if the __GNU_LIBRARY__ exist failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3741796880/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec3741796880.dir/build.make CMakeFiles/cmTryCompileExec3741796880.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec3741796880.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec3741796880.dir/CheckSymbolExists.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c:2:10: fatal error: 'features.h' file not found
+#include <features.h>
+         ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec3741796880.dir/CheckSymbolExists.c.o] Error 1
+make: *** [cmTryCompileExec3741796880/fast] Error 2
+
+File /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <features.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef __GNU_LIBRARY__
+  return ((int*)(&__GNU_LIBRARY__))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the include file netinet/in6.h exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2111526029/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec2111526029.dir/build.make CMakeFiles/cmTryCompileExec2111526029.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec2111526029.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec2111526029.dir/CheckIncludeFile.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckIncludeFile.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckIncludeFile.c:1:10: fatal error: 'netinet/in6.h' file not found
+#include <netinet/in6.h>
+         ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec2111526029.dir/CheckIncludeFile.c.o] Error 1
+make: *** [cmTryCompileExec2111526029/fast] Error 2
+
+
+Determining if the include file port.h exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2627364761/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec2627364761.dir/build.make CMakeFiles/cmTryCompileExec2627364761.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec2627364761.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec2627364761.dir/CheckIncludeFile.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckIncludeFile.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckIncludeFile.c:1:10: fatal error: 'port.h' file not found
+#include <port.h>
+         ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec2627364761.dir/CheckIncludeFile.c.o] Error 1
+make: *** [cmTryCompileExec2627364761/fast] Error 2
+
+
+Determining if the include file sys/devpoll.h exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1461080977/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec1461080977.dir/build.make CMakeFiles/cmTryCompileExec1461080977.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec1461080977.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec1461080977.dir/CheckIncludeFile.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckIncludeFile.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckIncludeFile.c:1:10: fatal error: 'sys/devpoll.h' file not found
+#include <sys/devpoll.h>
+         ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec1461080977.dir/CheckIncludeFile.c.o] Error 1
+make: *** [cmTryCompileExec1461080977/fast] Error 2
+
+
+Determining if the include file sys/epoll.h exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1034820597/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec1034820597.dir/build.make CMakeFiles/cmTryCompileExec1034820597.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec1034820597.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec1034820597.dir/CheckIncludeFile.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckIncludeFile.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckIncludeFile.c:1:10: fatal error: 'sys/epoll.h' file not found
+#include <sys/epoll.h>
+         ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec1034820597.dir/CheckIncludeFile.c.o] Error 1
+make: *** [cmTryCompileExec1034820597/fast] Error 2
+
+
+Determining if the include file sys/eventfd.h exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec647202135/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec647202135.dir/build.make CMakeFiles/cmTryCompileExec647202135.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec647202135.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec647202135.dir/CheckIncludeFile.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckIncludeFile.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckIncludeFile.c:1:10: fatal error: 'sys/eventfd.h' file not found
+#include <sys/eventfd.h>
+         ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec647202135.dir/CheckIncludeFile.c.o] Error 1
+make: *** [cmTryCompileExec647202135/fast] Error 2
+
+
+Determining if the include file sys/sendfile.h exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2792168452/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec2792168452.dir/build.make CMakeFiles/cmTryCompileExec2792168452.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec2792168452.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec2792168452.dir/CheckIncludeFile.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckIncludeFile.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckIncludeFile.c:1:10: fatal error: 'sys/sendfile.h' file not found
+#include <sys/sendfile.h>
+         ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec2792168452.dir/CheckIncludeFile.c.o] Error 1
+make: *** [cmTryCompileExec2792168452/fast] Error 2
+
+
+Determining if the include file sys/timerfd.h exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3743339477/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec3743339477.dir/build.make CMakeFiles/cmTryCompileExec3743339477.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec3743339477.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec3743339477.dir/CheckIncludeFile.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckIncludeFile.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckIncludeFile.c:1:10: fatal error: 'sys/timerfd.h' file not found
+#include <sys/timerfd.h>
+         ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec3743339477.dir/CheckIncludeFile.c.o] Error 1
+make: *** [cmTryCompileExec3743339477/fast] Error 2
+
+
+Determining if the function epoll_create exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3603366428/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec3603366428.dir/build.make CMakeFiles/cmTryCompileExec3603366428.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec3603366428.dir/CheckFunctionExistsEx.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=epoll_create -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec3603366428.dir/CheckFunctionExistsEx.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/dependencies/libevent/cmake/CheckFunctionExistsEx.c"
+Linking C executable cmTryCompileExec3603366428
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3603366428.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=epoll_create -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec3603366428.dir/CheckFunctionExistsEx.c.o  -o cmTryCompileExec3603366428  
+Undefined symbols for architecture x86_64:
+  "_epoll_create", referenced from:
+      _main in CheckFunctionExistsEx.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec3603366428] Error 1
+make: *** [cmTryCompileExec3603366428/fast] Error 2
+
+
+Determining if the function epoll_ctl exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec695889914/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec695889914.dir/build.make CMakeFiles/cmTryCompileExec695889914.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec695889914.dir/CheckFunctionExistsEx.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=epoll_ctl -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec695889914.dir/CheckFunctionExistsEx.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/dependencies/libevent/cmake/CheckFunctionExistsEx.c"
+Linking C executable cmTryCompileExec695889914
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec695889914.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=epoll_ctl -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec695889914.dir/CheckFunctionExistsEx.c.o  -o cmTryCompileExec695889914  
+Undefined symbols for architecture x86_64:
+  "_epoll_ctl", referenced from:
+      _main in CheckFunctionExistsEx.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec695889914] Error 1
+make: *** [cmTryCompileExec695889914/fast] Error 2
+
+
+Determining if the function eventfd exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1153431699/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec1153431699.dir/build.make CMakeFiles/cmTryCompileExec1153431699.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec1153431699.dir/CheckFunctionExistsEx.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=eventfd -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec1153431699.dir/CheckFunctionExistsEx.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/dependencies/libevent/cmake/CheckFunctionExistsEx.c"
+Linking C executable cmTryCompileExec1153431699
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1153431699.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=eventfd -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec1153431699.dir/CheckFunctionExistsEx.c.o  -o cmTryCompileExec1153431699  
+Undefined symbols for architecture x86_64:
+  "_eventfd", referenced from:
+      _main in CheckFunctionExistsEx.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec1153431699] Error 1
+make: *** [cmTryCompileExec1153431699/fast] Error 2
+
+
+Determining if the function clock_gettime exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec385023359/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec385023359.dir/build.make CMakeFiles/cmTryCompileExec385023359.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec385023359.dir/CheckFunctionExistsEx.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=clock_gettime -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec385023359.dir/CheckFunctionExistsEx.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/dependencies/libevent/cmake/CheckFunctionExistsEx.c"
+Linking C executable cmTryCompileExec385023359
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec385023359.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=clock_gettime -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec385023359.dir/CheckFunctionExistsEx.c.o  -o cmTryCompileExec385023359  
+Undefined symbols for architecture x86_64:
+  "_clock_gettime", referenced from:
+      _main in CheckFunctionExistsEx.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec385023359] Error 1
+make: *** [cmTryCompileExec385023359/fast] Error 2
+
+
+Determining if the function pipe2 exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1970301862/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec1970301862.dir/build.make CMakeFiles/cmTryCompileExec1970301862.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec1970301862.dir/CheckFunctionExistsEx.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=pipe2 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec1970301862.dir/CheckFunctionExistsEx.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/dependencies/libevent/cmake/CheckFunctionExistsEx.c"
+Linking C executable cmTryCompileExec1970301862
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1970301862.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=pipe2 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec1970301862.dir/CheckFunctionExistsEx.c.o  -o cmTryCompileExec1970301862  
+Undefined symbols for architecture x86_64:
+  "_pipe2", referenced from:
+      _main in CheckFunctionExistsEx.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec1970301862] Error 1
+make: *** [cmTryCompileExec1970301862/fast] Error 2
+
+
+Determining if the function port_create exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3263090057/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec3263090057.dir/build.make CMakeFiles/cmTryCompileExec3263090057.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec3263090057.dir/CheckFunctionExistsEx.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=port_create -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec3263090057.dir/CheckFunctionExistsEx.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/dependencies/libevent/cmake/CheckFunctionExistsEx.c"
+Linking C executable cmTryCompileExec3263090057
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3263090057.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=port_create -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec3263090057.dir/CheckFunctionExistsEx.c.o  -o cmTryCompileExec3263090057  
+Undefined symbols for architecture x86_64:
+  "_port_create", referenced from:
+      _main in CheckFunctionExistsEx.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec3263090057] Error 1
+make: *** [cmTryCompileExec3263090057/fast] Error 2
+
+
+Determining if the function splice exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3862337334/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec3862337334.dir/build.make CMakeFiles/cmTryCompileExec3862337334.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec3862337334.dir/CheckFunctionExistsEx.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=splice -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec3862337334.dir/CheckFunctionExistsEx.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/dependencies/libevent/cmake/CheckFunctionExistsEx.c"
+Linking C executable cmTryCompileExec3862337334
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3862337334.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=splice -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec3862337334.dir/CheckFunctionExistsEx.c.o  -o cmTryCompileExec3862337334  
+Undefined symbols for architecture x86_64:
+  "_splice", referenced from:
+      _main in CheckFunctionExistsEx.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec3862337334] Error 1
+make: *** [cmTryCompileExec3862337334/fast] Error 2
+
+
+Determining if the function accept4 exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2606602786/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec2606602786.dir/build.make CMakeFiles/cmTryCompileExec2606602786.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec2606602786.dir/CheckFunctionExistsEx.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=accept4 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec2606602786.dir/CheckFunctionExistsEx.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/dependencies/libevent/cmake/CheckFunctionExistsEx.c"
+Linking C executable cmTryCompileExec2606602786
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2606602786.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=accept4 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec2606602786.dir/CheckFunctionExistsEx.c.o  -o cmTryCompileExec2606602786  
+Undefined symbols for architecture x86_64:
+  "_accept4", referenced from:
+      _main in CheckFunctionExistsEx.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec2606602786] Error 1
+make: *** [cmTryCompileExec2606602786/fast] Error 2
+
+
+Determining if the function epoll_create1 exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3807004245/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec3807004245.dir/build.make CMakeFiles/cmTryCompileExec3807004245.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec3807004245.dir/CheckFunctionExistsEx.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=epoll_create1 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec3807004245.dir/CheckFunctionExistsEx.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/dependencies/libevent/cmake/CheckFunctionExistsEx.c"
+Linking C executable cmTryCompileExec3807004245
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3807004245.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=epoll_create1 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec3807004245.dir/CheckFunctionExistsEx.c.o  -o cmTryCompileExec3807004245  
+Undefined symbols for architecture x86_64:
+  "_epoll_create1", referenced from:
+      _main in CheckFunctionExistsEx.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec3807004245] Error 1
+make: *** [cmTryCompileExec3807004245/fast] Error 2
+
+
+Determining if the function timeradd exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3211056466/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec3211056466.dir/build.make CMakeFiles/cmTryCompileExec3211056466.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec3211056466.dir/CheckFunctionExistsEx.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=timeradd -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec3211056466.dir/CheckFunctionExistsEx.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/dependencies/libevent/cmake/CheckFunctionExistsEx.c"
+Linking C executable cmTryCompileExec3211056466
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3211056466.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=timeradd -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec3211056466.dir/CheckFunctionExistsEx.c.o  -o cmTryCompileExec3211056466  
+Undefined symbols for architecture x86_64:
+  "_timeradd", referenced from:
+      _main in CheckFunctionExistsEx.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec3211056466] Error 1
+make: *** [cmTryCompileExec3211056466/fast] Error 2
+
+
+Determining if the function timerclear exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2979826380/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec2979826380.dir/build.make CMakeFiles/cmTryCompileExec2979826380.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec2979826380.dir/CheckFunctionExistsEx.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=timerclear -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec2979826380.dir/CheckFunctionExistsEx.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/dependencies/libevent/cmake/CheckFunctionExistsEx.c"
+Linking C executable cmTryCompileExec2979826380
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2979826380.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=timerclear -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec2979826380.dir/CheckFunctionExistsEx.c.o  -o cmTryCompileExec2979826380  
+Undefined symbols for architecture x86_64:
+  "_timerclear", referenced from:
+      _main in CheckFunctionExistsEx.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec2979826380] Error 1
+make: *** [cmTryCompileExec2979826380/fast] Error 2
+
+
+Determining if the function timercmp exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2025633423/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec2025633423.dir/build.make CMakeFiles/cmTryCompileExec2025633423.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec2025633423.dir/CheckFunctionExistsEx.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=timercmp -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec2025633423.dir/CheckFunctionExistsEx.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/dependencies/libevent/cmake/CheckFunctionExistsEx.c"
+Linking C executable cmTryCompileExec2025633423
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2025633423.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=timercmp -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec2025633423.dir/CheckFunctionExistsEx.c.o  -o cmTryCompileExec2025633423  
+Undefined symbols for architecture x86_64:
+  "_timercmp", referenced from:
+      _main in CheckFunctionExistsEx.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec2025633423] Error 1
+make: *** [cmTryCompileExec2025633423/fast] Error 2
+
+
+Determining if the function timerfd_create exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec469776880/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec469776880.dir/build.make CMakeFiles/cmTryCompileExec469776880.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec469776880.dir/CheckFunctionExistsEx.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=timerfd_create -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec469776880.dir/CheckFunctionExistsEx.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/dependencies/libevent/cmake/CheckFunctionExistsEx.c"
+Linking C executable cmTryCompileExec469776880
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec469776880.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=timerfd_create -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec469776880.dir/CheckFunctionExistsEx.c.o  -o cmTryCompileExec469776880  
+Undefined symbols for architecture x86_64:
+  "_timerfd_create", referenced from:
+      _main in CheckFunctionExistsEx.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec469776880] Error 1
+make: *** [cmTryCompileExec469776880/fast] Error 2
+
+
+Determining if the function timerisset exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec638878139/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec638878139.dir/build.make CMakeFiles/cmTryCompileExec638878139.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec638878139.dir/CheckFunctionExistsEx.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=timerisset -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec638878139.dir/CheckFunctionExistsEx.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/dependencies/libevent/cmake/CheckFunctionExistsEx.c"
+Linking C executable cmTryCompileExec638878139
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec638878139.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=timerisset -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec638878139.dir/CheckFunctionExistsEx.c.o  -o cmTryCompileExec638878139  
+Undefined symbols for architecture x86_64:
+  "_timerisset", referenced from:
+      _main in CheckFunctionExistsEx.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec638878139] Error 1
+make: *** [cmTryCompileExec638878139/fast] Error 2
+
+
+Determining if the function gethostbyname_r exists failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec571911280/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec571911280.dir/build.make CMakeFiles/cmTryCompileExec571911280.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec571911280.dir/CheckFunctionExistsEx.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=gethostbyname_r -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec571911280.dir/CheckFunctionExistsEx.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/dependencies/libevent/cmake/CheckFunctionExistsEx.c"
+Linking C executable cmTryCompileExec571911280
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec571911280.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DCHECK_FUNCTION_EXISTS=gethostbyname_r -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec571911280.dir/CheckFunctionExistsEx.c.o  -o cmTryCompileExec571911280  
+Undefined symbols for architecture x86_64:
+  "_gethostbyname_r", referenced from:
+      _main in CheckFunctionExistsEx.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec571911280] Error 1
+make: *** [cmTryCompileExec571911280/fast] Error 2
+
+
+Performing C SOURCE FILE Test HAVE_inline failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3666608866/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec3666608866.dir/build.make CMakeFiles/cmTryCompileExec3666608866.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec3666608866.dir/src.c.o
+/usr/bin/cc  -DKEYWORD=inline -Wno-error=deprecated-declarations -Qunused-arguments -DHAVE_inline -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec3666608866.dir/src.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/src.c"
+Linking C executable cmTryCompileExec3666608866
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3666608866.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DHAVE_inline -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec3666608866.dir/src.c.o  -o cmTryCompileExec3666608866  
+Undefined symbols for architecture x86_64:
+  "_a", referenced from:
+      _main in src.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec3666608866] Error 1
+make: *** [cmTryCompileExec3666608866/fast] Error 2
+
+Source file was:
+
+        #include <stdio.h>
+        KEYWORD void a() {}
+        int main(int argc, char **argv) { a(); return 0; }
+        
+Performing C SOURCE FILE Test HAVE___inline__ failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1032868426/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec1032868426.dir/build.make CMakeFiles/cmTryCompileExec1032868426.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec1032868426.dir/src.c.o
+/usr/bin/cc  -DKEYWORD=__inline__ -Wno-error=deprecated-declarations -Qunused-arguments -DHAVE___inline__ -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec1032868426.dir/src.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/src.c"
+Linking C executable cmTryCompileExec1032868426
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1032868426.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DHAVE___inline__ -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec1032868426.dir/src.c.o  -o cmTryCompileExec1032868426  
+Undefined symbols for architecture x86_64:
+  "_a", referenced from:
+      _main in src.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec1032868426] Error 1
+make: *** [cmTryCompileExec1032868426/fast] Error 2
+
+Source file was:
+
+        #include <stdio.h>
+        KEYWORD void a() {}
+        int main(int argc, char **argv) { a(); return 0; }
+        
+Performing C SOURCE FILE Test HAVE___inline failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1698455036/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec1698455036.dir/build.make CMakeFiles/cmTryCompileExec1698455036.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec1698455036.dir/src.c.o
+/usr/bin/cc  -DKEYWORD=__inline -Wno-error=deprecated-declarations -Qunused-arguments -DHAVE___inline -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec1698455036.dir/src.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/src.c"
+Linking C executable cmTryCompileExec1698455036
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1698455036.dir/link.txt --verbose=1
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DHAVE___inline -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/cmTryCompileExec1698455036.dir/src.c.o  -o cmTryCompileExec1698455036  
+Undefined symbols for architecture x86_64:
+  "_a", referenced from:
+      _main in src.c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [cmTryCompileExec1698455036] Error 1
+make: *** [cmTryCompileExec1698455036/fast] Error 2
+
+Source file was:
+
+        #include <stdio.h>
+        KEYWORD void a() {}
+        int main(int argc, char **argv) { a(); return 0; }
+        
+Determining if the KERN_ARND exist failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec4151703953/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec4151703953.dir/build.make CMakeFiles/cmTryCompileExec4151703953.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec4151703953.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec4151703953.dir/CheckSymbolExists.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: error: use of undeclared identifier 'KERN_ARND'
+  return ((int*)(&KERN_ARND))[argc];
+                  ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec4151703953.dir/CheckSymbolExists.c.o] Error 1
+make: *** [cmTryCompileExec4151703953/fast] Error 2
+
+File /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/sysctl.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef KERN_ARND
+  return ((int*)(&KERN_ARND))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the KERN_RANDOM exist failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2077069765/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec2077069765.dir/build.make CMakeFiles/cmTryCompileExec2077069765.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec2077069765.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec2077069765.dir/CheckSymbolExists.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: error: use of undeclared identifier 'KERN_RANDOM'
+  return ((int*)(&KERN_RANDOM))[argc];
+                  ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec2077069765.dir/CheckSymbolExists.c.o] Error 1
+make: *** [cmTryCompileExec2077069765/fast] Error 2
+
+File /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/sysctl.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef KERN_RANDOM
+  return ((int*)(&KERN_RANDOM))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the RANDOM_UUID exist failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec4047133094/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec4047133094.dir/build.make CMakeFiles/cmTryCompileExec4047133094.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec4047133094.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec4047133094.dir/CheckSymbolExists.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: error: use of undeclared identifier 'RANDOM_UUID'
+  return ((int*)(&RANDOM_UUID))[argc];
+                  ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec4047133094.dir/CheckSymbolExists.c.o] Error 1
+make: *** [cmTryCompileExec4047133094/fast] Error 2
+
+File /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/sysctl.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef RANDOM_UUID
+  return ((int*)(&RANDOM_UUID))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining size of SSIZE_T failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3433300089/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec3433300089.dir/build.make CMakeFiles/cmTryCompileExec3433300089.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec3433300089.dir/EVENT__SIZEOF_UPPERCASE_SSIZE_T.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec3433300089.dir/EVENT__SIZEOF_UPPERCASE_SSIZE_T.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CheckTypeSize/EVENT__SIZEOF_UPPERCASE_SSIZE_T.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CheckTypeSize/EVENT__SIZEOF_UPPERCASE_SSIZE_T.c:24:12: error: use of undeclared identifier 'SSIZE_T'
+  ('0' + ((SIZE / 10000)%10)),
+           ^
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CheckTypeSize/EVENT__SIZEOF_UPPERCASE_SSIZE_T.c:22:22: note: expanded from macro 'SIZE'
+#define SIZE (sizeof(SSIZE_T))
+                     ^
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CheckTypeSize/EVENT__SIZEOF_UPPERCASE_SSIZE_T.c:25:12: error: use of undeclared identifier 'SSIZE_T'
+  ('0' + ((SIZE / 1000)%10)),
+           ^
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CheckTypeSize/EVENT__SIZEOF_UPPERCASE_SSIZE_T.c:22:22: note: expanded from macro 'SIZE'
+#define SIZE (sizeof(SSIZE_T))
+                     ^
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CheckTypeSize/EVENT__SIZEOF_UPPERCASE_SSIZE_T.c:26:12: error: use of undeclared identifier 'SSIZE_T'
+  ('0' + ((SIZE / 100)%10)),
+           ^
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CheckTypeSize/EVENT__SIZEOF_UPPERCASE_SSIZE_T.c:22:22: note: expanded from macro 'SIZE'
+#define SIZE (sizeof(SSIZE_T))
+                     ^
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CheckTypeSize/EVENT__SIZEOF_UPPERCASE_SSIZE_T.c:27:12: error: use of undeclared identifier 'SSIZE_T'
+  ('0' + ((SIZE / 10)%10)),
+           ^
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CheckTypeSize/EVENT__SIZEOF_UPPERCASE_SSIZE_T.c:22:22: note: expanded from macro 'SIZE'
+#define SIZE (sizeof(SSIZE_T))
+                     ^
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CheckTypeSize/EVENT__SIZEOF_UPPERCASE_SSIZE_T.c:28:12: error: use of undeclared identifier 'SSIZE_T'
+  ('0' +  (SIZE    % 10)),
+           ^
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CheckTypeSize/EVENT__SIZEOF_UPPERCASE_SSIZE_T.c:22:22: note: expanded from macro 'SIZE'
+#define SIZE (sizeof(SSIZE_T))
+                     ^
+5 errors generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec3433300089.dir/EVENT__SIZEOF_UPPERCASE_SSIZE_T.c.o] Error 1
+make: *** [cmTryCompileExec3433300089/fast] Error 2
+
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CheckTypeSize/EVENT__SIZEOF_UPPERCASE_SSIZE_T.c:
+#include <sys/types.h>
+#include <stdint.h>
+#include <stddef.h>
+#include "sys/types.h"
+#include "sys/socket.h"
+#include "netinet/in.h"
+#include "fcntl.h"
+#include "sys/time.h"
+
+
+#undef KEY
+#if defined(__i386)
+# define KEY '_','_','i','3','8','6'
+#elif defined(__x86_64)
+# define KEY '_','_','x','8','6','_','6','4'
+#elif defined(__ppc__)
+# define KEY '_','_','p','p','c','_','_'
+#elif defined(__ppc64__)
+# define KEY '_','_','p','p','c','6','4','_','_'
+#endif
+
+#define SIZE (sizeof(SSIZE_T))
+char info_size[] =  {'I', 'N', 'F', 'O', ':', 's','i','z','e','[',
+  ('0' + ((SIZE / 10000)%10)),
+  ('0' + ((SIZE / 1000)%10)),
+  ('0' + ((SIZE / 100)%10)),
+  ('0' + ((SIZE / 10)%10)),
+  ('0' +  (SIZE    % 10)),
+  ']',
+#ifdef KEY
+  ' ','k','e','y','[', KEY, ']',
+#endif
+  '\0'};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_size[argc];
+  (void)argv;
+  return require;
+}
+
+
+Determining if the _MINIX exist failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec4249638016/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec4249638016.dir/build.make CMakeFiles/cmTryCompileExec4249638016.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec4249638016.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec4249638016.dir/CheckSymbolExists.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: error: use of undeclared identifier '_MINIX'
+  return ((int*)(&_MINIX))[argc];
+                  ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec4249638016.dir/CheckSymbolExists.c.o] Error 1
+make: *** [cmTryCompileExec4249638016/fast] Error 2
+
+File /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stdio.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef _MINIX
+  return ((int*)(&_MINIX))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the _POSIX_1_SOURCE exist failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2976070043/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec2976070043.dir/build.make CMakeFiles/cmTryCompileExec2976070043.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec2976070043.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec2976070043.dir/CheckSymbolExists.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: error: use of undeclared identifier '_POSIX_1_SOURCE'
+  return ((int*)(&_POSIX_1_SOURCE))[argc];
+                  ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec2976070043.dir/CheckSymbolExists.c.o] Error 1
+make: *** [cmTryCompileExec2976070043/fast] Error 2
+
+File /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stdio.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef _POSIX_1_SOURCE
+  return ((int*)(&_POSIX_1_SOURCE))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the _POSIX_SOURCE exist failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2464119840/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec2464119840.dir/build.make CMakeFiles/cmTryCompileExec2464119840.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec2464119840.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec2464119840.dir/CheckSymbolExists.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: error: use of undeclared identifier '_POSIX_SOURCE'
+  return ((int*)(&_POSIX_SOURCE))[argc];
+                  ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec2464119840.dir/CheckSymbolExists.c.o] Error 1
+make: *** [cmTryCompileExec2464119840/fast] Error 2
+
+File /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stdio.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef _POSIX_SOURCE
+  return ((int*)(&_POSIX_SOURCE))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Performing C SOURCE FILE Test EVENT__HAVE_STRUCT_IN6_ADDR_S6_ADDR16 failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec4272213921/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec4272213921.dir/build.make CMakeFiles/cmTryCompileExec4272213921.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec4272213921.dir/src.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DEVENT__HAVE_STRUCT_IN6_ADDR_S6_ADDR16 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec4272213921.dir/src.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/src.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/src.c:9:9: error: no member named 's6_addr16' in 'struct in6_addr'
+   tmp->s6_addr16;
+   ~~~  ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec4272213921.dir/src.c.o] Error 1
+make: *** [cmTryCompileExec4272213921/fast] Error 2
+
+Source file was:
+
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <netdb.h>
+
+int main()
+{
+   struct in6_addr* tmp;
+   tmp->s6_addr16;
+  return 0;
+}
+
+Performing C SOURCE FILE Test EVENT__HAVE_STRUCT_IN6_ADDR_S6_ADDR32 failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec736641589/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec736641589.dir/build.make CMakeFiles/cmTryCompileExec736641589.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec736641589.dir/src.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DEVENT__HAVE_STRUCT_IN6_ADDR_S6_ADDR32 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec736641589.dir/src.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/src.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/src.c:9:9: error: no member named 's6_addr32' in 'struct in6_addr'
+   tmp->s6_addr32;
+   ~~~  ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec736641589.dir/src.c.o] Error 1
+make: *** [cmTryCompileExec736641589/fast] Error 2
+
+Source file was:
+
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <netdb.h>
+
+int main()
+{
+   struct in6_addr* tmp;
+   tmp->s6_addr32;
+  return 0;
+}
+
+Performing C SOURCE FILE Test EVENT__HAVE_STRUCT_SOCKADDR_IN_SIN_LEN failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1556746169/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec1556746169.dir/build.make CMakeFiles/cmTryCompileExec1556746169.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec1556746169.dir/src.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DEVENT__HAVE_STRUCT_SOCKADDR_IN_SIN_LEN -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec1556746169.dir/src.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/src.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/src.c:9:9: error: no member named 'sin_len' in 'struct sockaddr_in6'; did you mean 'sin6_len'?
+   tmp->sin_len;
+        ^~~~~~~
+        sin6_len
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include/netinet6/in6.h:171:12: note: 'sin6_len' declared here
+        __uint8_t       sin6_len;       /* length of this struct(sa_family_t) */
+                        ^
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/src.c:9:9: warning: expression result unused [-Wunused-value]
+   tmp->sin_len;
+   ~~~  ^~~~~~~
+1 warning and 1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec1556746169.dir/src.c.o] Error 1
+make: *** [cmTryCompileExec1556746169/fast] Error 2
+
+Source file was:
+
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <netdb.h>
+
+int main()
+{
+   struct sockaddr_in6* tmp;
+   tmp->sin_len;
+  return 0;
+}
+
+Performing C SOURCE FILE Test EVENT__HAVE_STRUCT_SOCKADDR_STORAGE___SS_FAMILY failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1880022538/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec1880022538.dir/build.make CMakeFiles/cmTryCompileExec1880022538.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building C object CMakeFiles/cmTryCompileExec1880022538.dir/src.c.o
+/usr/bin/cc   -Wno-error=deprecated-declarations -Qunused-arguments -DEVENT__HAVE_STRUCT_SOCKADDR_STORAGE___SS_FAMILY -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec1880022538.dir/src.c.o   -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/src.c"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/src.c:9:9: error: no member named '__ss_family' in 'struct sockaddr_storage'; did you mean 'ss_family'?
+   tmp->__ss_family;
+        ^~~~~~~~~~~
+        ss_family
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include/sys/socket.h:318:14: note: 'ss_family' declared here
+        sa_family_t     ss_family;      /* [XSI] address family */
+                        ^
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/src.c:9:9: warning: expression result unused [-Wunused-value]
+   tmp->__ss_family;
+   ~~~  ^~~~~~~~~~~
+1 warning and 1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec1880022538.dir/src.c.o] Error 1
+make: *** [cmTryCompileExec1880022538/fast] Error 2
+
+Source file was:
+
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <netdb.h>
+
+int main()
+{
+   struct sockaddr_storage* tmp;
+   tmp->__ss_family;
+  return 0;
+}
+
+Performing C++ SOURCE FILE Test MSGPACK_ENABLE_GCC_CXX_ATOMIC failed with the following output:
+Change Dir: /Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3458878926/fast"
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -f CMakeFiles/cmTryCompileExec3458878926.dir/build.make CMakeFiles/cmTryCompileExec3458878926.dir/build
+/usr/local/Cellar/cmake/2.8.12.2/bin/cmake -E cmake_progress_report "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/CMakeFiles" 1
+Building CXX object CMakeFiles/cmTryCompileExec3458878926.dir/src.cxx.o
+/usr/bin/c++    -ggdb -O0 -std=c++11 -DMSGPACK_ENABLE_GCC_CXX_ATOMIC -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk   -o CMakeFiles/cmTryCompileExec3458878926.dir/src.cxx.o -c "/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/src.cxx"
+/Users/Aaron/University/Yr3 Sem 1/SEP401/repo/targets/actuator_controller_test/sources/CMakeFiles/CMakeTmp/src.cxx:2:10: fatal error: 'bits/atomicity.h' file not found
+#include <bits/atomicity.h>
+         ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTryCompileExec3458878926.dir/src.cxx.o] Error 1
+make: *** [cmTryCompileExec3458878926/fast] Error 2
+
+Source file was:
+
+#include <bits/atomicity.h>
+int atomic_sub(int i) { return __gnu_cxx::__exchange_and_add(&i, -1) - 1; }
+int atomic_add(int i) { return __gnu_cxx::__exchange_and_add(&i, 1) + 1; }
+int main(int argc, char * argv[])
+{
+	atomic_sub(1);
+	atomic_add(1);
+}
+

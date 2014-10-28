@@ -1,6 +1,6 @@
-.orig$
+*.orig
 ~$
-.swp$
+*.swp
 .DS_Store
 Thumbs.db
 ehthumbs.db

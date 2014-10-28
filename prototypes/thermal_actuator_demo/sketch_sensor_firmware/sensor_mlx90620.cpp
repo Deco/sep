@@ -1,4 +1,3 @@
-
 #include "sensor_mlx90620.h"
 
 #include "MLX90620_registers.h"
@@ -302,4 +301,3 @@ boolean MLX90620::checkConfig_MLX90620()
   else
     return false;
 }
-

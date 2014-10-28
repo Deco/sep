@@ -6,6 +6,7 @@
  * main for testing.
  * 13/10/2014: Added name field for parameters. Implemented adding new parameters to tree. Tested 
  * structure
+ * 14/10/2014: Added createParam/getParam for objects
  */
 
 #include "params.h"
@@ -33,19 +34,31 @@ Param::Param(
 const std::shared_ptr<Param>& getParam(
     std::string &&key
 ) {
+    //If parameter is not an object, throw an exception
     if(type != ParamType::OBJ) {
-        throw exception and stuff
+        try {
+            throw "Tried to get non-obj parameter in object getParam()";
+        }
+        catch (std::string e) {
+             std::cout << "An exception occurred. " << e << std::endl;
+        }
     }
     
-    std::shared_ptr<Param> childParamPtr;
+    //Create pointer for param to get from map
+    std::shared_ptr<Param> returnParamPtr;
     
-    currentValueAtom.access_read([&key, &childParamPtr] (const ParamValue &valueRef) {
+    //Access the map (thread-safe), de-varianting it to objectValue for dereferencing
+    currentValueAtom.access_read([&key, &returnParamPtr] (const ParamValue &valueRef) {
         auto& objectValue = boost::get<std::map<const std::string, const std::shared_ptr<Param>>>(
             valueRef
         );
         
-        childParamPtr = objectValue.at(key);
+        //Get the parameter's pointer
+        returnParamPtr = objectValue.at(key);
     });
+
+    //Return the pointer to the parameter
+    return returnParamPtr;
     
     /* Ok, so to summarise:
         currentValueAtom.access_read blocks until the "boxed" value is ready to read safely
@@ -57,16 +70,7 @@ const std::shared_ptr<Param>& getParam(
         we then use the key passed in to access that map
         and we set childParamPtr to point to obtained value
     */
-    /* you're learning a lot :P
-        const-correctness
-        managed pointers (shared_ptr, weak_ptr)
-        references
-        std::function and lambdas
-        thread-safe operations
-        good idea
-        no probs :D
-    */ //Anyways I'm leaving uni now. Thanks for the help/education :)
-    return childParamPtr;
+    
 }
 
 
@@ -77,27 +81,28 @@ const std::shared_ptr<Param>& createParam(
     ParamValue &&defaultValue
 ) {
     if(type != ParamType::OBJ) {
-        throw exception and stuff
+        try {
+            throw "Tried to create non-obj parameter in object createParam()";
+        }
+        catch (std::string e) {
+             std::cout << "An exception occurred. " << e << std::endl;
+        }
     }
-    
-    // now, for createParam
-    // Same thing, but notice the const
-    // access_read forces that const
-    // because it's access_READ
-    
-    // in createParam, you'll need to use just access
-    // which gives you a non-const reference
-    // which lets you use std::map<?>.emplace
-    // (map.emplace CANNOT be used on a const value/reference)
-    // (map.at CAN because it doesn't change the map)
-    
-    //Creates new parameter and places it within the map
-    Param &newParam = objectValue.emplace(key, type, defaultValue, key);
-    
-    
-    
+
+    //Create pointer for new parameter
+    std::shared_ptr<Param> newParamPtr;
+
+    //Access to get the map (stored in objectValue)
+    currentValueAtom.access([&key, &newParamPtr] (const ParamValue &valueRef) {
+        auto& objectValue = boost::get<std::map<const std::string, const std::shared_ptr<Param>>>(
+            valueRef
+        );
+        //Create parameter and place it in map. Sets pointer to it's value for returning
+        newParamPtr = objectValue.emplace(key, type, defaultValue, key);
+    });
+
     //Create the pointer to the new parameter
-    return newParam;
+    return newParamPtr;
 }
 
 
@@ -105,24 +110,63 @@ const std::shared_ptr<Param>& createParam(
 const std::shared_ptr<Param>& getParam(
     int key
 ) {
+    //If this parameter isn't a list, throw an exception
     if(type != ParamType::LIST) {
-        throw exception and stuff
+        try {
+            throw "Tried to get non-list parameter in list getParam()";
+        }
+        catch (std::string e) {
+             std::cout << "An exception occurred. " << e << std::endl;
+        }
     }
-    // implement me!
+
+    //Create pointer for the return parameter
+    std::shared_ptr<Param> returnParamPtr;
+
+    //Get the vector list to access
+    currentValueAtom.access_read([&key, &returnParamPtr] (const ParamValue &valueRef) {
+        auto& objectValue = boost::get<std::vector<const std::shared_ptr<Param>>>(
+            valueRef
+        );
+
+        //Index the vector for the parameter to return
+        returnParamPtr = objectValue.at(key);
+        
+    });
+    
+    //return the pointer to the accessed parameter
+    return returnParamPtr;
 }
 
 
 ///////// This is for LISTS only ///////// 
-const std::shared_ptr<Param>& createParam(
+const std::shared_ptr<Param>& appendParam(
     int key,
     ParamType type,
     ParamValue &&defaultValue
 ) {
     if(type != ParamType::LIST) {
-        throw exception and stuff
+        try {
+            throw "Tried to create non-list parameter in list appendParam()";
+        }
+        catch (std::string e) {
+             std::cout << "An exception occurred. " << e << std::endl;
+        }
     }
-    // implement me!
-    // return a pointer to the new param for convenience
+    //Create pointer for new parameter
+    std::shared_ptr<Param> newParamPtr;
+
+    //Access to get the map (stored in objectValue)
+    currentValueAtom.access([&key, &newParamPtr] (const ParamValue &valueRef) {
+        auto& objectValue = boost::get<std::vector<const std::shared_ptr<Param>>>(
+            valueRef
+        );
+        //Create parameter and place at the back of the list. Sets pointer for returning
+        newParamPtr = objectValue.emplace_back(type, defaultValue, key);
+    });
+
+    //Create the pointer to the new parameter
+    return newParamPtr;
 }
 
 

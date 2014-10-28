@@ -23,3 +23,10 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
         PARENT_SCOPE
     )
 endif()
+
+set(INCLUDE_PATHS
+    ${CMAKE_CURRENT_SOURCE_DIR}/
+    PARENT_SCOPE
+)
+
+

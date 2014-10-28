@@ -1,8 +1,26 @@
-
 #include "serial_port.h"
 
+#include <exception>
 #include <algorithm>
 #include <limits>
+#include <vector>
+#include <cstring>
+#include <assert.h>
+
+ #include <sys/stat.h>
+#include <termios.h>
+
+// Serial requirements
+#include <stdio.h>
+#include <unistd.h> // UNIX standard function definitions
+#include <fcntl.h> // File control definitions
+
+#include <sys/ioctl.h>
+
+
+
+typedef unsigned char byte;
+//int fileDescriptor; // temp added to compile. where this is used outside of openDevice, it should be internalData typecast from void* and dereferenced to get fd
 
 inline void throwSerialError(const char *message, const char *deviceName) {
     char *what;
@@ -14,12 +32,13 @@ inline void throwSerialError(const char *message, const char *deviceName) {
     ));
     std::string str(what);
     free(what);
-    throw SerialFailure(str);
+    //throw SerialError(str); //not sure what to include for this?
+    throw std::exception();
 }
 
 struct SeralPortInternalData {
     int fileDescriptor;
-}
+};
 
 /* SerialPort::(primary constructor)
     Author: Declan White
@@ -38,7 +57,7 @@ SerialPort::SerialPort()
 */
 SerialPort::~SerialPort()
 {
-    close();
+    closeDevice();
 }
 
 /* SerialPort::open
@@ -48,8 +67,9 @@ SerialPort::~SerialPort()
         https://github.com/ikaros-project/ikaros/blob/master/Source/Kernel/IKAROS_Serial_BSD.cc
     Changelog:
         [2014-09-04 DWW] Created.
+        [2014-10-21 CW] Corrected syntax to compile.
 */
-void SerialPort::open(const std::string &&deviceName, unsigned long baudRate, bool shouldBlock)
+void SerialPort::openDevice(const std::string &&deviceName, unsigned long baudRate, bool shouldBlock)
 {
     int optionFlags = 0;
     // Open serial device in read & write mode
@@ -62,29 +82,29 @@ void SerialPort::open(const std::string &&deviceName, unsigned long baudRate, bo
         // from locking the IO thread
         optionFlags |= O_NDELAY;
     }
-    
-    int fileDescriptor = open(deviceName, optionFlags);
+   
+    int fileDescriptor = open(deviceName.c_str(), optionFlags); // moved decleration to global for now so other functions can use. maybe put it in class as a field
     if(-1 == fileDescriptor) {
-        throwSerialError("failed to open serial device", deviceName);
+        throwSerialError("failed to open serial device", deviceName.c_str());  
         return;
     }
     
     //fcntl(fileDescriptor, F_SETFL, 0);
     
     struct termios fileOptions;
-    if(-1 == tcgetattr(fileDescriptor, &options)) {
-        throwSerialError("failed get serial device options", deviceName);
+    if(-1 == tcgetattr(fileDescriptor, &fileOptions)) { // fileOptions used to be options, not sure if correct
+        throwSerialError("failed get serial device options", deviceName.c_str());
         return;
     }
     
     #ifndef MAC_OS_X
         // Setting the baud rate for non-OSX POSIX-compliant platforms
         if(-1 == cfsetispeed(&fileOptions, baudRate)) {
-            throwSerialError("failed to set baud rate for serial input device", deviceName);
+            throwSerialError("failed to set baud rate for serial input device", deviceName.c_str());
             return;
         }
         if(-1 == cfsetospeed(&fileOptions, baudRate)) {
-            throwSerialError("failed to set baud rate for serial output device", deviceName);
+            throwSerialError("failed to set baud rate for serial output device", deviceName.c_str());
             return;
         }
     #endif
@@ -105,25 +125,25 @@ void SerialPort::open(const std::string &&deviceName, unsigned long baudRate, bo
     
     // Flush the input and output buffers
     if(-1 == tcflush(fileDescriptor, TCIOFLUSH)) {
-        throwSerialError("failed to flush serial device", deviceName);
+        throwSerialError("failed to flush serial device", deviceName.c_str());
             return;
     }
     
     // Apply the new options
     if(-1 == tcsetattr(fileDescriptor, TCSANOW, &fileOptions)) {
-        throwSerialError("failed to set serial device attributes", deviceName);
+        throwSerialError("failed to set serial device attributes", deviceName.c_str());
             return;
     }
     
     #ifdef MAC_OS_X
         if(-1 == cfmakeraw(&options)) { // necessary for ioctl to function; must come after setattr
-            throwSerialError("failed to make serial device raw", deviceName);
+            throwSerialError("failed to make serial device raw", deviceName.c_str());
             return;
         }
         
         const speed_t TGTBAUD = baudRate;
         if(-1 == ioctl(fd, IOSSIOSPEED, &TGTBAUD)) { // sets also non-standard baud rates
-            throwSerialError("failed to set baud rate for serial device \"%s\": %s", deviceName);
+            throwSerialError("failed to set baud rate for serial device \"%s\": %s", deviceName.c_str());
             return;
         }
     #endif
@@ -131,21 +151,23 @@ void SerialPort::open(const std::string &&deviceName, unsigned long baudRate, bo
     auto bsdInternalData = std::make_shared<SeralPortInternalData>();
     bsdInternalData->fileDescriptor = fileDescriptor;
     internalData = bsdInternalData;
+    
 }
 
 /* SerialPort::close
     Author: Declan White
     Changelog:
         [2014-09-04 DWW] Created.
+        [2014-10-21 CW] Corrected syntax to compile.
 */
-void SerialPort::close()
+void SerialPort::closeDevice()
 {
     if(!internalData) {
-        //throw std::logic_error("cannot close a closed serial device");
+        throw std::logic_error("cannot close a closed serial device");
         return;
     }
     
-    SeralPortInternalData *bsdInternalData = (SeralPortInternalData*)*internalData;
+    SeralPortInternalData *bsdInternalData = (SeralPortInternalData*)internalData.get();
     
     if(-1 == close(bsdInternalData->fileDescriptor)) {
         throwSerialError("failed to close serial device", "");
@@ -153,6 +175,7 @@ void SerialPort::close()
     }
     
     internalData.reset();
+    
 }
 
 /* SerialPort::isOpen
@@ -167,6 +190,7 @@ void SerialPort::close()
     Throws: TODO
     Changelog:
         [2014-09-04 DWW] Created.
+        [2014-10-21 CW] Corrected syntax to compile.
 */
 bool SerialPort::isOpen()
 {
@@ -174,12 +198,13 @@ bool SerialPort::isOpen()
         return false;
     }
     
-    SeralPortInternalData *bsdInternalData = (SeralPortInternalData*)*internalData;
+
+    SeralPortInternalData *bsdInternalData = (SeralPortInternalData*)internalData.get();
     
     if(-1 == fcntl(bsdInternalData->fileDescriptor, F_GETFD)) {
         return false;
     } else if(errno == EBADF) {
-        return false
+        return false;
     }
     return true;
 }
@@ -189,16 +214,19 @@ bool SerialPort::isOpen()
     Throws: TODO
     Changelog:
         [2014-09-04 DWW] Created.
+        [2014-10-21 CW] Corrected syntax to compile.
 */
-size_t SerialPort::write(const std::vector<byte> &&data)
+size_t SerialPort::writeDevice(const std::vector<byte> &&data)
 {
     if(!internalData) {
         throw std::logic_error("cannot write to a closed serial device");
         return 0;
     }
-    SeralPortInternalData *bsdInternalData = (SeralPortInternalData*)*internalData;
+    
+    SeralPortInternalData *bsdInternalData = (SeralPortInternalData*)internalData.get();
     
     int bytesWritten = write(bsdInternalData->fileDescriptor, &data[0], data.size());
+    
     if(-1 == bytesWritten) {
         throwSerialError("failed to write to serial device", "");
         return 0;
@@ -210,18 +238,20 @@ size_t SerialPort::write(const std::vector<byte> &&data)
     Author: Declan White
     Changelog:
         [2014-09-04 DWW] Created.
+        [2014-10-21 CW] Corrected syntax to compile.
 */
-size_t SerialPort::read(std::vector<byte> &data)
+size_t SerialPort::readDevice(std::vector<byte> &data)
 {
-    read(data, std::numeric_limits<size_t>::max());
+    readDevice(data, std::numeric_limits<size_t>::max());
 }
-size_t SerialPort::read(std::vector<byte> &data, size_t maxSize)
+size_t SerialPort::readDevice(std::vector<byte> &data, size_t maxSize)
 {
     if(!internalData) {
         throw std::logic_error("cannot read from a closed serial device");
         return 0;
     }
-    SeralPortInternalData *bsdInternalData = (SeralPortInternalData*)*internalData;
+    
+    SeralPortInternalData *bsdInternalData = (SeralPortInternalData*)internalData.get();
     
     int bytesAvailable = 0;
     if(-1 == ioctl(bsdInternalData->fileDescriptor, FIONREAD, &bytesAvailable)) {
@@ -229,11 +259,12 @@ size_t SerialPort::read(std::vector<byte> &data, size_t maxSize)
         return 0;
     }
     if(bytesAvailable > 0) {
-        int bytesToRead = std::min(bytesAvailable, maxSize);
+        int bytesToRead = std::min(bytesAvailable, (int)maxSize);
         if(data.size() < bytesToRead) {
             data.resize(bytesToRead);
         }
         int bytesRead = read(bsdInternalData->fileDescriptor, &data[0], bytesToRead);
+        
         if(-1 == bytesRead) {
             throwSerialError("failed to read from serial device", "");
             return 0;
@@ -243,14 +274,17 @@ size_t SerialPort::read(std::vector<byte> &data, size_t maxSize)
     return 0;
 }
 
+
 /* SerialPort::flushWrite
     Author: Declan White
     Changelog:
         [2014-09-04 DWW] Created.
+        [2014-10-21 CW] Corrected syntax to compile.
 */
 void SerialPort::flushWrite()
 {
-    if(-1 == tcflush(fd, TCOFLUSH)) {
+    SeralPortInternalData *bsdInternalData = (SeralPortInternalData*)internalData.get();
+    if(-1 == tcflush(bsdInternalData->fileDescriptor, TCOFLUSH)) { 
         throwSerialError("failed to flush serial device output object", "");
     }
 }
@@ -259,12 +293,12 @@ void SerialPort::flushWrite()
     Author: Declan White
     Changelog:
         [2014-09-04 DWW] Created.
+        [2014-10-21 CW] Corrected syntax to compile.
 */
 void SerialPort::flushRead()
 {
-    if(-1 == tcflush(fd, TCIFLUSH)) {
+    SeralPortInternalData *bsdInternalData = (SeralPortInternalData*)internalData.get();
+    if(-1 == tcflush(bsdInternalData->fileDescriptor, TCIFLUSH)) { 
         throwSerialError("failed to flush serial device output object", "");
     }
 }
-
-

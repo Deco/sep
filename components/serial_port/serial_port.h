@@ -1,9 +1,15 @@
+#include "common.h"
 
 #include <cstddef>
 #include <exception>
+#include <memory>
+#include <vector>
 
 #ifndef SERIAL_PORT_H
 #define SERIAL_PORT_H
+
+typedef unsigned char byte;
+
 
 /* class SerialPort
     Author: Declan White
@@ -22,7 +28,7 @@ public:
     */
     class SerialFailure : std::runtime_error {
         // 
-    }
+    };
 
 public:
     /* SerialPort::(primary constructor)
@@ -54,7 +60,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    void open(
+    void openDevice(
         const std::string &&deviceName,
         unsigned long baudRate,
         bool shouldBlock = false
@@ -69,7 +75,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    void close();
+    void closeDevice();
     
     /* SerialPort::isOpen
         Author: Declan White
@@ -91,7 +97,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    size_t write(const std::vector<byte> &&data);
+    size_t writeDevice(const std::vector<byte> &&data);
     
     /* SerialPort::read
         Author: Declan White
@@ -102,8 +108,8 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    size_t read(std::vector<byte> &data);
-    size_t read(std::vector<byte> &data, size_t maxSize);
+    size_t readDevice(std::vector<byte> &data);
+    size_t readDevice(std::vector<byte> &data, size_t maxSize);
     
     /* SerialPort::flushWrite
         Author: Declan White
@@ -127,7 +133,7 @@ public:
     */
     void flushRead();
     
-private
+private:
     std::shared_ptr<void> internalData;
 };
 

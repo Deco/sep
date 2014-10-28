@@ -208,7 +208,7 @@ public:
     
     
     ///////// This is for LISTS only ///////// 
-    const std::shared_ptr<Param>& createParam(
+    const std::shared_ptr<Param>& appendParam(
         int key,
         ParamType type,
         ParamValue &&defaultValue
@@ -219,7 +219,7 @@ public:
     bool isTerminal() const;
     
     // For all types
-    const ParamAddress &getAddress() const;
+    //const ParamAddress &getAddress() const;
     
     // For terminal types
     ParamValue getValue();

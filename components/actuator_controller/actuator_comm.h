@@ -1,10 +1,14 @@
-
 #include "common.h"
 #include "serial_port.h"
+#include "events.h"
+#include "application_core.h"
 
 #ifndef ACTUATOR_COMM_H
 #define ACTUATOR_COMM_H
 
+class ActuatorError {
+    //
+};
 /* abstract class ActuatorComm
     Author: Declan White
     Description:
@@ -102,7 +106,7 @@ public:
     
 
 public:
-    
+    ActuatorComm();
     /* ActuatorComm::(primary constructor)
         Author: Declan White
         Description: TODO
@@ -114,11 +118,13 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    virtual ActuatorComm(
-        std::shared_ptr<ApplicationContext> app,
-        ParamContext params,
+    ActuatorComm(
+        std::shared_ptr<ApplicationCore> app,
+        Param params,
         const std::shared_ptr<SerialPort> &serialPort
-    ) = 0;
+    ){
+        //
+    }
     
     /* ActuatorComm::~ActuatorComm
         Author: Declan White
@@ -169,7 +175,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    virtual void getActuatorInfoList(
+    virtual void obtainActuatorInfoList(
         std::vector<ActuatorComm::ActuatorInfo> &infoList
     ) const = 0;
     
@@ -297,4 +303,3 @@ public:
 };
 
 #endif//ACTUATOR_COMM_H
-

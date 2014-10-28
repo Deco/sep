@@ -1,9 +1,8 @@
-
 #include <boost/signals2/signal.hpp>
 #include "threads.h"
 
-#ifndef eventS_H
-#define eventS_H
+#ifndef EVENTS_H
+#define EVENTS_H
 
 /* alias event
     Author: Declan White
@@ -14,7 +13,8 @@
     Changelog:
         [2014-09-02 DWW] Created.
 */
-using event = boost::signals2::signal;
+template<typename T>
+using event = boost::signals2::signal<T>;
 
 /* alias hook
     Author: Declan White
@@ -60,7 +60,7 @@ public:
 private:
     atom<T> value;
 
-}
+};
 
 /* struct Cancellableevent
     Author: Nathan Monteloene
@@ -91,4 +91,4 @@ struct cancellable {
     
 };
 
-#endif//eventS_H
+#endif//EVENTS_H
