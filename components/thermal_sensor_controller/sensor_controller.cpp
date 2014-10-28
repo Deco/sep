@@ -31,7 +31,7 @@
  *             to start io_service work. CW
  */
 ThermalSensorController::ThermalSensorController(
-    std::shared_ptr<Application_core> core, const std::string _deviceName, unsigned int _baudRate
+    std::shared_ptr<ApplicationCore> core, const std::string _deviceName, unsigned int _baudRate
 )   
     : app_core(core), deviceName(_deviceName), deviceBaudRate(_baudRate), readingQueue()
 {
@@ -83,7 +83,7 @@ void ThermalSensorController::init()
 
 bool ThermalSensorController::sync(std::vector<byte> &data, std::vector<byte> &buff)
 {
- std::cout << "Opening sensor device: " << deviceName << std::endl;
+    std::cout << "Opening sensor device: " << deviceName << std::endl;
 
     // buffer of data to be written to device
     //unsigned char data[255]; 
@@ -94,19 +94,19 @@ bool ThermalSensorController::sync(std::vector<byte> &data, std::vector<byte> &b
     //std::vector<byte> buff;
     
     
-    sport.openDevice(deviceName.c_str(), deviceBaudRate);
+    sport.open(deviceName.c_str(), deviceBaudRate);
     size_t readCount;
 
     // Start synchronisation process by sending a 255 byte
     data[0] = 255;
     //int sent = sport.write((char*)&data, 1);
-    size_t sent = sport.writeDevice(data);
+    size_t sent = sport.write(data);
     assert(sent == 1);
 
     // Read bytes until 50 continuous 255 bytes have been read.
     int count = 0;
     do {
-        readCount = sport.readDevice(buff, 1);
+        readCount = sport.read(buff, 1);
         if(readCount > 0) {
             if(buff[0] == 255) {
                 count++;
@@ -118,12 +118,12 @@ bool ThermalSensorController::sync(std::vector<byte> &data, std::vector<byte> &b
 
     // write 254 to sensor
     data[0] = 254;
-    sent = sport.writeDevice(data);
+    sent = sport.write(data);
     assert(sent == 1);
 
     // if 254 is returned by sensor, synchronisation is complete
     do {
-        readCount = sport.readDevice(buff, 1);
+        readCount = sport.read(buff, 1);
         if(readCount > 0 && buff[0] == 254) {
             break;
         }
@@ -142,23 +142,23 @@ bool ThermalSensorController::takeReading(std::vector<byte> &data, std::vector<b
     newReading.time = time(0);     // set time = to current time
         
     // read sentinal byte
-    sport.readDevice(buff, 1);
+    sport.read(buff, 1);
     //std::cout << "This byte should be 255!" << buff[0] << std::endl;
     assert(buff[0] == 255); 
 
     // read id byte representing what sensor is sending
-    sport.readDevice(buff, 1);
+    sport.read(buff, 1);
     unsigned char id = buff[0];
 
     // read length of data that sensor is going to send
-    sport.readDevice(buff, 2);
+    sport.read(buff, 2);
     unsigned short len = *((unsigned short*)buff.data());
     //byte buff2[sizeof(unsigned short)];
     //memcpy(&buff2,&buff,sizeof(unsigned short));
     //unsigned short len = buff2[0];
 
     // read sensor data into buffer
-    sport.readDevice(buff, len);
+    sport.read(buff, len);
 
 
     float ambientTemp = 0;        

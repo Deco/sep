@@ -57,7 +57,7 @@ SerialPort::SerialPort()
 */
 SerialPort::~SerialPort()
 {
-    closeDevice();
+    close();
 }
 
 /* SerialPort::open
@@ -69,7 +69,7 @@ SerialPort::~SerialPort()
         [2014-09-04 DWW] Created.
         [2014-10-21 CW] Corrected syntax to compile.
 */
-void SerialPort::openDevice(const std::string &&deviceName, unsigned long baudRate, bool shouldBlock)
+void SerialPort::open(const std::string &&deviceName, unsigned long baudRate, bool shouldBlock)
 {
     int optionFlags = 0;
     // Open serial device in read & write mode
@@ -83,7 +83,7 @@ void SerialPort::openDevice(const std::string &&deviceName, unsigned long baudRa
         optionFlags |= O_NDELAY;
     }
    
-    int fileDescriptor = open(deviceName.c_str(), optionFlags); // moved decleration to global for now so other functions can use. maybe put it in class as a field
+    int fileDescriptor = ::open(deviceName.c_str(), optionFlags); // moved decleration to global for now so other functions can use. maybe put it in class as a field
     if(-1 == fileDescriptor) {
         throwSerialError("failed to open serial device", deviceName.c_str());  
         return;
@@ -160,7 +160,7 @@ void SerialPort::openDevice(const std::string &&deviceName, unsigned long baudRa
         [2014-09-04 DWW] Created.
         [2014-10-21 CW] Corrected syntax to compile.
 */
-void SerialPort::closeDevice()
+void SerialPort::close()
 {
     if(!internalData) {
         throw std::logic_error("cannot close a closed serial device");
@@ -169,7 +169,7 @@ void SerialPort::closeDevice()
     
     SeralPortInternalData *bsdInternalData = (SeralPortInternalData*)internalData.get();
     
-    if(-1 == close(bsdInternalData->fileDescriptor)) {
+    if(-1 == ::close(bsdInternalData->fileDescriptor)) {
         throwSerialError("failed to close serial device", "");
         return;
     }
@@ -216,7 +216,7 @@ bool SerialPort::isOpen()
         [2014-09-04 DWW] Created.
         [2014-10-21 CW] Corrected syntax to compile.
 */
-size_t SerialPort::writeDevice(const std::vector<byte> &&data)
+size_t SerialPort::write(const std::vector<byte> &data)
 {
     if(!internalData) {
         throw std::logic_error("cannot write to a closed serial device");
@@ -225,7 +225,7 @@ size_t SerialPort::writeDevice(const std::vector<byte> &&data)
     
     SeralPortInternalData *bsdInternalData = (SeralPortInternalData*)internalData.get();
     
-    int bytesWritten = write(bsdInternalData->fileDescriptor, &data[0], data.size());
+    int bytesWritten = ::write(bsdInternalData->fileDescriptor, &data[0], data.size());
     
     if(-1 == bytesWritten) {
         throwSerialError("failed to write to serial device", "");
@@ -240,11 +240,11 @@ size_t SerialPort::writeDevice(const std::vector<byte> &&data)
         [2014-09-04 DWW] Created.
         [2014-10-21 CW] Corrected syntax to compile.
 */
-size_t SerialPort::readDevice(std::vector<byte> &data)
+size_t SerialPort::read(std::vector<byte> &data)
 {
-    readDevice(data, std::numeric_limits<size_t>::max());
+    read(data, std::numeric_limits<size_t>::max());
 }
-size_t SerialPort::readDevice(std::vector<byte> &data, size_t maxSize)
+size_t SerialPort::read(std::vector<byte> &data, size_t maxSize)
 {
     if(!internalData) {
         throw std::logic_error("cannot read from a closed serial device");
@@ -263,7 +263,7 @@ size_t SerialPort::readDevice(std::vector<byte> &data, size_t maxSize)
         if(data.size() < bytesToRead) {
             data.resize(bytesToRead);
         }
-        int bytesRead = read(bsdInternalData->fileDescriptor, &data[0], bytesToRead);
+        int bytesRead = ::read(bsdInternalData->fileDescriptor, &data[0], bytesToRead);
         
         if(-1 == bytesRead) {
             throwSerialError("failed to read from serial device", "");
