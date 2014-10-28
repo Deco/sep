@@ -6,13 +6,19 @@
  * websocketpp websocket & http server to handle commands.
  */
 
+#include "websocketpp/config/asio_no_tls.hpp"
+
+#include "websocketpp/server.hpp"
+
+#include <iostream>
+
 class NetService {
 public:
 	typedef websocketpp::server<websocketpp::config::asio> WSServer;
 
 public:
 	//The map used to map names to callback functions, making them easy to use via message passing
-	std::map<std::string, std::function<void(int)> callbackMap;
+	std::map<std::string, std::function<void(int)>> callbackMap;
 
 	//NetService default constructor
 	NetService(
@@ -33,7 +39,7 @@ public:
 
 private:
 	//The websocket/http server (can handle requests from both)
-	websocketpp::server<websocketpp::config::asio> wss;
+	WSServer wss;
 
 	void init() 
 	{
@@ -42,7 +48,7 @@ private:
 
 		//Set handler for http connection requests
 		wss.set_http_handler([](WSServer *svr, websocketpp::connection_hdl hdl) {
-			server::connection_ptr con = svr->get_con_from_hdl(hdl);
+			WSServer::connection_ptr con = svr->get_con_from_hdl(hdl);
 			
 			std::stringstream output;
 			output << "<!doctype html><html><body>You requested "
@@ -65,4 +71,4 @@ private:
 		wss.run();
 	}
 
-}
+};
