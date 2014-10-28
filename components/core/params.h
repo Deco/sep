@@ -11,6 +11,7 @@
 #include <atomic>
 #include <vector>
 #include <map>
+#include <string>
 #include <initializer_list>
 
 #include <boost/variant.hpp>
