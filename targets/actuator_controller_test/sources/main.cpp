@@ -8,6 +8,8 @@ int main()
     //fdakjhfdsakljfdasjklfdsa
     
     //core->run();
+
+    std::cout << "meow" << std::endl;
     
     return 0;
 }
