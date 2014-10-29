@@ -142,7 +142,8 @@ public:
             [2014-09-04 DWW] Added `comm` parameter (for dependency injection).
     */
     ActuatorController(
-        Param params,
+        const std::shared_ptr<ApplicationCore> &core,
+        const std::shared_ptr<Param> &params,
         const std::shared_ptr<ActuatorComm> &comm
     );
 
@@ -191,7 +192,9 @@ private:
     
 
 private:
-    hook hookOnSerialData;
+    Hook hookOnActuatorStateChange;
+    
+    Hook hookOnActuatorMovementUpdate;
     
 
 };

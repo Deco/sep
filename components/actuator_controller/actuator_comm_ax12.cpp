@@ -96,6 +96,119 @@ ActuatorCommAX12::ActuatorCommAX12(
         &ActuatorCommAX12::onSampleRateChanged, this
     );*/
     
+    
+    hookOnSerialDataReady = serialPortPtr->registerOnSerialDataReadyCallback(
+        std::bind(&ActuatorCommAX12::onSerialDataReady, this)
+    );
+    
+}
+
+/////
+    OXFF 0XFF ID LENGTH ERROR PARAMETER1 PARAMETER2 PARAMETER3 CHECKSUM
+
+    .    .    .  .      .     .          .          .          .
+    
+    Check Sum = ~ (ID + Length + Instruction + Parameter1 + ... Parameter N)
+    
+/////
+    enum class SerialReadState {
+        HEADER,
+        PARAMETERS,
+        CHECKSUM
+    }
+    
+    SerialReadState readState = HEADER;
+    int readStateExpectedParameterCount = 0;
+    int readCurrentChecksumTally = 0;
+    
+/////
+
+
+/* ... */
+void ActuatorCommAX12::onSerialDataReady(const SerialPort &sport)
+{
+    strand.post(
+        std::bind(&ActuatorCommAX12::handleSerialData, this)
+    );
+}
+
+void ActuatorCommAX12::handleSerialData()
+{
+    while(true) {
+        if(readState == SerialReadState::HEADER) {
+            if(sport.getAvailable() < 5) {
+                return;
+            }
+            
+            readCurrentChecksumTally = 0;
+            
+            std::vector<byte> data;
+            sport.read(data, 5);
+            
+            for(int byteI = 0; byteI < data.size(); byteI++) {
+                readChecksumTally += data[byteI];
+            }
+            
+            byte preamble1 = data[0];
+            byte preamble2 = data[1];
+            byte id = data[2];
+            byte length = data[3];
+            byte errorStatus = data[4];
+            
+            if(preamble1 != 0xFF || preamble2 != 0xFF) {
+                throw new std::runtime_error("oh shit!");
+            }
+            
+            // check id
+            // check errorStatus
+            // etc
+            
+            readState = SerialReadState::PARAMETERS;
+            readStateExpectedParameterCount = length-2;
+        }
+        
+        if(readState == SerialReadState::PARAMETERS) {
+            if(sport.getAvailable() < readStateExpectedParameterCount) {
+                return;
+            }
+            std::vector<byte> data;
+            sport.read(data, readStateExpectedParameterCount);
+            
+            for(int byteI = 0; byteI < data.size(); byteI++) {
+                readChecksumTally += data[byteI];
+            }
+            
+            for(int paramI = 0; paramI < readStateExpectedParameterCount; paramI++) {
+                // do stuff with params
+            }
+            
+            readState = SerialReadState::CHECKSUM;
+        }
+        
+        if(readState == SerialReadState::CHECKSUM) {
+            if(sport.getAvailable() < 1) {
+                return;
+            }
+            std::vector<byte> data;
+            sport.read(data, 1);
+            
+            byte expectedChecksum = data[0];
+            
+            byte calculatedChecksum = ~readChecksumTally;
+            
+            if(expectedChecksum != calculatedChecksum) {
+                throw new std::runtime_error("oh shit!");
+            }
+            
+            readState = SerialReadState::HEADER;
+            
+        }
+    }
+}
+
+void ActuatorCommAX12::SomeOtherMethod()
+{
+    packetQueue.pop() blah blah blah
 }
 
 /* ActuatorCommAX12::~ActuatorCommAX12
