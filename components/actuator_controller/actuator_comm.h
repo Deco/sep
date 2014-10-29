@@ -270,7 +270,32 @@ public:
     //virtual duration getActuatorMovementSampleRate(int id = 0);
     //virtual void setActuatorMovementSampleRate(int id, duration sampleRate) = 0;
     
+public:
+    virtual void registerActuatorStateChangeCallback(
+        std::function<const ActuatorInfo& info, ActuatorState state> callbackPtr
+    ) = 0;
+
+    virtual void registerActuatorMovementUpdateCallback(
+        std::function<const ActuatorInfo& info, double pos, double vel, bool isMoving> callbackPtr
+    ) = 0;
 
 };
 
 #endif//ACTUATOR_COMM_H
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
