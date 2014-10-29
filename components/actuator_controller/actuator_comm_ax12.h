@@ -39,20 +39,6 @@ public:
             [2014-09-04 DWW] Created.
     */
     ~ActuatorCommAX12();
-    void connect();
-    void disconnect();
-    void obtainActuatorInfoList(
-    std::vector<ActuatorComm::ActuatorInfo> &infoList
-    );
-    ActuatorComm::ActuatorState getActuatorState(int id);
-    std::shared_ptr<ActuatorError> getActuatorError(int id);
-    void recoverActuator(int id);
-    double getActuatorGoalPos(int id);
-    void setActuatorGoalPos(int id, double posDeg);
-    double getActuatorGoalVel(int id);
-    void setActuatorGoalVel(int id, double velDegPerSec);
-    void initiateMovement(int id);
-    
 
 private:
     
@@ -160,8 +146,8 @@ private:
     
     atom<std::vector<const ActuatorInfo>> actuatorInfoList;
     
-    
-    hook hookParamSampleRateChanged;
+    Hook hookParamSampleRateChanged;
 };
 
 #endif//ACTUATOR_COMM_AX12_H
+
