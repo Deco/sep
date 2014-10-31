@@ -323,17 +323,7 @@ size_t SerialPort::readDevice(char* data, size_t maxSize)
     if(bytesAvailable > 0) {
 
         int bytesToRead = std::min(bytesAvailable, (int)maxSize);
-        //if(data.size() < bytesToRead) {
-        //    data.resize(bytesToRead);
-        //}
-        printf("There are %d bytes avilable to read from sensor and we want to read %d.\n", bytesAvailable, bytesToRead);
         int bytesRead = read(bsdInternalData->fileDescriptor, &data[0], bytesToRead);
-        for (int i=0;i<bytesRead;i++) {
-            //std::cout << data[i] << " ";
-            unsigned char ch = data[i];
-            printf("%u ", ch);
-        }
-        printf("\n");
 
         if(-1 == bytesRead) {
             throwSerialError("failed to read from serial device", "");
