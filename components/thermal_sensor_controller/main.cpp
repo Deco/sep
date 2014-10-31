@@ -6,7 +6,7 @@
 
 int main()
 {
-    std::shared_ptr<Application_core> core = Application_core::instantiate();
+    std::shared_ptr<ApplicationCore> core = ApplicationCore::instantiate();
     ThermalSensorController sc(core, "/dev/ttyACM0", 115200);
 
 
@@ -18,7 +18,10 @@ int main()
 
 
     sc.init();
-/*
+
+
+
+
     while(1) {
         bool wasDataRead = sc.popThermopileReading(img, timeOfRead);
         if(wasDataRead) {
@@ -29,7 +32,7 @@ int main()
                 printf("\n");
             }
         }
-    }*/
+    }
     
     return 0;
 }

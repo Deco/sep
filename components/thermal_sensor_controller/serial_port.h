@@ -97,6 +97,7 @@ public:
             [2014-09-04 DWW] Created.
     */
     size_t writeDevice(const std::vector<byte> &data);
+    size_t writeDevice(char* data, int size);
     
     /* SerialPort::read
         Author: Declan White
@@ -110,6 +111,9 @@ public:
     size_t readDevice(std::vector<byte> &data);
     size_t readDevice(std::vector<byte> &data, size_t maxSize);
     
+    size_t readDevice(char* data);
+    size_t readDevice(char* data, size_t maxSize);
+
     /* SerialPort::flushWrite
         Author: Declan White
         Description: TODO
@@ -131,6 +135,8 @@ public:
             [2014-09-04 DWW] Created.
     */
     void flushRead();
+
+    int getAvailable();
     
 private:
     std::shared_ptr<void> internalData;
