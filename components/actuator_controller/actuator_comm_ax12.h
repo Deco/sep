@@ -3,6 +3,8 @@
 #include "threads.h"
 #include "params.h"
 
+#include <functional>
+
 #ifndef ACTUATOR_COMM_AX12_H
 #define ACTUATOR_COMM_AX12_H
 
@@ -30,6 +32,8 @@ public:
         const std::shared_ptr<SerialPort> &serialPort
     );
     
+    void onSerialDataReady(SerialPort &sport);
+
     /* ActuatorCommAX12::~ActuatorCommAX12
         Author: Declan White
         Description: TODO
@@ -41,7 +45,17 @@ public:
     ~ActuatorCommAX12();
 
 private:
+
+    void connect();
+
+    void disconnect();
     
+    void obtainActuatorInfoList(
+    std::vector<ActuatorComm::ActuatorInfo> &infoList
+    );
+
+    void handleSerialData(SerialPort sport);
+
     /* ActuatorCommAX12::serialThreadFunc
         Author: Declan White
         Description: TODO
@@ -114,6 +128,22 @@ private:
             [2014-09-04 DWW] Created.
     */
     void  writeShort(byte id, byte address, short value);
+
+    ActuatorComm::ActuatorState getActuatorState(int id);
+
+    std::shared_ptr<ActuatorError> getActuatorError(int id);
+
+    void recoverActuator(int id);
+
+    double getActuatorGoalPos(int id);
+
+    void setActuatorGoalPos(int id, double posDeg);
+
+    double getActuatorGoalVel(int id);
+
+    void setActuatorGoalVel(int id, double velDegPerSec);
+
+    void initiateMovement(int id);
     
 
 private:
@@ -130,11 +160,21 @@ private:
     enum struct ActuatorOrderKind {
         INITIATE_MOVEMENT,
     };
+
+    enum class SerialReadState {
+        HEADER,
+        PARAMETERS,
+        CHECKSUM
+    };
     
 
 private:
+    SerialReadState readState = SerialReadState::HEADER;
+    int readStateExpectedParameterCount = 0;
+    int readCurrentChecksumTally = 0;
+
     std::shared_ptr<ApplicationCore> app;
-    const std::shared_ptr<const boost::asio::io_service> ios;
+    const std::shared_ptr<boost::asio::io_service> ios;
     std::shared_ptr<Param> paramsPtr;
     
     std::shared_ptr<std::thread> serialThreadPtr;
@@ -146,7 +186,9 @@ private:
     
     atom<std::vector<const ActuatorInfo>> actuatorInfoList;
     
-    Hook hookParamSampleRateChanged;
+    hook hookParamSampleRateChanged;
+
+    hook hookOnSerialDataReady;
 };
 
 #endif//ACTUATOR_COMM_AX12_H

@@ -3,6 +3,8 @@
 #include "events.h"
 #include "application_core.h"
 
+#include <functional>
+
 #ifndef ACTUATOR_COMM_H
 #define ACTUATOR_COMM_H
 
@@ -271,12 +273,13 @@ public:
     //virtual void setActuatorMovementSampleRate(int id, duration sampleRate) = 0;
     
 public:
-    virtual void registerActuatorStateChangeCallback(
-        std::function<const ActuatorInfo& info, ActuatorState state> callbackPtr
+    virtual hook registerActuatorStateChangeCallback(
+        std::function<void (const ActuatorInfo&, ActuatorState)> callbackPtr
     ) = 0;
 
-    virtual void registerActuatorMovementUpdateCallback(
-        std::function<const ActuatorInfo& info, double pos, double vel, bool isMoving> callbackPtr
+    //info, pos, vel, isMoving
+    virtual hook registerActuatorMovementUpdateCallback(
+        std::function<void (const ActuatorInfo&, double, double, bool)> callbackPtr
     ) = 0;
 
 };

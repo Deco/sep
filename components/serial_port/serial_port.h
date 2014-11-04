@@ -1,4 +1,5 @@
 #include "common.h"
+#include "events.h"
 
 #include <cstddef>
 #include <exception>
@@ -132,9 +133,17 @@ public:
             [2014-09-04 DWW] Created.
     */
     void flushRead();
+
+    int getAvailable();
     
 private:
     std::shared_ptr<void> internalData;
+
+
+public:
+    hook registerOnSerialDataReadyCallback(
+        std::function<void (SerialPort &)> callbackPtr
+    );
 };
 
 #endif//SERIAL_PORT_H

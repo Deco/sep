@@ -68,7 +68,7 @@ public: // Public concept classes
     class OrderProvider {
         public:
             OrderProvider() = default;
-            virtual ~OrderProvider() = default;
+            ~OrderProvider() = default;
             struct ActuatorMoveOrder{};
         
         public:
@@ -153,7 +153,7 @@ public:
         Changelog:
             [2014-09-02 DWW] Created.
     */
-    virtual ~ActuatorController();
+    ~ActuatorController();
     
 
 public:
@@ -170,7 +170,7 @@ public:
         Changelog:
             [2014-09-02 DWW] Created.
     */
-    virtual void connect();
+    void connect();
     
     /* ActuatorController::disconnect
         Author: Declan White
@@ -184,17 +184,27 @@ public:
         Changelog:
             [2014-09-02 DWW] Created.
     */
-    virtual void disconnect();
+    void disconnect();
     
 
 private:
-    
+    void onActuatorStateChange(
+        const ActuatorComm::ActuatorInfo& info, ActuatorComm::ActuatorState state
+    );
+
+    void onActuatorMovementUpdate(
+        const ActuatorComm::ActuatorInfo& info, double pos, double vel, bool isMoving
+    );
     
 
 private:
-    Hook hookOnActuatorStateChange;
+    hook hookOnActuatorStateChange;
     
-    Hook hookOnActuatorMovementUpdate;
+    hook hookOnActuatorMovementUpdate;
+
+    std::shared_ptr<ApplicationCore> core;
+    std::shared_ptr<Param> params;
+    std::shared_ptr<ActuatorComm> comm;
     
 
 };

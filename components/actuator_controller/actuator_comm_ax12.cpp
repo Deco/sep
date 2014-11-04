@@ -1,4 +1,5 @@
 #include "actuator_comm_ax12.h"
+#include "serial_port.h"
 
 /* Dynamixel AX-12 sentinel values
     Attribution:
@@ -77,6 +78,11 @@
     Changelog:
         [2014-09-04 DWW] Created.
 */
+
+void test(const SerialPort &sport) {
+    // 
+}
+
 ActuatorCommAX12::ActuatorCommAX12(
     std::shared_ptr<ApplicationCore> appIn,
     const std::shared_ptr<Param> &&paramsIn,
@@ -98,11 +104,14 @@ ActuatorCommAX12::ActuatorCommAX12(
     
     
     hookOnSerialDataReady = serialPortPtr->registerOnSerialDataReadyCallback(
-        std::bind(&ActuatorCommAX12::onSerialDataReady, this)
+        std::bind(
+            &ActuatorCommAX12::onSerialDataReady,
+            this, std::placeholders::_1
+        )
     );
     
 }
-
+/*
 /////
     OXFF 0XFF ID LENGTH ERROR PARAMETER1 PARAMETER2 PARAMETER3 CHECKSUM
 
@@ -111,36 +120,30 @@ ActuatorCommAX12::ActuatorCommAX12(
     Check Sum = ~ (ID + Length + Instruction + Parameter1 + ... Parameter N)
     
 /////
-    enum class SerialReadState {
-        HEADER,
-        PARAMETERS,
-        CHECKSUM
-    }
     
-    SerialReadState readState = HEADER;
-    int readStateExpectedParameterCount = 0;
-    int readCurrentChecksumTally = 0;
     
-/////
+/////*/
 
 
 /* ... */
-void ActuatorCommAX12::onSerialDataReady(const SerialPort &sport)
+void ActuatorCommAX12::onSerialDataReady(SerialPort &sport)
 {
-    strand.post(
+    boost::asio::io_service::strand strand(*ios);
+    /*strand.post(
         std::bind(&ActuatorCommAX12::handleSerialData, this)
-    );
+    );*/
 }
 
-void ActuatorCommAX12::handleSerialData()
+void ActuatorCommAX12::handleSerialData(SerialPort sport)
 {
+    int readChecksumTally = 0;
     while(true) {
         if(readState == SerialReadState::HEADER) {
             if(sport.getAvailable() < 5) {
                 return;
             }
             
-            readCurrentChecksumTally = 0;
+            readChecksumTally = 0;
             
             std::vector<byte> data;
             sport.read(data, 5);
@@ -206,10 +209,10 @@ void ActuatorCommAX12::handleSerialData()
     }
 }
 
-void ActuatorCommAX12::SomeOtherMethod()
+/*void ActuatorCommAX12::SomeOtherMethod()
 {
-    packetQueue.pop() blah blah blah
-}
+    packetQueue.pop();// blah blah blah
+}*/
 
 /* ActuatorCommAX12::~ActuatorCommAX12
     Author: Declan White
@@ -421,7 +424,7 @@ void ActuatorCommAX12::initiateMovement(int id)
 */
 void ActuatorCommAX12::serialThreadFunc()
 {
-    serialPortPtr = std::make_shared<SerialPort>();
+    //serialPortPtr = std::make_shared<SerialPort>();
     
 }
 
@@ -455,7 +458,8 @@ void ActuatorCommAX12::receivePacket(
 */
 byte ActuatorCommAX12::readByte(byte id, byte address)
 {
-    //
+    //to be changed
+    return 0;
 }
 
 /* ActuatorCommAX12::readShort
@@ -465,7 +469,8 @@ byte ActuatorCommAX12::readByte(byte id, byte address)
 */
 short ActuatorCommAX12::readShort(byte id, byte address)
 {
-    //
+    //to be changed
+    return 0;
 }
 
 /* ActuatorCommAX12::writeByte
