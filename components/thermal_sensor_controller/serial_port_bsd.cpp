@@ -34,8 +34,7 @@ inline void throwSerialError(const char *message, const char *deviceName) {
     ));
     std::string str(what);
     free(what);
-    //throw SerialError(str); //not sure what to include for this?
-    throw std::exception();
+    throw std::runtime_error(deviceName + std::string(" : ") + message);
 }
 
 struct SeralPortInternalData {
@@ -377,3 +376,10 @@ int SerialPort::getAvailable(){
     return bytesAvailable;
 }
 
+
+hook SerialPort::registerOnSerialDataReadyCallback(
+    std::function<void (SerialPort &)> callbackPtr
+)
+{
+    // 
+}

@@ -1,11 +1,11 @@
 #include "sensor_controller.h"
 #include "serial_port.h"
 #include "application_core.h"
-#include "serialconn.h"
 #include <iostream>
 #include <thread>
 #include <mutex>
 #include <vector>
+#include <exception>
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
@@ -15,12 +15,8 @@
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 
-/* Definitions for the ID byte read from sensor telling us 
- * what kind of data the sensor is sending */
 
-
-
-
+// Global variables to manage serial data
 enum class SerialReadState {
     HEADER,
     DATA
@@ -30,20 +26,19 @@ SerialReadState readState = SerialReadState::HEADER;
 int DataLength = 0;
 
 // buffer of data read from device
-unsigned char buff[300];
+unsigned char buff[100];
 unsigned char data[100];
 
+bool deviceSynced = false;
 
-
-// TODO: Ambient temp data reading not being added to queue.
 
 /* Created by: Chris Webb
  * Date Created: 7/6/14
- * Function: ThermalSensorController Constructor
  *
  * Changelog:
  * 21/10/2014: Modified to import a pointer to an Application_core object used 
  *             to start io_service work. CW
+ * 2/11/2014: Started implementing io_service hook but not fully implemented.
  */
 ThermalSensorController::ThermalSensorController(
     std::shared_ptr<ApplicationCore> coreIn,
@@ -53,23 +48,47 @@ ThermalSensorController::ThermalSensorController(
     ios(coreIn->getIOService()),
     deviceName(_deviceName), 
     deviceBaudRate(_baudRate), 
-    readingQueue()
+    readingQueue(),
+    sport()
 {
-  //
+    /*
+    hookOnSerialDataReady = sport.registerOnSerialDataReadyCallback(
+            std::bind(
+            &ThermalSensorController::onSerialDataReady,
+            this, std::placeholders::_1
+    );
+    */
 }
 
 
+/* Work in progress:
+   Function to post data to core when data is ready on sensor. 
+
+void ThermalSensorController::onSerialDataReady()
+{
+    boost::asio::io_service::strand strand(*ios);
+    strand.post(
+        std::bind(&ThermalSensorController::handleSerialData, this)
+    );
+}*/
 
 
 
+/* Created by: Chris Webb
+ * Date Created: 2/11/14
+ * Last Modified: 2/11/14
+ * Description:
+ * Flip between HEADER and DATA, reading data from the sensor if it's available.
+ */
 void ThermalSensorController::handleSerialData()
 {
     while(true) {
         if(readState == SerialReadState::HEADER) {
-            if(sport.getAvailable() < 4) {
+            int availableBytes = sport.getAvailable();
+            if(availableBytes < 4) {
+                //printf("not 4 bytes available(only %d), returning.\n", availableBytes);
                 return;
             }
-            
             
             int readCount;
             readCount = sport.readDevice((char*)&buff, 4);
@@ -81,32 +100,45 @@ void ThermalSensorController::handleSerialData()
 
             memcpy(&length,&buff[2],2);
 
-
-            // check id
-            if(id != AMBIENT_TEMP_DATA || id != IMU_DATA || id != SENSOR_DATA) {
-                throw new std::runtime_error("id of reading is wrong, out of sync.");
+            // check id. USING HARDCODED NUMBERS because hexidecimal
+            unsigned char correctIDs[3] = {17, 18, 19};
+            if (memcmp(&id, &correctIDs[0], sizeof(id)) != 0 &&
+                memcmp(&id, &correctIDs[1], sizeof(id)) != 0 &&
+                memcmp(&id, &correctIDs[2], sizeof(id)) != 0) 
+            {
+                printf("%u is NOT equal to %u.\n", id, correctIDs[1]);
+                throw std::runtime_error("id of reading is wrong");
             }
 
-            // check length
-            if(length != 4 || length != 256 || length != 12) {
-                throw new std::runtime_error("length is unexpected, out of sync.");
+            // check length.
+            unsigned short correctLengths[3] = {4, 256, 12};
+            if (memcmp(&length, &correctLengths[0], sizeof(length)) != 0 &&
+                memcmp(&length, &correctLengths[1], sizeof(length)) != 0 &&
+                memcmp(&length, &correctLengths[2], sizeof(length)) != 0) 
+            {
+                throw std::runtime_error("length is unexpected");
             }
             
             readState = SerialReadState::DATA;
             DataLength = length;
-        }
+            //printf("CORRECT AND FINAL HEADER: id:%x, length: %hu.\n", id, length);
+        } 
         
 
         if(readState == SerialReadState::DATA) {
-            if(sport.getAvailable() < DataLength) {
+            int availableBytes = sport.getAvailable();
+            if(availableBytes < DataLength) {
+                //printf("not %d bytes available(only %d), returning.\n", DataLength, availableBytes);
                 return;
             }
-                
-            int readCount = sport.readDevice((char*)&buff[4], DataLength);
+            unsigned char dataBuffer[300];
+            //printf("Reading data now.\n");
+            int readCount = sport.readDevice((char*)&dataBuffer, DataLength);
             assert(readCount == DataLength);
                 
 
             unsigned char id = buff[1];
+
 
             Reading newReading;
             newReading.time = time(0);     // set time = to current time
@@ -115,22 +147,23 @@ void ThermalSensorController::handleSerialData()
             // id of the reading
             switch(id) {
                 case AMBIENT_TEMP_DATA: {
-                    //       std::cout << "Reading new Ambient temp data!" << std::endl;
+                    //std::cout << "Reading new Ambient temp data!" << std::endl;
                     assert(DataLength == sizeof(float));
-                    float ambient = *((float*)buff);
+                    float ambient = *((float*)dataBuffer);
                     //     std::cout << "ambient temp: " << ambientTemp << std::endl;
 
                     if(1) {
                         std::lock_guard<std::mutex> readingQueueLock(readingQueueMutex);
                         newReading.id = AMBIENT_TEMP_DATA;
                         newReading.ambientTemp = ambient;
+                        //printf("2Ambient temperature is %f.\n", newReading.ambientTemp);
                         readingQueue.push(newReading);
                     }
 
                     break;
                 }
                 case SENSOR_DATA: {
-                    //   std::cout << "Reading new MLX data!" << std::endl;
+                    //std::cout << "Reading new MLX data!" << std::endl;
                     assert(DataLength == 64*sizeof(float));
                     // create pointer to the new images data
                     newReading.img.create(4, 16);  // 4 rows 16 cols
@@ -138,69 +171,116 @@ void ThermalSensorController::handleSerialData()
                     if(1) {
                         std::lock_guard<std::mutex> readingQueueLock(readingQueueMutex);
                         newReading.id = SENSOR_DATA;
-                        memcpy(imgDataPtr, buff, sizeof(float)*64);
+                        memcpy(imgDataPtr, dataBuffer, sizeof(float)*64);
                         readingQueue.push(newReading);
                     }
                     break;
                 }
                 case IMU_DATA: {
-                    //     std::cout << "Reading new IMU data!" << std::endl;
+                    //std::cout << "Reading new IMU data!" << std::endl;
                     assert(DataLength == 3*sizeof(float));
-                    float *imu = (float*)buff;
+                    float *imu = (float*)dataBuffer;
                     if(1) {
                         std::lock_guard<std::mutex> readingQueueLock(readingQueueMutex);
                         newReading.id = IMU_DATA;
                         newReading.orientation.push_back(imu[0]);
                         newReading.orientation.push_back(imu[1]);
                         newReading.orientation.push_back(imu[2]);
+                        //printf("Roll: %f, Pitch: %f, Yaw: %f.\n", newReading.orientation.data()[0], newReading.orientation.data()[1], newReading.orientation.data()[2]);
                         readingQueue.push(newReading);
                     }
                     break;
                 }
                 default: {
-                    // no default case so error and crash painfully here.
-                    assert(1 == 0);
+                    throw std::runtime_error("should never execute this error, caught earlier when ID is wrong.");
                 }
             }
+
+            readState = SerialReadState::HEADER;
         }
     }
 }
 
 
 
+
 /* Created by: Chris Webb
  * Date Created: 7/6/14
- * Function: init()
+ * Last Modified: 2/11/14
+ * Description:
+ * While running is true, continuously read data from sensor and store Readings in queue.
+ */
+void ThermalSensorController::sensorThreadFunc(){
+    while (running) {
+        handleSerialData();
+    }
+}
+
+/* Created by: Chris Webb
+ * Date Created: 7/6/14
+ * Last Modified: 2/11/14
  * Description:
  * Set the bool(running) representing the sensors state to true then create a thread
- * that calls sensorThreadFunc().
+ * that reads data from sensor.
  */
 void ThermalSensorController::init()
 {
-  //  boost::asio::io_service::strand strand( *ios );
-
     running = true;
-    sensorThread = std::thread(&ThermalSensorController::sensorThreadFunc, this);
-
-/*
-    // buffer of data to be written to device
-    std::vector<byte> data;
-
-    // buffer of data read from device
-    std::vector<byte> buff;
-
-    // sync device
-    //ios->dispatch(boost::bind(&ThermalSensorController::sync, this, data, buff));
-    strand.post( boost::bind( &ThermalSensorController::sync, this, data, buff ) );
-
-    while (running){
-        ios->post(boost::bind(&ThermalSensorController::takeReading, this, data, buff));        
+    sport.openDevice(deviceName.c_str(), deviceBaudRate);
+    if (!deviceSynced) {
+        syncDevice();
+        printf("Device sync'd.\n");
     }
-*/
+
+    sensorThread = std::thread(&ThermalSensorController::sensorThreadFunc, this);
+    
 }
 
+/* Created by: Chris Webb
+ * Date Created: 2/11/14
+ * Last Modified: 2/11/14
+ * Description:
+ * Achieves scynchronisation with physical sensor device.
+ *
+ * Changelog:
+ * 2/11/14: Created. CW
+ */
+void ThermalSensorController::syncDevice()
+{   
+    int readCount;
+    // Start synchronisation process by sending a 255 byte
+    data[0] = 255;
+    int sent = sport.writeDevice((char*)&data, 1);
+    assert(sent == 1);
 
+    // Read bytes until 50 continuous 255 bytes have been read.
+    int count = 0;
+    do {
+        readCount = sport.readDevice((char*)&buff, 1);
+        if(readCount > 0) {
+            if(buff[0] == 255) {
+                count++;
+            } else {
+                count = 0;
+            }
+        }
+    } while(count < 50);
 
+    // write 254 to sensor
+    data[0] = 254;
+    sent = sport.writeDevice((char*)&data, 1);
+    assert(sent == 1);
+
+    // if 254 is returned by sensor, synchronisation is complete
+    do {
+        readCount = sport.readDevice((char*)&buff, 1);
+        if(readCount > 0 && buff[0] == 254) {
+            break;
+        }
+    } while(true);
+
+    // Sync complete and successful.
+}
 
 
 
@@ -223,7 +303,8 @@ void ThermalSensorController::init()
  * 7/6/14: Created. CW
  * 25/9/2014: Now supports IMU data. CW
  * 21/10/2014: Updated to use vectors instead of arrays and now using Declans SerialPort class. CW
- */
+ * 2/11/2014: Split function into multiple functions and modified design to check for bytes.
+ 
 void ThermalSensorController::sensorThreadFunc()
 {
   std::cout << "Opening sensor device: " << deviceName << std::endl;
@@ -373,130 +454,11 @@ void ThermalSensorController::sensorThreadFunc()
         }
         
     }// end while
-}
+}*/
 
 
 
 
-
-void ThermalSensorController::oldFunc(){
-{
-    std::cout << "Opening sensor device: " << deviceName << std::endl;
-
-    // buffer of data to be written to device
-    unsigned char data[255]; 
-    // buffer of data read from device
-    unsigned char buff[255];
-
-    // Create a new Reading object to store the sensor data
-    Reading newReading;
-    newReading.img.create(4, 16);  // 4 rows 16 cols
-    newReading.time = time(0);     // set time = to current time
-    
-    
-    // Create a new serial connection to device
-    SerialConn sc(deviceName, 115200);
-    int readCount;
-
-    // Start synchronisation process by sending a 255 byte
-    data[0] = 255;
-    int sent = sc.write((char*)&data, 1);
-    assert(sent == 1);
-
-    // Read bytes until 50 continuous 255 bytes have been read.
-    int count = 0;
-    do {
-        readCount = sc.read((char*)&buff, 1);
-        if(readCount > 0) {
-            if(buff[0] == 255) {
-                count++;
-            } else {
-                count = 0;
-            }
-        }
-    } while(count < 50);
-
-    // write 254 to sensor
-    data[0] = 254;
-    sent = sc.write((char*)&data, 1);
-    assert(sent == 1);
-
-    // if 254 is returned by sensor, synchronisation is complete
-    do {
-        readCount = sc.read((char*)&buff, 1);
-        if(readCount > 0 && buff[0] == 254) {
-            break;
-        }
-    } while(true);
-    printf("synced!\n");
-
-    // loop until controller has requested to stop
-    while (running){
-    bool waitingForOrientation = false;
-        
-        // read sentinal byte
-        sc.read((char*)&buff, 1);
-    //std::cout << "This byte should be 255!" << buff[0] << std::endl;
-        assert(buff[0] == 255); 
-
-        // read id byte representing what sensor is sending
-        sc.read((char*)&buff, 1);
-        unsigned char id = buff[0];
-
-        // read length of data that sensor is going to send
-        sc.read((char*)&buff, 2);
-        unsigned short len = *((unsigned short*)buff);
-
-        // read sensor data into buffer
-        sc.read((char*)&buff, len);
-
-
-        float ambientTemp = 0;
-        
-        // What we do with the recently read sensor data is defined by the
-        // id of the reading
-        switch(id) {
-            case AMBIENT_TEMP_DATA: {
-                std::cout << "Reading new Ambient temp data!" << std::endl;
-                assert(len == sizeof(float));
-                float ambient = *((float*)buff);
-                ambientTemp = ambient;
-                std::cout << "ambient temp: " << ambientTemp << std::endl;
-                break;
-            };
-            case SENSOR_DATA: {
-                std::cout << "Reading new MLX data!" << std::endl;
-                assert(len == 64*sizeof(float));
-                // create pointer to the new images data
-                float *imgDataPtr = (float*)newReading.img.data; 
-                if(1) {
-                    std::lock_guard<std::mutex> readingQueueLock(readingQueueMutex);
-                    memcpy(imgDataPtr, buff, sizeof(float)*64);
-                    waitingForOrientation = true; // not used
-                    readingQueue.push(newReading);
-                }
-                break;
-            };
-        case IMU_DATA: {
-        std::cout << "Reading new IMU data!" << std::endl;
-        assert(len == 3*sizeof(float));
-                
-        //float roll = *((float*)buff);
-        float *imu = (float*)buff;
-        // add orientation to newReading should be around here
-        std::cout << "roll: " << imu[0];
-        std::cout << ", pitch:: " << imu[1];
-        std::cout << ", yaw: " << imu[2] <<  std::endl;
-        break;
-        }
-            default: {
-                assert(1 == 0);
-            }
-        }
-        
-    }// end while
-}
-}
 
 
 
@@ -513,18 +475,13 @@ bool ThermalSensorController::isReadingAvailable(){
  * Date: 7/6/14
  * Function: popThermopileReading
  * Import: 
- *      matRef: cv::Mat passed by reference to return the Reading at the front of
- *              the queue. 
- *      timeRef: time_t passed by reference to return the time the reading at the
- *              front of the queue was created.
- * Export:
- *      boolean containing true if queue has been popped otherwise false
+ * Export: A Reading struct containing the reading at the front of the queue.
  * Description:
- * Removes a Reading from the readingQueue atomically using mutexes and returns the 
- * values.
+ * Removes a Reading from the readingQueue and returns it.
  *
  * Changelog:
  * 7/6/14: Created. CW
+ * 2/11/14: Modified to allow for IMU sensor.
  */
 Reading ThermalSensorController::popThermopileReading()
 {

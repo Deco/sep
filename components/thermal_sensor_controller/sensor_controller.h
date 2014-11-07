@@ -17,12 +17,14 @@
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 
+// Different types of data from sensor
 #define AMBIENT_TEMP_DATA 0x11
 #define SENSOR_DATA 0x12    
 #define IMU_DATA 0x13
 
 typedef unsigned char byte;
 
+// Struct to hold data from sensor
 struct Reading {
     unsigned char id;
     time_t time;
@@ -36,7 +38,6 @@ class ThermalSensorController
 {
 public:
     // Constructor that imports a device name and baud rate of the sensor
-    /*ThermalSensorController(std::shared_ptr<ParamSet> pset);*/
     ThermalSensorController(
         std::shared_ptr<ApplicationCore> coreIn,
         const std::string _deviceName,
@@ -49,26 +50,33 @@ public:
     void shutdown();
     // not implemented
     void update();
-    // Remove a reading from the queue of Readings and return by passed in references.
     // Return the result of queue pop
     Reading popThermopileReading();
-
+    // If there is a Reading available, return true
     bool isReadingAvailable();
-
-    enum struct SensorState {
-        DISCONNECTED,
-        CONNECTED,
-        ERROR
-    };
-
+    // Handle reading serial data from sensor
     void handleSerialData();
-    void oldFunc(); // delete me
-private:
-    // Represents a single 16X4 reading from the MLX sensor, the time it was read
-    // and the orientation of the sensor at the time of scan.
+    // Serial Port class to handle reading and writing over serial port.    
+    SerialPort sport;
 
+    //void onSerialDataReady(); not yet implemented.
 
+    /* not yet implemented.
+    hook registerOnSerialDataReadyCallback(
+        std::function<void ()> callbackPtr
+      //std::function<void (const ActuatorInfo&, ActuatorState)> callbackPtr
+    );
 
+    virtual hook registerActuatorStateChangeCallback(
+        std::function<void (const ActuatorInfo&, ActuatorState)> callbackPtr
+    ) = 0;
+
+    event<
+        void(const ActuatorInfo&, double, double, bool)
+    > eventActuatorMovementUpdate;
+
+    event<void(ActuatorMoveOrder)> eventCurrentOrderChanged;
+*/
 
 private:
     // Seperate thread to continuously read from sensor.
@@ -85,13 +93,18 @@ private:
     bool running;
     // function to be ran in parallel to read from device
     void sensorThreadFunc();
-
+    // core application pointer to use io_service
     std::shared_ptr<ApplicationCore> app_core;
+    // pointer to io_service to be taken from app_core
     const std::shared_ptr<boost::asio::io_service> ios;
+    // sync device on serial
+    void syncDevice();
 
-    bool sync(std::vector<byte> &data, std::vector<byte> &buff);
-    bool takeReading(std::vector<byte> &data, std::vector<byte> &buff);
-    SerialPort sport;
+    /* not implemented
+    hook hookOnSerialDataReady;
+    hook hookEventProc;
+    */
+
 };
 
 

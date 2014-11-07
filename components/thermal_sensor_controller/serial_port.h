@@ -4,6 +4,10 @@
 #include <memory>
 #include <vector>
 
+#include "common.h"
+#include "events.h"
+
+
 #ifndef SERIAL_PORT_H
 #define SERIAL_PORT_H
 
@@ -140,6 +144,12 @@ public:
     
 private:
     std::shared_ptr<void> internalData;
+
+
+public:
+    hook registerOnSerialDataReadyCallback(
+        std::function<void (SerialPort &)> callbackPtr
+    );
 };
 
 #endif//SERIAL_PORT_H
