@@ -57,6 +57,8 @@ void NetService::init(int port)
 	// Starts the server accept loop
 	wss.start_accept();
 
+	std::cout << "Accepting on port " << port << "!" << std::endl;
+
 	//Start the ASIO io_service run loop
 	//wss.run();
 }

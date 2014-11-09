@@ -12,7 +12,6 @@
 #include "serial_port.h"
 #include "application_core.h"
 
-
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
@@ -43,7 +42,7 @@ public:
     ThermalSensorController(
         std::shared_ptr<ApplicationCore> coreIn,
         const std::string _deviceName,
-        unsigned int _baudRate=115200
+        unsigned int _baudRate = 115200
     );
     
     // Start reading data from the sensor within a new thread.
@@ -53,8 +52,8 @@ public:
     // not implemented
     void update();
     // Return the result of queue pop
-    bool popReading(ThermoReading &r);
-    bool popReading(GyroReading &r);
+    bool popThermoReading(ThermoReading &r);
+    bool popGyroReading(GyroReading &r);
     // If there is a Reading available, return true
     bool isThermoReadingAvailable();
     bool isGyroReadingAvailable();

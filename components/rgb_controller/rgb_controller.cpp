@@ -50,7 +50,7 @@ void RgbController::initCamera()
 	}
 
 	timer.async_wait(
-		std::bind(&RgbController::captureFrame)
+		std::bind(&RgbController::captureFrame, this)
 	);
 	timer.expires_at(timer.expires_at() + boost::posix_time::seconds(1));
 }
@@ -71,7 +71,7 @@ void RgbController::captureFrame()
 	std::cout << "yay" << std::endl;
 
 	timer.async_wait(
-		std::bind(&RgbController::captureFrame)
+		std::bind(&RgbController::captureFrame, this)
 	);
 	timer.expires_at(timer.expires_at() + boost::posix_time::seconds(1));
 }

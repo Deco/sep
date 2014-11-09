@@ -189,13 +189,14 @@ void ThermalSensorController::handleSerialData()
                     // create pointer to the new images data
                     newReading2.img.create(4, 16);  // 4 rows 16 cols
                     float *imgDataPtr = (float*)newReading2.img.data; 
-                    if(1){ //{ modified for presentation optimisation
+                    if(1) { //{ modified for presentation optimisation
                     //if (thermoReadRequested.load()) {
                         std::lock_guard<std::mutex> thermoReadingQueueLock(thermoReadingQueueMutex);
                         newReading2.id = SENSOR_DATA;
                         memcpy(imgDataPtr, dataBuffer, sizeof(float)*64);
-                        if (tRequested.load())
-                        thermoReadingQueue.push(newReading2);
+                        if(tRequested.load()) {
+                            thermoReadingQueue.push(newReading2);
+                        }
                     }
                     break;
                 }
@@ -204,17 +205,18 @@ void ThermalSensorController::handleSerialData()
                     assert(DataLength == 3*sizeof(float));
                     float *imu = (float*)dataBuffer;
                     //if(gyroReadRequested.load()) { 
-                    if(1){
+                    if(1) {
                         GyroReading newReading2;
                         newReading2.time = time(0);
                         std::lock_guard<std::mutex> readingQueueLock(gyroReadingQueueMutex);
                         newReading2.id = IMU_DATA;
                         newReading2.roll = imu[0];
-                        newReading2.pitch = imu[0];
-                        newReading2.yaw = imu[0];
+                        newReading2.pitch = imu[1];
+                        newReading2.yaw = imu[2];
                         //printf("Roll: %f, Pitch: %f, Yaw: %f.\n", newReading.orientation.data()[0], newReading.orientation.data()[1], newReading.orientation.data()[2]);
-                        if (gRequested.load())
-                        gyroReadingQueue.push(newReading2);
+                        if(gRequested.load()) {
+                            gyroReadingQueue.push(newReading2);
+                        }
                     }
                     break;
                 }
@@ -351,7 +353,7 @@ bool ThermalSensorController::isGyroReadingAvailable(){
  * 7/6/14: Created. CW
  * 2/11/14: Modified to allow for IMU sensor.
  */
-bool ThermalSensorController::popReading(ThermoReading &r)
+bool ThermalSensorController::popThermoReading(ThermoReading &r)
 {
 
     tRequested.store(true);
@@ -359,14 +361,13 @@ bool ThermalSensorController::popReading(ThermoReading &r)
    // while (!isThermoReadingAvailable()) {
         
   //  }
-    if(isThermoReadingAvailable()) {
+    if(1) {
         std::lock_guard<std::mutex> readingQueueLock(thermoReadingQueueMutex);
         if(thermoReadingQueue.size() > 0) {
             wasReadingPopped = true;
             r = thermoReadingQueue.front();
             thermoReadingQueue.pop();
-                //tRequested = false;
-                tRequested.store(false);
+            tRequested.store(false);
         }
     }
     //thermoReadRequested = false;
@@ -378,20 +379,20 @@ bool ThermalSensorController::popReading(ThermoReading &r)
 
 
 
-bool ThermalSensorController::popReading(GyroReading &r)
+bool ThermalSensorController::popGyroReading(GyroReading &r)
 {
       gRequested.store(true);// = true;
     bool wasReadingPopped = false;
    // while (!isGyroReadingAvailable()) {
         
   //  }
-    if(isThermoReadingAvailable()) {
-        std::lock_guard<std::mutex> readingQueueLock(thermoReadingQueueMutex);
-        if(thermoReadingQueue.size() > 0) {
+    if(1) {
+        std::lock_guard<std::mutex> readingQueueLock(gyroReadingQueueMutex);
+        if(gyroReadingQueue.size() > 0) {
             wasReadingPopped = true;
             r = gyroReadingQueue.front();
             gyroReadingQueue.pop();
-      gRequested.store(false);
+            gRequested.store(false);
         }
     }
 
