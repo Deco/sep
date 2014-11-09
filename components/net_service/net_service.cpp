@@ -6,69 +6,101 @@
  * websocketpp websocket & http server to handle commands.
  */
 
-#include "websocketpp/config/asio_no_tls.hpp"
-
-#include "websocketpp/server.hpp"
-
+#include <string>
 #include <iostream>
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 
-class NetService {
-public:
-	typedef websocketpp::server<websocketpp::config::asio> WSServer;
+#include "net_service.h"
 
-public:
-	//The map used to map names to callback functions, making them easy to use via message passing
-	std::map<std::string, std::function<void(int)>> callbackMap;
+namespace fs = boost::filesystem;
 
-	//NetService default constructor
-	NetService(
 
-	) : callbackMap()
-	{
-		registerCallback("test", [](int testValue) {
-			std::cout << "Test callback value: " << testValue << std::endl;
-		});
-	}
+NetService::NetService(
+	const std::shared_ptr<ApplicationCore> &coreIn
+) : core(coreIn)
+  , callbackMap()
+{
+	registerCallback("test", [](int testValue) {
+		std::cout << "Test callback value: " << testValue << std::endl;
+	});
+}
 
-	//Takes in a name and a pointer to a callback and adds that relation to the callback map.
-	void registerCallback(std::string callbackName, std::function<void(int)> callback)
-	{
-		//Insert a new callback function to the callbackMap for handling
-		callbackMap.insert(std::make_pair(callbackName, callback));
-	}
+//Takes in a name and a pointer to a callback and adds that relation to the callback map.
+void NetService::registerCallback(
+	std::string callbackName,
+	std::function<void(int)> callback
+)
+{
+	//Insert a new callback function to the callbackMap for handling
+	callbackMap.insert(std::make_pair(callbackName, callback));
+}
 
-private:
-	//The websocket/http server (can handle requests from both)
-	WSServer wss;
+void NetService::init()
+{
+	//Initialise ASIO config
+	wss.init_asio(core->getIOService().get());
 
-	void init() 
-	{
-		//Initialise ASIO config
-		wss.init_asio();
+	//Set handler for http connection requests
+	wss.set_http_handler(
+		std::bind(&NetService::handleHTTPConn, this,
+			std::placeholders::_1
+		)
+	);
 
-		//Set handler for http connection requests
-		wss.set_http_handler([&](websocketpp::connection_hdl hdl) {
-			WSServer::connection_ptr con = wss.get_con_from_hdl(hdl);
-			
-			std::stringstream output;
-			output << "<!doctype html><html><body>You requested "
-	           << con->get_resource()
-	           << "</body></html>";
-    
-    		// Set status to 200 rather than the default error code
-    		con->set_status(websocketpp::http::status_code::ok);
-    		// Set body text to the HTML created above
-   			con->set_body(output.str());	
-		});
+	wss.set_message_handler(
+		std::bind(&NetService::handleWSMessage, this,
+			std::placeholders::_1, std::placeholders::_2
+		)
+	);
 
-		// Server listen on port 9000
-		wss.listen(9000);
+	// Server listen on port 9000
+	wss.listen(9008);
 
-		// Starts the server accept loop
-		wss.start_accept();
+	// Starts the server accept loop
+	wss.start_accept();
 
-		//Start the ASIO io_service run loop
-		wss.run();
-	}
+	//Start the ASIO io_service run loop
+	//wss.run();
+}
 
-};
+void NetService::handleWSMessage(
+	websocketpp::connection_hdl hdl,
+	WSServer::message_ptr msg
+)
+{
+	std::cout << "on_message called with hdl: " << hdl.lock().get()
+              << " and message: " << msg->get_payload()
+              << std::endl;
+}
+
+void NetService::handleHTTPConn(
+	websocketpp::connection_hdl hdl
+)
+{
+	WSServer::connection_ptr con = wss.get_con_from_hdl(hdl);
+
+	fs::path wwwpath("res/www");
+
+	fs::path filepath = wwwpath / fs::path(con->get_resource());
+
+	std::cout << "serving: " << filepath << std::endl;
+
+	std::ifstream file;
+	file.open(filepath.string());
+	
+	std::stringstream output;
+	output << file.rdbuf();
+
+   	file.close();
+
+	// Set status to 200 rather than the default error code
+	con->set_status(websocketpp::http::status_code::ok);
+	// Set body text to the HTML created above
+	con->set_body(output.str());
+
+	//std::cout << output.str() << std::endl;
+}
+
+
+
