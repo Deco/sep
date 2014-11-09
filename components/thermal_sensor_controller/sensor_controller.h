@@ -25,14 +25,16 @@
 typedef unsigned char byte;
 
 // Struct to hold data from sensor
-struct Reading {
+struct ThermoReading {
     unsigned char id;
     time_t time;
     cv::Mat_<float> img;
-    std::vector<float> orientation; // ORDER IS ROLL -> PITCH -> YAW
-    float ambientTemp;
 };
-
+struct GyroReading {
+    unsigned char id;
+    time_t time;
+    float roll, pitch, yaw;
+};
 
 class ThermalSensorController
 {
@@ -51,9 +53,11 @@ public:
     // not implemented
     void update();
     // Return the result of queue pop
-    bool popThermopileReading(Reading &r);
+    bool popReading(ThermoReading &r);
+    bool popReading(GyroReading &r);
     // If there is a Reading available, return true
-    bool isReadingAvailable();
+    bool isThermoReadingAvailable();
+    bool isGyroReadingAvailable();
     // Handle reading serial data from sensor
     void handleSerialData();
     // Serial Port class to handle reading and writing over serial port.    
@@ -86,9 +90,11 @@ private:
     // Baud rate of the device
     const unsigned int deviceBaudRate;
     // Mutex to stop threading errors (race conditions)
-    std::mutex readingQueueMutex;
+    std::mutex thermoReadingQueueMutex;
+    std::mutex gyroReadingQueueMutex;
     // Queue containing all of the Readings from the sensor
-    std::queue<Reading> readingQueue;
+    std::queue<ThermoReading> thermoReadingQueue;
+    std::queue<GyroReading> gyroReadingQueue;
     // Boolean representing state of a device and if it's being read.
     bool running;
     // function to be ran in parallel to read from device
@@ -100,9 +106,7 @@ private:
     // sync device on serial
     void syncDevice();
 
-    std::shared_ptr<ApplicationCore> app_core;
-    boost::shared_ptr< boost::asio::io_service > ios; // temp, probably take pointer from app_core when its implemented
-
+    
     /* not implemented
     hook hookOnSerialDataReady;
     hook hookEventProc;
