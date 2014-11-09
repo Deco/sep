@@ -84,7 +84,10 @@ void ActuatorController::getPositionRange(cv::Vec2d &min, cv::Vec2d &max)
 */
 void ActuatorController::queueMove(ActuatorMoveOrder order)
 {
-    moveQueue.push(order);
+    if(1) {
+        std::lock_guard<std::mutex> moveQueueLock(moveQueueMutex);
+        moveQueue.push(order);
+    }
 }
 
 /**
@@ -94,8 +97,11 @@ void ActuatorController::queueMove(ActuatorMoveOrder order)
 void ActuatorController::queueMoves(std::vector<ActuatorMoveOrder> moveList) 
 {
     // Pushes each order in moveList to moveQueue
-    for(ActuatorMoveOrder order : moveList) {
-        moveQueue.push(order);
+    if(1) {
+        std::lock_guard<std::mutex> moveQueueLock(moveQueueMutex);
+        for(ActuatorMoveOrder order : moveList) {
+            moveQueue.push(order);
+        }
     }
 }
 

@@ -11,13 +11,18 @@
 #include "application_core.h"
 #include <iostream>
 
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
+
 class NetService {
 public:
     typedef websocketpp::server<websocketpp::config::asio> WSServer;
+    typedef std::function<void(const rapidjson::Document&)> MessageCallbackFunc;
 
 public:
     //The map used to map names to callback functions, making them easy to use via message passing
-    std::map<std::string, std::function<void(int)>> callbackMap;
+    std::map<std::string, MessageCallbackFunc> callbackMap;
 
     //NetService default constructor
     NetService(
@@ -25,7 +30,7 @@ public:
     );
 
     //Takes in a name and a pointer to a callback and adds that relation to the callback map.
-    void registerCallback(std::string callbackName, std::function<void(int)> callback);
+    void registerCallback(std::string callbackName, MessageCallbackFunc callback);
 
 public:
     //The websocket/http server (can handle requests from both)
@@ -33,7 +38,7 @@ public:
 
     std::shared_ptr<ApplicationCore> core;
 
-    void init();
+    void init(int port);
 
     void handleWSMessage(
         websocketpp::connection_hdl hdl,

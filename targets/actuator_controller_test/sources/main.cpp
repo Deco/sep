@@ -26,11 +26,10 @@ int main()
 	bool isAdding = false;
 	// Empty list
 	std::vector<ActuatorMoveOrder> ordersToAddList;
-
+	
 	sf::RenderWindow window(sf::VideoMode(640,480), "test");
 	while (window.isOpen())
 	{
-
 		ac.update();
 
 		sf::Event event;

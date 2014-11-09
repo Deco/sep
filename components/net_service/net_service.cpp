@@ -15,28 +15,25 @@
 
 namespace fs = boost::filesystem;
 
-
 NetService::NetService(
 	const std::shared_ptr<ApplicationCore> &coreIn
 ) : core(coreIn)
   , callbackMap()
 {
-	registerCallback("test", [](int testValue) {
-		std::cout << "Test callback value: " << testValue << std::endl;
-	});
+	// 
 }
 
 //Takes in a name and a pointer to a callback and adds that relation to the callback map.
 void NetService::registerCallback(
 	std::string callbackName,
-	std::function<void(int)> callback
+	MessageCallbackFunc callback
 )
 {
 	//Insert a new callback function to the callbackMap for handling
 	callbackMap.insert(std::make_pair(callbackName, callback));
 }
 
-void NetService::init()
+void NetService::init(int port)
 {
 	//Initialise ASIO config
 	wss.init_asio(core->getIOService().get());
@@ -55,7 +52,7 @@ void NetService::init()
 	);
 
 	// Server listen on port 9000
-	wss.listen(9008);
+	wss.listen(port);
 
 	// Starts the server accept loop
 	wss.start_accept();
@@ -69,9 +66,20 @@ void NetService::handleWSMessage(
 	WSServer::message_ptr msg
 )
 {
-	std::cout << "on_message called with hdl: " << hdl.lock().get()
-              << " and message: " << msg->get_payload()
-              << std::endl;
+	rapidjson::Document doc;
+	doc.Parse(msg->get_payload().c_str());
+
+	if(!doc.IsObject()) {
+		std::cout << "!!!! wtf: " << msg->get_payload() << std::endl;
+		return;
+	}
+
+	auto callbackIt = callbackMap.find(doc["type"].GetString());
+	if(callbackIt != callbackMap.end()) {
+		callbackIt->second(doc);
+	} else {
+		std::cout << "Unhandled message! (" << doc["type"].GetString() << ")" << std::endl;
+	}
 }
 
 void NetService::handleHTTPConn(
