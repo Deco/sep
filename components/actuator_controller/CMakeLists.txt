@@ -14,5 +14,7 @@ set(SOURCE_FILES
     ${SOURCE_FILES}
     ${CMAKE_CURRENT_SOURCE_DIR}/actuator_controller.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/actuator_comm_ax12.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Dynamixel/DynamixelComm.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/Dynamixel/IKAROS_Serial_BSD.cc
 )
 set_property(GLOBAL PROPERTY PROJECT_SOURCE_FILES ${SOURCE_FILES})
