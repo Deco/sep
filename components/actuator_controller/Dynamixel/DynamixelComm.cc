@@ -1,5 +1,5 @@
 //
-//    DynamixelComm.cc		Class to communicate with USB2Dynamixel
+//    DynamixelComm.cc      Class to communicate with USB2Dynamixel
 //
 //    Copyright (C) 2010  Christian Balkenius
 //
@@ -87,12 +87,10 @@ DynamixelComm::Receive(unsigned char * b)
     return c;
 }
 
-
-
 bool
 DynamixelComm::ReadAllData(int id, unsigned char * buffer)
 {
-    unsigned char outbuf[256] = {0XFF, 0XFF, id, 4, INST_READ, 0, 50, 0X00}; // read two bytes for present position
+    unsigned char outbuf[256] = {0XFF, 0XFF, (unsigned char)id, 4, INST_READ, 0, 50, 0X00}; // read two bytes for present position
     unsigned char inbuf[256];
     
     Send(outbuf);
@@ -119,7 +117,10 @@ DynamixelComm::ReadAllData(int id, unsigned char * buffer)
 int
 DynamixelComm::Move(int id, int pos, int speed)
 {
-    unsigned char outbuf[256] = {0XFF, 0XFF, id, 7, INST_WRITE, P_GOAL_POSITION_L, pos % 256, pos / 256, speed % 256, speed / 256, 0X00}; // move to position with speed
+    unsigned char pos_low = (unsigned char)(pos%256), pos_high = (unsigned char)(pos/256);
+    unsigned char speed_low = (unsigned char)(speed%256), speed_high = (unsigned char)(speed/256);
+    
+    unsigned char outbuf[256] = {0XFF, 0XFF, (unsigned char)id, 7, INST_WRITE, P_GOAL_POSITION_L, pos_low, pos_high, speed_low, speed_high, 0X00}; // move to position with speed
     unsigned char inbuf[256];
     
     Send(outbuf);
@@ -133,7 +134,9 @@ DynamixelComm::Move(int id, int pos, int speed)
 int
 DynamixelComm::SetSpeed(int id, int speed)
 {
-    unsigned char outbuf[256] = {0XFF, 0XFF, id, 5, INST_WRITE, P_GOAL_SPEED_L, speed % 256, speed / 256, 0X00}; // write two bytes for present position
+    unsigned char speed_low = (unsigned char)(speed%256), speed_high = (unsigned char)(speed/256);
+    
+    unsigned char outbuf[256] = {0XFF, 0XFF, (unsigned char)id, 5, INST_WRITE, P_GOAL_SPEED_L, speed_low, speed_high, 0X00}; // write two bytes for present position
     unsigned char inbuf[256];
     
     Send(outbuf);
@@ -147,7 +150,9 @@ DynamixelComm::SetSpeed(int id, int speed)
 int
 DynamixelComm::SetPosition(int id, int pos)
 {
-    unsigned char outbuf[256] = {0XFF, 0XFF, id, 5, INST_WRITE, P_GOAL_POSITION_L, pos % 256, pos / 256, 0X00}; // write two bytes for present position
+    unsigned char pos_low = (unsigned char)(pos%256), pos_high = (unsigned char)(pos/256);
+    
+    unsigned char outbuf[256] = {0XFF, 0XFF, (unsigned char)id, 5, INST_WRITE, P_GOAL_POSITION_L, pos_low, pos_high, 0X00}; // write two bytes for present position
     unsigned char inbuf[256];
     
     Send(outbuf);
@@ -161,7 +166,7 @@ DynamixelComm::SetPosition(int id, int pos)
 int
 DynamixelComm::SetTorque(int id, int value)
 {
-    unsigned char outbuf[256] = {0XFF, 0XFF, id, 4, INST_WRITE, P_TORQUE_ENABLE, value, 0X00}; // write two bytes for present position
+    unsigned char outbuf[256] = {0XFF, 0XFF, (unsigned char)id, 4, INST_WRITE, P_TORQUE_ENABLE, (unsigned char)value, 0X00}; // write two bytes for present position
     unsigned char inbuf[256];
     
     Send(outbuf);
@@ -177,7 +182,7 @@ DynamixelComm::SetTorque(int id, int value)
 int
 DynamixelComm::GetPosition(int id)
 {                                                      
-    unsigned char outbuf[256] = {0XFF, 0XFF, id, 4, INST_READ, P_PRESENT_POSITION_L, 2, 0X00}; // read two bytes for present position
+    unsigned char outbuf[256] = {0XFF, 0XFF, (unsigned char)id, 4, INST_READ, P_PRESENT_POSITION_L, 2, 0X00}; // read two bytes for present position
     unsigned char inbuf[256];
     
     Send(outbuf);
@@ -201,7 +206,7 @@ DynamixelComm::GetPosition(int id)
 bool
 DynamixelComm::Ping(int id)
 {
-    unsigned char outbuf[256] = {0XFF, 0XFF, id, 2, INST_PING, 0X00};
+    unsigned char outbuf[256] = {0XFF, 0XFF, (unsigned char)id, 2, INST_PING, 0X00};
     unsigned char inbuf[256];
     
     Send(outbuf);
@@ -210,4 +215,34 @@ DynamixelComm::Ping(int id)
     return (n != 0);
 }
 
+bool
+DynamixelComm::GetIsMoving(int id)
+{                                                      
+    unsigned char outbuf[256] = {0XFF, 0XFF, (unsigned char)id, 4, INST_READ, P_MOVING, 1, 0X00}; // read two bytes for present position
+    unsigned char inbuf[256];
+    
+    Send(outbuf);
+    
+    // set a timout first
 
+    Receive(inbuf);
+    
+    // exit if checksum incorrect
+    
+    // check ID @ inbuf[2]
+    // check ERROR @ inbuf[4], should be 0
+    
+    return inbuf[5];
+}
+
+
+
+void
+DynamixelComm::SetTorqueEnabled(int id, bool enabled)
+{
+    unsigned char outbuf[256] = {0XFF, 0XFF, (unsigned char)id, 4, INST_WRITE, P_TORQUE_ENABLE, (enabled), 0X00}; // write one bytes for torque enabled
+    unsigned char inbuf[256];
+    
+    Send(outbuf);
+    Receive(inbuf);
+}
