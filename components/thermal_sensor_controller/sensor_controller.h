@@ -51,7 +51,7 @@ public:
     // not implemented
     void update();
     // Return the result of queue pop
-    Reading popThermopileReading();
+    bool popThermopileReading(Reading &r);
     // If there is a Reading available, return true
     bool isReadingAvailable();
     // Handle reading serial data from sensor

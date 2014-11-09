@@ -28,18 +28,19 @@ int main()
         float ambientTemp;
     };*/
 
+        Reading r;
 
     while(1) {
         if (sc.isReadingAvailable()) {
-            Reading r = sc.popThermopileReading();
+            sc.popThermopileReading(r);
 
             if (r.id == SENSOR_DATA) {
-                printf("print out MLX data here.\n");
+                //printf("print out MLX data here.\n");
                 for (int i=0;i<4;i++) {
                     for (int j=0;j<16;j++) {
-                 //       printf("%f ", r.img(i, j));
+                        printf("%f ", r.img(i, j));
                     }
-                //    printf("\n");
+                    printf("\n");
                 }
             } else if (r.id == IMU_DATA) {
                 printf("Roll: %f, Pitch: %f, Yaw: %f.\n", r.orientation.data()[0], r.orientation.data()[1], r.orientation.data()[2]);

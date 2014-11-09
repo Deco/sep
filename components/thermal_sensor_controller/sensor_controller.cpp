@@ -483,18 +483,18 @@ bool ThermalSensorController::isReadingAvailable(){
  * 7/6/14: Created. CW
  * 2/11/14: Modified to allow for IMU sensor.
  */
-Reading ThermalSensorController::popThermopileReading()
+bool ThermalSensorController::popThermopileReading(Reading &r)
 {
-    Reading r;
+    bool wasReadingPopped = false;
     if(isReadingAvailable()) {
         std::lock_guard<std::mutex> readingQueueLock(readingQueueMutex);
         if(readingQueue.size() > 0) {
+            wasReadingPopped = true;
             r = readingQueue.front();
             readingQueue.pop();
         }
     }
-
-    return r;
+    return wasReadingPopped;
 }
 
 
