@@ -55,6 +55,7 @@ SerialPort::SerialPort()
     Author: Declan White
     Changelog:
         [2014-09-04 DWW] Created.
+
 */
 SerialPort::~SerialPort()
 {
@@ -68,6 +69,7 @@ SerialPort::~SerialPort()
     Author: Declan White
     Attribution:
         Original code modified from IKAROS project (GNU GPL licence).
+
         https://github.com/ikaros-project/ikaros/blob/master/Source/Kernel/IKAROS_Serial_BSD.cc
     Changelog:
         [2014-09-04 DWW] Created.
@@ -108,6 +110,7 @@ void SerialPort::openDevice(const std::string &&deviceName, unsigned long baudRa
         }
         if(-1 == cfsetospeed(&fileOptions, baudRate)) {
             printf("failed to setospeed.\n");
+
             throwSerialError("failed to set baud rate for serial output device", deviceName.c_str());
             return;
         }*/
@@ -160,6 +163,7 @@ void SerialPort::openDevice(const std::string &&deviceName, unsigned long baudRa
 /* SerialPort::close
     Author: Declan White
     Changelog:
+
         [2014-09-04 DWW] Created.
         [2014-10-21 CW] Corrected syntax to compile.
 */
@@ -184,12 +188,14 @@ void SerialPort::closeDevice()
 /* SerialPort::isOpen
     Author: Declan White
     Attribution:
+
         Code for checking if a file descriptor is still valid adapted from
         StackOverflow answer (CC-Wiki with attribution required).
         http://stackoverflow.com/a/12340725/837856
     Description: TODO
     Parameters: TODO
     Returns: TODO
+
     Throws: TODO
     Changelog:
         [2014-09-04 DWW] Created.
@@ -217,6 +223,7 @@ bool SerialPort::isOpen()
     Throws: TODO
     Changelog:
         [2014-09-04 DWW] Created.
+
         [2014-10-21 CW] Corrected syntax to compile.
 */
 size_t SerialPort::writeDevice(const std::vector<byte> &data)
@@ -258,6 +265,7 @@ size_t SerialPort::writeDevice(char* data, int size)
 /* SerialPort::read
     Author: Declan White
     Changelog:
+
         [2014-09-04 DWW] Created.
         [2014-10-21 CW] Corrected syntax to compile.
 */
@@ -298,6 +306,7 @@ size_t SerialPort::readDevice(std::vector<byte> &data, size_t maxSize)
     Author: Declan White
     Changelog:
         [2014-09-04 DWW] Created.
+
         [2014-10-21 CW] Corrected syntax to compile.
 */
 size_t SerialPort::readDevice(char* data)
@@ -339,6 +348,7 @@ size_t SerialPort::readDevice(char* data, size_t maxSize)
     Changelog:
         [2014-09-04 DWW] Created.
         [2014-10-21 CW] Corrected syntax to compile.
+
 */
 void SerialPort::flushWrite()
 {
@@ -352,6 +362,7 @@ void SerialPort::flushWrite()
     Author: Declan White
     Changelog:
         [2014-09-04 DWW] Created.
+
         [2014-10-21 CW] Corrected syntax to compile.
 */
 void SerialPort::flushRead()
@@ -366,6 +377,7 @@ void SerialPort::flushRead()
 /* SerialPort::getAvailable
     Author: Christopher Webb
     Changelog:
+
         [2014-10-30 DWW] Created.
 */
 int SerialPort::getAvailable(){

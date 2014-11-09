@@ -1,5 +1,5 @@
 #ifndef SENSOR_CONTROLLER_H
-#define SENSOR_COTRNOLLER_H
+#define SENSOR_CONTROLLER_H
 
 #include <opencv2/opencv.hpp>
 #include <thread>
@@ -99,6 +99,9 @@ private:
     const std::shared_ptr<boost::asio::io_service> ios;
     // sync device on serial
     void syncDevice();
+
+    std::shared_ptr<ApplicationCore> app_core;
+    boost::shared_ptr< boost::asio::io_service > ios; // temp, probably take pointer from app_core when its implemented
 
     /* not implemented
     hook hookOnSerialDataReady;

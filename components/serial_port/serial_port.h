@@ -1,4 +1,3 @@
-
 #include <cstddef>
 #include <exception>
 #include <memory>
@@ -56,6 +55,7 @@ public:
     
     /* SerialPort::open
         Author: Declan White
+
         Description: TODO
         Parameters: TODO
         Returns: TODO
@@ -83,6 +83,7 @@ public:
     /* SerialPort::isOpen
         Author: Declan White
         Description: TODO
+
         Parameters: TODO
         Returns: TODO
         Throws: TODO
@@ -96,6 +97,7 @@ public:
         Description: TODO
         Parameters: TODO
         Returns: TODO
+
         Throws: TODO
         Changelog:
             [2014-09-04 DWW] Created.
@@ -123,6 +125,7 @@ public:
         Description: TODO
         Parameters: TODO
         Returns: TODO
+
         Throws: TODO
         Changelog:
             [2014-09-04 DWW] Created.
@@ -130,6 +133,7 @@ public:
     void flushWrite();
     
     /* SerialPort::flushRead
+
         Author: Declan White
         Description: TODO
         Parameters: TODO

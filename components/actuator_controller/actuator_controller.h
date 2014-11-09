@@ -1,5 +1,6 @@
 
 #include "events.h"
+#include "actuator_comm.h"
 #include <opencv2/core/core.hpp>
 
 #ifndef ACTUATOR_CONTROLLER_H
@@ -66,11 +67,12 @@ public: // Public concept classes
     */
     class OrderProvider {
         public:
-            virtual OrderProvider() = default;
-            virtual ~OrderProvider() = default;
+            OrderProvider() = default;
+            ~OrderProvider() = default;
+            struct ActuatorMoveOrder{};
         
         public:
-            Event<void(ActuatorMoveOrder)> eventCurrentOrderChanged;
+            event<void(ActuatorMoveOrder)> eventCurrentOrderChanged;
         
         public:
             ActuatorMoveOrder getCurrentOrder();
@@ -115,7 +117,7 @@ public: // Publicly subscribable events
             [2014-09-02 DWW] Renamed from eventDeviceStatusChange to
                 eventControllerStatusChange.
     */
-    Event<void(ActuatorSystemState)> eventControllerStateChange;
+    event<void(ActuatorSystemState)> eventControllerStateChange;
     
     /* ActuatorController::eventOrientationUpdate
         Description:
@@ -126,7 +128,7 @@ public: // Publicly subscribable events
         Changelog:
             [2014-09-02 DWW] Created.
     */
-    Event<void(cv::Vec2d)> eventOrientationUpdate;
+    event<void(cv::Vec2d)> eventOrientationUpdate;
     
 
 public:
@@ -139,18 +141,19 @@ public:
             [2014-09-02 DWW] Created.
             [2014-09-04 DWW] Added `comm` parameter (for dependency injection).
     */
-    virtual ActuatorController(
-        ParamContext params,
+    ActuatorController(
+        const std::shared_ptr<ApplicationCore> &core,
+        const std::shared_ptr<Param> &params,
         const std::shared_ptr<ActuatorComm> &comm
     );
-    
+
     /* ActuatorController::~ActuatorController
         Author: Declan White
         Description: TODO
         Changelog:
             [2014-09-02 DWW] Created.
     */
-    virtual ~ActuatorController();
+    ~ActuatorController();
     
 
 public:
@@ -167,7 +170,7 @@ public:
         Changelog:
             [2014-09-02 DWW] Created.
     */
-    virtual void connect();
+    void connect();
     
     /* ActuatorController::disconnect
         Author: Declan White
@@ -181,18 +184,29 @@ public:
         Changelog:
             [2014-09-02 DWW] Created.
     */
-    virtual void disconnect();
+    void disconnect();
     
 
 private:
-    
+    void onActuatorStateChange(
+        const ActuatorComm::ActuatorInfo& info, ActuatorComm::ActuatorState state
+    );
+
+    void onActuatorMovementUpdate(
+        const ActuatorComm::ActuatorInfo& info, double pos, double vel, bool isMoving
+    );
     
 
 private:
-    Hook hookOnSerialData;
+    hook hookOnActuatorStateChange;
+    
+    hook hookOnActuatorMovementUpdate;
+
+    std::shared_ptr<ApplicationCore> core;
+    std::shared_ptr<Param> params;
+    std::shared_ptr<ActuatorComm> comm;
     
 
 };
 
 #endif//ACTUATOR_CONTROLLER_H
-

@@ -218,6 +218,7 @@ void ThermalSensorController::sensorThreadFunc(){
 
 /* Created by: Chris Webb
  * Date Created: 7/6/14
+
  * Last Modified: 2/11/14
  * Description:
  * Set the bool(running) representing the sensors state to true then create a thread

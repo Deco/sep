@@ -1,5 +1,5 @@
-
 #include "actuator_comm_ax12.h"
+#include "serial_port.h"
 
 /* Dynamixel AX-12 sentinel values
     Attribution:
@@ -78,16 +78,21 @@
     Changelog:
         [2014-09-04 DWW] Created.
 */
+
+void test(const SerialPort &sport) {
+    // 
+}
+
 ActuatorCommAX12::ActuatorCommAX12(
-    std::shared_ptr<ApplicationContext> appIn,
-    const std::shared_ptr<ParamContext> &&paramsIn,
-    const std::shared_ptr<SerialPort> &serialPortIn;
+    std::shared_ptr<ApplicationCore> appIn,
+    const std::shared_ptr<Param> &&paramsIn,
+    const std::shared_ptr<SerialPort> &serialPortIn
 ) : app(appIn),
     ios(appIn->getIOService()),
     paramsPtr(paramsIn),
     serialThreadPtr(nullptr),
     serialThreadShouldDisconnect(false),
-    serialPortPtr(serialPortIn),
+    serialPortPtr(serialPortIn)
 {
     
     /*paramsPtr->declare<duration>("sample_rate_sec");
@@ -97,17 +102,127 @@ ActuatorCommAX12::ActuatorCommAX12(
         &ActuatorCommAX12::onSampleRateChanged, this
     );*/
     
+    
+    hookOnSerialDataReady = serialPortPtr->registerOnSerialDataReadyCallback(
+        std::bind(
+            &ActuatorCommAX12::onSerialDataReady,
+            this, std::placeholders::_1
+        )
+    );
+    
 }
+/*
+/////
+    OXFF 0XFF ID LENGTH ERROR PARAMETER1 PARAMETER2 PARAMETER3 CHECKSUM
+
+    .    .    .  .      .     .          .          .          .
+    
+    Check Sum = ~ (ID + Length + Instruction + Parameter1 + ... Parameter N)
+    
+/////
+    
+    
+/////*/
+
+
+/* ... */
+void ActuatorCommAX12::onSerialDataReady(SerialPort &sport)
+{
+    boost::asio::io_service::strand strand(*ios);
+    /*strand.post(
+        std::bind(&ActuatorCommAX12::handleSerialData, this)
+    );*/
+}
+
+void ActuatorCommAX12::handleSerialData(SerialPort sport)
+{
+    int readChecksumTally = 0;
+    while(true) {
+        if(readState == SerialReadState::HEADER) {
+            if(sport.getAvailable() < 5) {
+                return;
+            }
+            
+            readChecksumTally = 0;
+            
+            std::vector<byte> data;
+            sport.read(data, 5);
+            
+            for(int byteI = 0; byteI < data.size(); byteI++) {
+                readChecksumTally += data[byteI];
+            }
+            
+            byte preamble1 = data[0];
+            byte preamble2 = data[1];
+            byte id = data[2];
+            byte length = data[3];
+            byte errorStatus = data[4];
+            
+            if(preamble1 != 0xFF || preamble2 != 0xFF) {
+                throw new std::runtime_error("oh shit!");
+            }
+            
+            // check id
+            // check errorStatus
+            // etc
+            
+            readState = SerialReadState::PARAMETERS;
+            readStateExpectedParameterCount = length-2;
+        }
+        
+        if(readState == SerialReadState::PARAMETERS) {
+            if(sport.getAvailable() < readStateExpectedParameterCount) {
+                return;
+            }
+            std::vector<byte> data;
+            sport.read(data, readStateExpectedParameterCount);
+            
+            for(int byteI = 0; byteI < data.size(); byteI++) {
+                readChecksumTally += data[byteI];
+            }
+            
+            for(int paramI = 0; paramI < readStateExpectedParameterCount; paramI++) {
+                // do stuff with params
+            }
+            
+            readState = SerialReadState::CHECKSUM;
+        }
+        
+        if(readState == SerialReadState::CHECKSUM) {
+            if(sport.getAvailable() < 1) {
+                return;
+            }
+            std::vector<byte> data;
+            sport.read(data, 1);
+            
+            byte expectedChecksum = data[0];
+            
+            byte calculatedChecksum = ~readChecksumTally;
+            
+            if(expectedChecksum != calculatedChecksum) {
+                throw new std::runtime_error("oh shit!");
+            }
+            
+            readState = SerialReadState::HEADER;
+            
+        }
+    }
+}
+
+/*void ActuatorCommAX12::SomeOtherMethod()
+{
+    packetQueue.pop();// blah blah blah
+}*/
 
 /* ActuatorCommAX12::~ActuatorCommAX12
     Author: Declan White
     Changelog:
         [2014-09-04 DWW] Created.
 */
-~ActuatorCommAX12::ActuatorCommAX12()
+/*ActuatorCommAX12::~ActuatorCommAX12()
 {
     disconnect();
-}
+}*/
 
 /* ActuatorCommAX12::connect
     Author: Declan White
@@ -156,12 +271,12 @@ void ActuatorCommAX12::disconnect()
         [2014-09-04 DWW] Created.
         [2014-09-04 DWW] Implemented.
 */
-void ActuatorCommAX12::getActuatorInfoList(
+void ActuatorCommAX12::obtainActuatorInfoList(
     std::vector<ActuatorComm::ActuatorInfo> &infoList
-) const
+)
 {
     // Lock the actuator data list..
-    actuatorDataList.access_read([](auto list) {
+    actuatorDataList.access_read([&](const std::vector<ActuatorData> & list) {
         infoList.reserve(list.size());
         
         // ..and retrieve all the actuator info structs.
@@ -177,11 +292,11 @@ void ActuatorCommAX12::getActuatorInfoList(
         [2014-09-04 DWW] Created.
         [2014-09-05 DWW] Implemented.
 */
-ActuatorState ActuatorCommAX12::getActuatorState(int id) const
+ActuatorComm::ActuatorState ActuatorCommAX12::getActuatorState(int id)
 {
     ActuatorState state;
     // Lock the actuator data list..
-    actuatorDataList.access_read([](auto list) {
+    actuatorDataList.access_read([&](const std::vector<ActuatorData> & list) {
         // ..and retrieve the state of the specified actuator.
         state = list.at(id).state;
     });
@@ -194,11 +309,11 @@ ActuatorState ActuatorCommAX12::getActuatorState(int id) const
         [2014-09-04 DWW] Created.
         [2014-09-05 DWW] Implemented.
 */
-std::shared_ptr<ActuatorError> ActuatorCommAX12::getActuatorError(int id) const
+std::shared_ptr<ActuatorError> ActuatorCommAX12::getActuatorError(int id)
 {
-    std::shared_ptr<ActuatorState> errorPtr;
+    std::shared_ptr<ActuatorError> errorPtr;
     // Lock the actuator data list..
-    actuatorDataList.access_read([](auto list) {
+    actuatorDataList.access_read([&](const std::vector<ActuatorData> & list) {
         // ..and retrieve the error of the specified actuator.
         errorPtr = list.at(id).errorPtr;
     });
@@ -221,11 +336,11 @@ void ActuatorCommAX12::recoverActuator(int id)
         [2014-09-04 DWW] Created.
         [2014-09-05 DWW] Implemented.
 */
-double ActuatorCommAX12::getActuatorGoalPos(int id) const
+double ActuatorCommAX12::getActuatorGoalPos(int id)
 {
     double goalPos;
     // Lock the actuator data list..
-    actuatorDataList.access_read([](auto list) {
+    actuatorDataList.access_read([&](const std::vector<ActuatorData> & list) {
         // ..and retrieve the goalPos of the specified actuator.
         goalPos = list.at(id).goalPos;
     });
@@ -241,7 +356,7 @@ double ActuatorCommAX12::getActuatorGoalPos(int id) const
 void ActuatorCommAX12::setActuatorGoalPos(int id, double posDeg)
 {
     // Lock the actuator data list..
-    actuatorDataList.access([](auto list) {
+    actuatorDataList.access([&](std::vector<ActuatorData> & list) {
         // ..and set the goalPos of the specified actuator.
         list.at(id).goalPos = posDeg;
         // Ensure the goal pos is marked as dirty so that the new value
@@ -255,11 +370,11 @@ void ActuatorCommAX12::setActuatorGoalPos(int id, double posDeg)
     Changelog:
         [2014-09-04 DWW] Created.
 */
-double ActuatorCommAX12::getActuatorGoalVel(int id) const
+double ActuatorCommAX12::getActuatorGoalVel(int id)
 {
     double goalVel;
     // Lock the actuator data list..
-    actuatorDataList.access_read([](auto list) {
+    actuatorDataList.access_read([&](const std::vector<ActuatorData> & list) {
         // ..and retrieve the goalVel of the specified actuator.
         goalVel = list.at(id).goalVel;
     });
@@ -275,7 +390,7 @@ double ActuatorCommAX12::getActuatorGoalVel(int id) const
 void ActuatorCommAX12::setActuatorGoalVel(int id, double velDegPerSec)
 {
     // Lock the actuator data list..
-    actuatorDataList.access([](auto list) {
+    actuatorDataList.access([&](std::vector<ActuatorData> & list) {
         // ..and set the goalVel of the specified actuator.
         list.at(id).goalVel = velDegPerSec;
         // Ensure the goal vel is marked as dirty so that the new value
@@ -293,7 +408,7 @@ void ActuatorCommAX12::setActuatorGoalVel(int id, double velDegPerSec)
 void ActuatorCommAX12::initiateMovement(int id)
 {
     // Lock the actuator data list..
-    actuatorDataList.access_read([](auto list) {
+    actuatorDataList.access_read([&](const std::vector<ActuatorData> & list) {
         for(ActuatorData data : list) {
             if(data.goalVelIsDirty) {
                 
@@ -309,7 +424,7 @@ void ActuatorCommAX12::initiateMovement(int id)
 */
 void ActuatorCommAX12::serialThreadFunc()
 {
-    serialPortPtr = std::make_shared<SerialPort>();
+    //serialPortPtr = std::make_shared<SerialPort>();
     
 }
 
@@ -343,7 +458,8 @@ void ActuatorCommAX12::receivePacket(
 */
 byte ActuatorCommAX12::readByte(byte id, byte address)
 {
-    //
+    //to be changed
+    return 0;
 }
 
 /* ActuatorCommAX12::readShort
@@ -353,7 +469,8 @@ byte ActuatorCommAX12::readByte(byte id, byte address)
 */
 short ActuatorCommAX12::readShort(byte id, byte address)
 {
-    //
+    //to be changed
+    return 0;
 }
 
 /* ActuatorCommAX12::writeByte
@@ -375,4 +492,3 @@ void ActuatorCommAX12::writeShort(byte id, byte address, short value)
 {
     //
 }
-

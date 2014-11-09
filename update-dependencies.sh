@@ -1,11 +1,7 @@
-git subtree pull --squash \
-    --prefix dependencies/msgpack-c/ \
-    https://github.com/msgpack/msgpack-c.git master \
-    --message="Updating dependencies/msgpack-c" \
-;
 
 git subtree pull --squash \
-    --prefix dependencies/libevent/ \
-    https://github.com/libevent/libevent.git master \
-    --message="Updating dependencies/libevent" \
+    --prefix dependencies/websocketpp/websocketpp/ \
+    https://github.com/zaphoyd/websocketpp.git master \
+    --message="Updating dependencies/websocketpp" \
 ;
+

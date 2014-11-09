@@ -1,10 +1,16 @@
-
 #include "common.h"
 #include "serial_port.h"
+#include "events.h"
+#include "application_core.h"
+
+#include <functional>
 
 #ifndef ACTUATOR_COMM_H
 #define ACTUATOR_COMM_H
 
+class ActuatorError {
+    //
+};
 /* abstract class ActuatorComm
     Author: Declan White
     Description:
@@ -102,34 +108,7 @@ public:
     
 
 public:
-    
-    /* ActuatorComm::(primary constructor)
-        Author: Declan White
-        Description: TODO
-        Parameters: TODO
-        Returns: TODO
-        Notes:
-            This may need to be modified to accept multiple serial connections
-            if not all the actuators are connected via one serial port.
-        Changelog:
-            [2014-09-04 DWW] Created.
-    */
-    virtual ActuatorComm(
-        std::shared_ptr<ApplicationContext> app,
-        ParamContext params,
-        const std::shared_ptr<SerialPort> &serialPort
-    ) = 0;
-    
-    /* ActuatorComm::~ActuatorComm
-        Author: Declan White
-        Description: TODO
-        Parameters: TODO
-        Returns: TODO
-        Changelog:
-            [2014-09-04 DWW] Created.
-    */
-    virtual ~ActuatorComm();
-    
+    //
 
 public:
     
@@ -169,7 +148,7 @@ public:
         Changelog:
             [2014-09-04 DWW] Created.
     */
-    virtual void getActuatorInfoList(
+    virtual void obtainActuatorInfoList(
         std::vector<ActuatorComm::ActuatorInfo> &infoList
     ) const = 0;
     
@@ -293,8 +272,33 @@ public:
     //virtual duration getActuatorMovementSampleRate(int id = 0);
     //virtual void setActuatorMovementSampleRate(int id, duration sampleRate) = 0;
     
+public:
+    virtual hook registerActuatorStateChangeCallback(
+        std::function<void (const ActuatorInfo&, ActuatorState)> callbackPtr
+    ) = 0;
+
+    //info, pos, vel, isMoving
+    virtual hook registerActuatorMovementUpdateCallback(
+        std::function<void (const ActuatorInfo&, double, double, bool)> callbackPtr
+    ) = 0;
 
 };
 
 #endif//ACTUATOR_COMM_H
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

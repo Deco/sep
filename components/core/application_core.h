@@ -1,6 +1,6 @@
-
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
+#include "params.h"
 
 #ifndef CORE_H
 #define CORE_H
@@ -26,8 +26,7 @@ public:
         INFO,
         DEBUG,
         TRACE
-    }
-    
+    };    
 
 public:
     
@@ -85,8 +84,10 @@ public:
         Changelog:
             [2014-09-26 DWW] Created.
     */
-    std::weak_ptr<Param> &findParam(ParamAddress &&addr) const;
-    
+    //std::weak_ptr<Param> &findParam(ParamAddress &&addr) const;
+
+    const std::shared_ptr<boost::asio::io_service> getIOService();
+
     /* ApplicationCore::log
         Author: Declan White
         Description:
@@ -99,10 +100,10 @@ public:
     */
     void log(LogLevel level, std::string msg);
     void log(LogLevel level, std::stringstream msgStream);
-    void log(LogLevel level, std::function<void(std::stringstream)> msgStreamBuilderFunc);
+    void log(LogLevel level, std::function<void(std::stringstream&)> msgStreamBuilderFunc);
     
 
-private:
+public://private:
     
     /* ApplicationCore::(primary constructor)
         Author: Declan White
@@ -114,8 +115,10 @@ private:
         Changelog:
             [2014-09-26 DWW] Created.
     */
-    void ApplicationCore();
-    
+    ApplicationCore();
+
+private:
+
     /* ApplicationCore::workerThreadFunc
         Author: Declan White
         Description:
@@ -146,7 +149,7 @@ private:
 private:
     
     // IO service used to execute everything in the application
-    boost::asio::io_service ios;
+    const std::shared_ptr<boost::asio::io_service> iosPtr;
     
     // A group of threads for the IO service to execute on
     boost::thread_group workerThreadGroup;
@@ -168,11 +171,11 @@ private:
     */
     static void handleRawSignal(int signum);
 
-private
+private:
     
     static std::weak_ptr<ApplicationCore> singletonInstanceWeakPtr;
 
-}
+};
 
 
 
