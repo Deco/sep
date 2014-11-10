@@ -38,6 +38,13 @@ void NetService::init(int port)
 	//Initialise ASIO config
 	wss.init_asio(core->getIOService().get());
 
+	wss.set_access_channels(websocketpp::log::alevel::none);
+	wss.set_access_channels(
+			websocketpp::log::alevel::connect
+		|	websocketpp::log::alevel::disconnect
+	);
+	
+
 	//Set handler for http connection requests
 	wss.set_http_handler(
 		std::bind(&NetService::handleHTTPConn, this,
@@ -45,6 +52,16 @@ void NetService::init(int port)
 		)
 	);
 
+	wss.set_open_handler(
+		std::bind(&NetService::handleWSOpen, this,
+			std::placeholders::_1
+		)
+	);
+	wss.set_close_handler(
+		std::bind(&NetService::handleWSClose, this,
+			std::placeholders::_1
+		)
+	);
 	wss.set_message_handler(
 		std::bind(&NetService::handleWSMessage, this,
 			std::placeholders::_1, std::placeholders::_2
@@ -58,11 +75,18 @@ void NetService::init(int port)
 	wss.start_accept();
 
 	std::cout << "Accepting on port " << port << "!" << std::endl;
-
 	//Start the ASIO io_service run loop
 	//wss.run();
 }
 
+void NetService::handleWSOpen(websocketpp::connection_hdl hdl)
+{
+	connectionList.insert(hdl);
+}
+void NetService::handleWSClose(websocketpp::connection_hdl hdl)
+{
+	connectionList.erase(hdl);
+}
 void NetService::handleWSMessage(
 	websocketpp::connection_hdl hdl,
 	WSServer::message_ptr msg
@@ -82,6 +106,18 @@ void NetService::handleWSMessage(
 	} else {
 		std::cout << "Unhandled message! (" << doc["type"].GetString() << ")" << std::endl;
 	}
+}
+void NetService::sendWSDoc(rapidjson::Document &doc)
+{
+	rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    doc.Accept(writer);
+
+    std::string data = buffer.GetString();
+
+    for (auto connIt : connectionList) {
+        wss.send(connIt, data, websocketpp::frame::opcode::text);
+    }
 }
 
 void NetService::handleHTTPConn(

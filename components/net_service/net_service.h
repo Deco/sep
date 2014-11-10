@@ -6,8 +6,11 @@
  * websocketpp websocket & http server to handle commands.
  */
 
-#include "websocketpp/config/asio_no_tls.hpp"
-#include "websocketpp/server.hpp"
+#include <memory>
+#include <set>
+#include <boost/smart_ptr/owner_less.hpp>
+#include <websocketpp/config/asio_no_tls.hpp>
+#include <websocketpp/server.hpp>
 #include "application_core.h"
 #include <iostream>
 
@@ -33,17 +36,19 @@ public:
     void registerCallback(std::string callbackName, MessageCallbackFunc callback);
 
 public:
-    //The websocket/http server (can handle requests from both)
-    WSServer wss;
-
     std::shared_ptr<ApplicationCore> core;
+    WSServer wss;
+    std::set<websocketpp::connection_hdl, boost::owner_less<websocketpp::connection_hdl>> connectionList;
 
     void init(int port);
 
+    void handleWSOpen(websocketpp::connection_hdl hdl);
+    void handleWSClose(websocketpp::connection_hdl hdl);
     void handleWSMessage(
         websocketpp::connection_hdl hdl,
         WSServer::message_ptr msg
     );
+    void sendWSDoc(rapidjson::Document &doc);
 
     void handleHTTPConn(
         websocketpp::connection_hdl hdl

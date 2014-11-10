@@ -35,7 +35,7 @@ public:
 
 	//Public function forward declarations
 	//Details outlined in .cpp file
-	void initCamera();
+	void init();
 
 	void captureFrame();
 

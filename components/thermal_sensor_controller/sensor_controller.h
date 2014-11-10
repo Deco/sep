@@ -54,6 +54,10 @@ public:
     // Return the result of queue pop
     bool popThermoReading(ThermoReading &r);
     bool popGyroReading(GyroReading &r);
+
+    void requestThermoReading();
+    void requestGyroReading();
+    
     // If there is a Reading available, return true
     bool isThermoReadingAvailable();
     bool isGyroReadingAvailable();

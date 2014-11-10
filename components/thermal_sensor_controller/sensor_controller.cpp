@@ -187,16 +187,18 @@ void ThermalSensorController::handleSerialData()
                     ThermoReading newReading2;
                     newReading2.time = time(0);
                     // create pointer to the new images data
-                    newReading2.img.create(4, 16);  // 4 rows 16 cols
+                    newReading2.img.create(1, 64);
                     float *imgDataPtr = (float*)newReading2.img.data; 
-                    if(1) { //{ modified for presentation optimisation
+                    if(tRequested.load()) { //{ modified for presentation optimisation
                     //if (thermoReadRequested.load()) {
                         std::lock_guard<std::mutex> thermoReadingQueueLock(thermoReadingQueueMutex);
                         newReading2.id = SENSOR_DATA;
                         memcpy(imgDataPtr, dataBuffer, sizeof(float)*64);
-                        if(tRequested.load()) {
+                        if(thermoReadingQueue.size() == 0) {
                             thermoReadingQueue.push(newReading2);
+                            std::cout << "push " << thermoReadingQueue.size() << std::endl;
                         }
+                        tRequested.store(false);
                     }
                     break;
                 }
@@ -205,7 +207,7 @@ void ThermalSensorController::handleSerialData()
                     assert(DataLength == 3*sizeof(float));
                     float *imu = (float*)dataBuffer;
                     //if(gyroReadRequested.load()) { 
-                    if(1) {
+                    if(gRequested.load()) {
                         GyroReading newReading2;
                         newReading2.time = time(0);
                         std::lock_guard<std::mutex> readingQueueLock(gyroReadingQueueMutex);
@@ -214,9 +216,10 @@ void ThermalSensorController::handleSerialData()
                         newReading2.pitch = imu[1];
                         newReading2.yaw = imu[2];
                         //printf("Roll: %f, Pitch: %f, Yaw: %f.\n", newReading.orientation.data()[0], newReading.orientation.data()[1], newReading.orientation.data()[2]);
-                        if(gRequested.load()) {
+                        if(gyroReadingQueue.size() == 0) {
                             gyroReadingQueue.push(newReading2);
                         }
+                        gRequested.store(false);
                     }
                     break;
                 }
@@ -355,8 +358,6 @@ bool ThermalSensorController::isGyroReadingAvailable(){
  */
 bool ThermalSensorController::popThermoReading(ThermoReading &r)
 {
-
-    tRequested.store(true);
     bool wasReadingPopped = false;
    // while (!isThermoReadingAvailable()) {
         
@@ -375,17 +376,12 @@ bool ThermalSensorController::popThermoReading(ThermoReading &r)
     return wasReadingPopped;
 }
 
-
-
-
-
 bool ThermalSensorController::popGyroReading(GyroReading &r)
 {
-      gRequested.store(true);// = true;
     bool wasReadingPopped = false;
-   // while (!isGyroReadingAvailable()) {
+    // while (!isGyroReadingAvailable()) {
         
-  //  }
+    //  }
     if(1) {
         std::lock_guard<std::mutex> readingQueueLock(gyroReadingQueueMutex);
         if(gyroReadingQueue.size() > 0) {
@@ -399,6 +395,18 @@ bool ThermalSensorController::popGyroReading(GyroReading &r)
     //thermoReadRequested = false;
     return wasReadingPopped;
 }
+
+void ThermalSensorController::requestThermoReading()
+{
+    tRequested.store(true);
+}
+
+void ThermalSensorController::requestGyroReading()
+{
+    gRequested.store(true);
+}
+
+
 
 
 
