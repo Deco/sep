@@ -21,20 +21,32 @@ double interval = 100;
 
 int main(int argc, char **argv)
 {
-    if(argc != 4) {
+    if(argc != 6) {
         std::cout << "wrong args" << std::endl;
         return 1;
     }
     const char *sensorDeviceName = argv[1];
     const char *actuatorDeviceName = argv[2];
-    const int port = atoi(argv[3]);
+    const int cameraDeviceNum = atoi(argv[3]);
+    const int port = atoi(argv[4]);
+    const char *mode = argv[5];
+
+    bool showThermal = false;
+    bool showRGB = false;
+    if(mode[0] == 't') {
+        showThermal = true;
+    } else if(mode[0] == 'r') {
+        showRGB = true;
+    } else {
+        throw "wtf";
+    }
 
     std::cout << "blah" << std::endl;
 
     std::shared_ptr<ApplicationCore> core = ApplicationCore::instantiate();
 
     auto sc = std::make_shared<ThermalSensorController>(core, sensorDeviceName, 115200);
-    auto rc = std::make_shared<RgbController>(core, 0);
+    auto rc = std::make_shared<RgbController>(core, cameraDeviceNum);
     auto ac = std::make_shared<ActuatorController>("/dev/tty.usbserial-A9S3VTXD");
     auto ns = std::make_shared<NetService>(core);
 
@@ -54,7 +66,7 @@ int main(int argc, char **argv)
         rc->captureFrame();
         auto rgbFrame = rc->popFrame();
 
-        if(0 && rgbFrame->rows > 0) {
+        if(showRGB && rgbFrame->rows > 0) {
             rapidjson::Document doc;
             auto &aloc = doc.GetAllocator();
             doc.SetObject();
@@ -75,8 +87,8 @@ int main(int argc, char **argv)
             doc.AddMember("pitch", -pos[1], aloc);
             doc.AddMember("dataWidth", imgMat.cols, aloc);
             doc.AddMember("dataHeight", imgMat.rows, aloc);
-            doc.AddMember("yawSize", 94.4, aloc);
-            doc.AddMember("pitchSize", 53.1, aloc);
+            doc.AddMember("yawSize", 63.625, aloc);
+            doc.AddMember("pitchSize", 35.789, aloc);
 
             ns->sendWSDoc(doc);
         }
@@ -91,7 +103,7 @@ int main(int argc, char **argv)
 
         std::cout << "tick: " << timer.expires_at() << std::endl;
 
-        if(1 && sc->popThermoReading(thermoReading)){
+        if(showThermal && sc->popThermoReading(thermoReading)){
             rapidjson::Document doc;
             auto &aloc = doc.GetAllocator();
             doc.SetObject();
@@ -114,9 +126,6 @@ int main(int argc, char **argv)
                 ) {
                     temp += 10.0;
                 }
-                //if(temp < 1.0) {
-                    std::cout << temp << " bbaabababb: " << x << ", " << y << std::endl;
-                //}
 
                 //std::cout << (int)temp << " ";
 

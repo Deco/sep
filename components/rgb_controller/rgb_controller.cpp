@@ -63,14 +63,10 @@ void RgbController::captureFrame()
 	//Extracts the next frame from the camera
 	camera >> *framePtr;
 
-	std::cout << "uwatttt: " << framePtr->rows << std::endl;
-
 	frameBuffer.push_back(framePtr);
 	if(frameBuffer.size() > MAX_BUFFER_SIZE) {
 		frameBuffer.pop_front();
 	}
-
-	std::cout << "yay" << std::endl;
 
 	// timer.async_wait(
 	// 	std::bind(&RgbController::captureFrame, this)
