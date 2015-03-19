@@ -1,0 +1,183 @@
+#rootdiv {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.layer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#canvas-layer { }
+#main-canvas-container {
+    right: 100px;
+    
+    width: 100%;
+    height: 100%;
+}
+#main-canvas {
+    width: 90%;
+    height: 100%;
+    border: 10px solid;
+
+}
+
+#slider-layer { }
+#timeslider {
+    position: absolute;
+    width: 100%;
+}
+
+#menu-layer { }
+#sidebar-pane {
+    float: right;
+    height: 100%;
+    width: 100px;
+    
+    background-color: #ddddff;
+    opacity: 0.7;
+}
+#sidebar-content {
+    display: table;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+.sidebar-element {
+    display: block;
+    height: 100%;
+    width: 100%;
+    border-width: 3px;
+    border-style: solid;
+    border-color: gray;
+    cursor: hand;
+}
+
+.sidebar-element:active {
+    display: block;
+    height: 100%;
+    width: 100%;
+    border-width: 3px;
+    border-style: solid;
+    border-color: white;
+    cursor: hand;
+}
+
+.sidebar-header {
+    display: block;
+    height: auto;
+    width: 100%;
+}
+
+#sidebar-content li {
+    display: table-row;
+}
+.sidebar-header-row {
+    height: 8%;
+}
+#sidebar-content li span {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.popout-pane {
+    float: right;
+    height: 100%;
+    width: 45%;
+    
+    background-color: #C8C8C8;
+    opacity: 0.7;
+}
+.popout-header {
+    height: calc(20px - 4px); /* subtract padding */
+    padding: 2px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    
+    text-align: center;
+}
+.popout-content {
+    height: calc(100% - 4px - 20px - 4px - 4px - 40px - 4px); /* I hate CSS */
+            /* height -padd -head -padd -padd -foot -padd */
+    overflow-y: scroll;
+}
+.popout-footer {
+    height: 40px;
+    text-align: center;
+}
+#close-popout-button {
+    width: 95%;
+    height: 100%;
+    background-color: #dddddd;
+    opacity: 1.0;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
+    cursor: hand;
+}
+
+.settings-row {
+    width: 100%;
+    height: 50px;
+    overflow: hidden;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-top-color: #787878;
+}
+
+.settings-label {
+    text-align: left;
+    float: left;
+    height: 100%;
+    width: 25%;
+    padding-left: 5%;
+    padding-right: 5%;
+    vertical-align: middle;
+}
+
+.settings-value {
+    position: relative;
+    text-align: center;
+    float: right;
+    height: 100%;
+    width: 65%;
+    overflow: hidden;
+}
+
+.settings-sliders-regular {
+    position: absolute;
+    width: 90%;
+    top: 30%;
+    left: 5%;
+    cursor: hand;
+}
+
+.settings-sliders-toggle {
+    position: absolute;
+    width: 20%;
+    top: 30%;
+    left: 40%;
+    cursor: hand;
+}
+
+.settings-sliders-range {
+    position: absolute;
+    width: 80%;
+    top: 30%;
+    left: 10%;
+    cursor: hand;
+}
+
+
+.rectangle {
+    border: 2px solid #FF0000;
+    position: absolute;
+}

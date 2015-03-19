@@ -1,0 +1,78 @@
+<!--
+  Authors: Thomas Smallridge, Aaron Nyugen, Samuel Holmes
+  Written: 9/9/2014
+  
+-->
+
+<html>
+<head>
+  <title>Bomb Guys</title>
+  <link rel="stylesheet" href="css/jquery-ui.css" />
+</head>
+
+<body>
+<div id="rootdiv">
+    <div class="layer" id="canvas-layer">
+        <div id="main-canvas-container">
+            <!--<canvas id="main-canvas"></canvas>-->
+            <!--<div class="panning-slider" id=x-slider></div>-->
+
+        </div>
+    </div>
+    
+    <div class="layer" id="svg-layer">
+        <div id="main-svg-container">
+            <!--<svg id=svg-rectangle width="200" height="250" version="1.1" xmlns="http://www.w3.org/2000/svg">
+              <rect x="10" y="10" width="30" height="30" stroke="black" fill="transparent" stroke-width="5"/>
+            </svg>-->
+        </div>
+    </div>
+    
+    <div class="layer" id="menu-layer">
+        <div class="pane" id="sidebar-pane">
+            <ul class="pane-content" id="sidebar-content">
+            </ul>
+        </div>
+        
+        <div class="pane popout-pane" style="display: none;">
+        <div class="popout-header" id="settings-header">
+        </div>
+        <div class="popout-content" id="settings-body">
+        </div>
+        <div class="popout-footer">
+            <button id="close-popout-button">Close</button>
+        </div>
+    </div>
+    
+</div>
+
+<script src="libs/jquery-1.10.2.min.js"></script>
+<script src="libs/jquery-ui.min.js"></script>
+
+<script>JSCLASS_PATH = '/libs/jsclass/min/'</script>
+<script src="libs/jsclass/min/loader-browser.js"></script>
+
+<script src="libs/svg.js"></script>
+<script src="libs/svg.draggable.js"></script>
+
+<!--<script src="libs/handlebars-1.0.0.js"></script>
+<script src="libs/ember.js"></script>
+<script src="libs/ember-data.js"></script>-->
+<script src="libs/three.js"></script>
+<script src='libs/threex.keyboardstate.js'></script>
+
+<script src="libs/jquery.nouislider.js"></script>
+<!--<script src="libs/jquery.nouislider.all.min.js"></script>-->
+<link rel="stylesheet" type="text/css" href="css/jquery.nouislider.pips.css"></link>
+
+<link rel="stylesheet" type="text/css" href="css/jquery.nouislider.css"></link>
+
+<link rel="stylesheet" type="text/css" href="css/webapp.css"></link>
+
+<script src="QuadTree.js"></script>
+<script src="SensorStructure.js"></script>
+<script src="panorama.js"></script>
+<script src="webapp.js"></script>
+</body>
+
+</html>
