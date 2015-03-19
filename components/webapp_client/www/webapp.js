@@ -173,7 +173,7 @@ JS.require('JS.Class', 'JS.Observable', function(Class) {
         this.pr = new PanoramaRenderer($('#main-canvas-container'));
 
         this.wsUri = "ws://"+document.location.host;
-        //this.ws = new WebSocket(this.wsUri);
+        this.ws = new WebSocket(this.wsUri);
 
         this.wsIsConnected = false;
 
